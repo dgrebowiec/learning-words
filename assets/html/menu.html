@@ -1,0 +1,80 @@
+<section id="menu" class="card">
+  <div class="center" style="margin-bottom:10px">
+    <div class="pill" id="ttsStatus">TTS: wykrywanie…</div>
+    <p class="sub" style="margin-top:8px">Wybierz kategorię, poziom i tryb:</p>
+  </div>
+  <div class="row segmented" id="catSeg">
+    <div class="seg active" data-cat="FRUITS">Owoce</div>
+    <div class="seg" data-cat="VEGGIES">Warzywa</div>
+    <div class="seg" data-cat="MIXED">Mieszane</div>
+  </div>
+  <div class="row segmented" id="levelSeg" style="margin-top:8px">
+    <div class="seg active" data-level="LATWY">Łatwy</div>
+    <div class="seg" data-level="SREDNI">Średni</div>
+    <div class="seg" data-level="TRUDNY">Trudny</div>
+  </div>
+
+  <div class="menu-grid" style="margin-top:12px">
+    <div class="mode-card">
+      <div><h3>Fiszki</h3><p>Ucz się nazw + odsłuch, bez punktacji.</p></div>
+      <button class="btn" data-go="flashcards">Start ➜</button>
+    </div>
+    <div class="mode-card">
+      <div><h3>Quiz (PL ➜ ES)</h3><p>Wybierz hiszpańską nazwę.</p></div>
+      <button class="btn" data-go="quiz">Start ➜</button>
+    </div>
+    <div class="mode-card">
+      <div><h3>Wybierz element (ES ➜ obraz)</h3><p>Podajemy nazwę po hiszp.; wybierz właściwy obraz.</p></div>
+      <button class="btn" data-go="finditem">Start ➜</button>
+    </div>
+
+    <div class="mode-card" id="reviewModeCard" style="display: none; background:linear-gradient(160deg, rgba(239,68,68,.10), rgba(255,255,255,.03)); border-color:rgba(239,68,68,.3);">
+      <div><h3>Powtórka (Błędy)</h3><p>Przećwicz słowa, z którymi masz problem.</p></div>
+      <button class="btn" id="startReviewBtn">Start (0 słów) ➜</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="row" style="justify-content:center; gap:8px;">
+      <span class="pill">Kategoria: <b id="statCat">Owoce</b></span>
+      <span class="pill">Poziom: <b id="statLvl">Łatwy</b></span>
+      <span class="pill">Tryb: <b id="statMode">—</b></span>
+      <span class="pill">Najlepszy wynik: <b id="statBest">0</b></span>
+      <span class="pill">Najlepszy czas: <b id="statBestTime">—</b></span>
+      <span class="pill">Najlepsza seria: <b id="statBestStreak">0</b></span>
+      <span class="pill">Poznane słowa: <b id="statLearned">0</b>/<span id="statTotalWords">0</span></span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <h3 style="margin:0 0 6px 0">⏱️ Najlepsze czasy dla tej kategorii i trybu</h3>
+    <ul class="stats-list" id="bestTimesList"></ul>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <h3 style="margin:0 0 6px 0">📊 Postępy ogólne</h3>
+    <div class="row" style="justify-content:center; gap:8px;">
+      <span class="pill">Łącznie gier: <b id="globalGames">0</b></span>
+      <span class="pill">Średnia skuteczność: <b id="globalAccuracy">0%</b></span>
+      <span class="pill">Poznane słowa: <b id="globalLearned">0</b>/<span id="globalTotalWords">0</span></span>
+      <span class="pill">Ostatnia aktywność: <b id="globalLastPlayed">—</b></span>
+    </div>
+  </div>
+
+  <div class="card" id="achievementsCard" style="margin-top:12px">
+    <div class="row" style="justify-content:center; gap:8px;">
+      <h3 style="margin:0">⭐ Postęp osiągnięć</h3>
+      <span class="pill">Gwiazdy: <b id="statStars">0</b></span>
+      <span class="pill">Naklejki: <b id="statStickers">0</b></span>
+    </div>
+    <div class="badges" id="stickerShelf" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="row" style="justify-content:space-between">
+      <h3 style="margin:0">🏅 Odznaki</h3>
+      <span class="pill">Zdobyte: <b id="badgeCount">0</b>/<span id="badgeTotal">0</span></span>
+    </div>
+    <div class="badges" id="badgeShelf" style="margin-top:10px"></div>
+  </div>
+</section>

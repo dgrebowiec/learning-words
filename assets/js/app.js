@@ -442,7 +442,12 @@ function runFunctionalTests(){
     {name:'Zestaw owoców niepusty', pass: FRUITS.length > 0},
     {name:'Zestaw warzyw niepusty', pass: VEGGIES.length > 0},
     {name:'Poziomy skonfigurowane', pass: Object.keys(LEVELS).length === 3},
-    {name:'Łączny zestaw spójny', pass: datasetFor('MIXED').length === datasetFor('FRUITS').length + datasetFor('VEGGIES').length}
+    {name:'Łączny zestaw spójny', pass: datasetFor('MIXED').length === datasetFor('FRUITS').length + datasetFor('VEGGIES').length},
+    {name:'Sekcja menu obecna', pass: !!document.getElementById('menu')},
+    {name:'Sekcja fiszek obecna', pass: !!document.getElementById('flashcards')},
+    {name:'Sekcja quizu obecna', pass: !!document.getElementById('quiz')},
+    {name:'Sekcja znajdź element obecna', pass: !!document.getElementById('finditem')},
+    {name:'Kontener naklejek obecny', pass: !!document.getElementById('stickerShelf')}
   ];
   const hasConsole = typeof console !== 'undefined';
   if (hasConsole && console.groupCollapsed){

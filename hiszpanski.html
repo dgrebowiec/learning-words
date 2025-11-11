@@ -3,178 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Hiszpańskie Owoce &amp; Warzywa – mini-gra (odznaki, retry, mieszane, podsumowanie)</title>
+  <title>Hiszpańskie Owoce &amp; Warzywa – mini-gra</title>
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-<div class="app">
-  <header>
-    <h1>Hiszpańskie <span class="grad">Owoce &amp; Warzywa</span> – mini-gra</h1>
-    <div class="toolbar">
-      <button class="btn secondary" id="toMenuBtn">🏠 Menu</button>
-      <button class="btn" id="speakAllBtn">🔊 Lista</button>
-    </div>
-  </header>
-
-  <main>
-    <section id="menu" class="card">
-      <div class="center" style="margin-bottom:10px">
-        <div class="pill" id="ttsStatus">TTS: wykrywanie…</div>
-        <p class="sub" style="margin-top:8px">Wybierz kategorię, poziom i tryb:</p>
-      </div>
-      <div class="row segmented" id="catSeg">
-        <div class="seg active" data-cat="FRUITS">Owoce</div>
-        <div class="seg" data-cat="VEGGIES">Warzywa</div>
-        <div class="seg" data-cat="MIXED">Mieszane</div>
-      </div>
-      <div class="row segmented" id="levelSeg" style="margin-top:8px">
-        <div class="seg active" data-level="LATWY">Łatwy</div>
-        <div class="seg" data-level="SREDNI">Średni</div>
-        <div class="seg" data-level="TRUDNY">Trudny</div>
-      </div>
-
-      <div class="menu-grid" style="margin-top:12px">
-        <div class="mode-card">
-          <div><h3>Fiszki</h3><p>Ucz się nazw + odsłuch, bez punktacji.</p></div>
-          <button class="btn" data-go="flashcards">Start ➜</button>
-        </div>
-        <div class="mode-card">
-          <div><h3>Quiz (PL ➜ ES)</h3><p>Wybierz hiszpańską nazwę.</p></div>
-          <button class="btn" data-go="quiz">Start ➜</button>
-        </div>
-        <div class="mode-card">
-          <div><h3>Wybierz element (ES ➜ obraz)</h3><p>Podajemy nazwę po hiszp.; wybierz właściwy obraz.</p></div>
-          <button class="btn" data-go="finditem">Start ➜</button>
-        </div>
-
-        <div class="mode-card" id="reviewModeCard" style="display: none; background:linear-gradient(160deg, rgba(239,68,68,.10), rgba(255,255,255,.03)); border-color:rgba(239,68,68,.3);">
-          <div><h3>Powtórka (Błędy)</h3><p>Przećwicz słowa, z którymi masz problem.</p></div>
-          <button class="btn" id="startReviewBtn">Start (0 słów) ➜</button>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <div class="row" style="justify-content:center; gap:8px;">
-          <span class="pill">Kategoria: <b id="statCat">Owoce</b></span>
-          <span class="pill">Poziom: <b id="statLvl">Łatwy</b></span>
-          <span class="pill">Tryb: <b id="statMode">—</b></span>
-          <span class="pill">Najlepszy wynik: <b id="statBest">0</b></span>
-          <span class="pill">Najlepszy czas: <b id="statBestTime">—</b></span>
-          <span class="pill">Najlepsza seria: <b id="statBestStreak">0</b></span>
-          <span class="pill">Poznane słowa: <b id="statLearned">0</b>/<span id="statTotalWords">0</span></span>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <h3 style="margin:0 0 6px 0">⏱️ Najlepsze czasy dla tej kategorii i trybu</h3>
-        <ul class="stats-list" id="bestTimesList"></ul>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <h3 style="margin:0 0 6px 0">📊 Postępy ogólne</h3>
-        <div class="row" style="justify-content:center; gap:8px;">
-          <span class="pill">Łącznie gier: <b id="globalGames">0</b></span>
-          <span class="pill">Średnia skuteczność: <b id="globalAccuracy">0%</b></span>
-          <span class="pill">Poznane słowa: <b id="globalLearned">0</b>/<span id="globalTotalWords">0</span></span>
-          <span class="pill">Ostatnia aktywność: <b id="globalLastPlayed">—</b></span>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <div class="row" style="justify-content:space-between">
-          <h3 style="margin:0">🏅 Odznaki</h3>
-          <span class="pill">Zdobyte: <b id="badgeCount">0</b>/<span id="badgeTotal">0</span></span>
-        </div>
-        <div class="badges" id="badgeShelf" style="margin-top:10px"></div>
-      </div>
-    </section>
-
-    <section id="flashcards" class="card hidden">
-      <div class="imgwrap"><img id="fcImg" alt="obraz" /></div>
-      <div class="word" id="fcEs">manzana</div>
-      <div class="sub" id="fcPl">jabłko</div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn secondary" id="fcPrev">⬅️ Poprzednie</button>
-        <button class="btn secondary" id="resetBtn">🔄 Reset</button>
-        <button class="btn" id="fcSpeak">🔁 Powtórz słowo</button>
-        <button class="btn" id="fcNext">Następny ➜</button>
-      </div>
-    </section>
-
-    <section id="quiz" class="card hidden">
-      <div class="row" style="justify-content:space-between;">
-        <span class="pill">Pytanie: <b id="qNum">1</b>/<span id="qTotal">10</span></span>
-        <span class="pill">Wynik: <b id="qScore">0</b></span>
-        <span class="pill">Seria: <b id="qStreak">0</b> (rek.: <span id="qBestStreak">0</span>)</span>
-      </div>
-      <div class="scorebar" aria-hidden="true" style="margin:10px 0 14px 0"><span id="scoreFill"></span></div>
-      <div class="center" style="margin-bottom:6px">
-        <div class="imgwrap" style="max-width:520px;margin:0 auto"><img id="qImg" alt="obraz do pytania" /></div>
-        <div class="sub" id="qHint">po polsku: jabłko</div>
-        <div class="row" style="margin-top:6px">
-          <button class="btn" id="qSpeak">🔁 Powtórz słowo (ES)</button>
-        </div>
-      </div>
-      <div class="choices" id="choices"></div>
-      <div class="row" style="margin-top:10px; justify-content:space-between;">
-        <button class="btn secondary" id="qSkip">Pomiń</button>
-        <div class="row" style="gap:8px">
-          <button class="btn secondary" id="qRetry">⟳ Zagraj ponownie (nowy zestaw)</button>
-          <button class="btn" id="qNext">Następne pytanie</button>
-        </div>
-      </div>
-
-      <div id="qSummary" class="summary hidden">
-        <div class="big">Podsumowanie</div>
-        <div><b>Wynik:</b> <span id="qSumScore">0</span>/<span id="qSumTotal">0</span> (<span id="qSumPct">0</span>%)</div>
-        <div class="muted">Najlepsza seria: <b id="qSumBestStreak">0</b> • Czas: <b id="qSumTime">0.0 s</b> • Rekord czasu: <b id="qSumBestTime">—</b></div>
-        <div class="row" style="margin-top:6px">
-          <button class="btn secondary" id="qSumMenu">🏠 Menu</button>
-          <button class="btn" id="qSumRetry">⟳ Zagraj ponownie</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="finditem" class="card hidden">
-      <div class="row" style="justify-content:space-between;">
-        <span class="pill">Pytanie: <b id="fNum">1</b>/<span id="fTotal">10</span></span>
-        <span class="pill">Wynik: <b id="fScore">0</b></span>
-        <span class="pill">Seria: <b id="fStreak">0</b> (rek.: <span id="fBestStreak">0</span>)</span>
-      </div>
-      <div class="scorebar" aria-hidden="true" style="margin:10px 0 14px 0"><span id="fFill"></span></div>
-      <div class="center" style="margin-bottom:6px">
-        <div class="word" id="fEs">manzana</div>
-        <div class="sub" id="fPl" style="display: none">(jabłko)</div>
-        <div class="row" style="margin-top:6px">
-          <button class="btn" id="fSpeak">🔁 Powtórz słowo (ES)</button>
-        </div>
-      </div>
-      <div class="choices" id="itemChoices"></div>
-      <div class="row" style="margin-top:10px; justify-content:space-between;">
-        <button class="btn secondary" id="fSkip">Pomiń</button>
-        <div class="row" style="gap:8px">
-          <button class="btn secondary" id="fRetry">⟳ Zagraj ponownie (nowy zestaw)</button>
-          <button class="btn" id="fNext">Następne pytanie</button>
-        </div>
-      </div>
-
-      <div id="fSummary" class="summary hidden">
-        <div class="big">Podsumowanie</div>
-        <div><b>Wynik:</b> <span id="fSumScore">0</span>/<span id="fSumTotal">0</span> (<span id="fSumPct">0</span>%)</div>
-        <div class="muted">Najlepsza seria: <b id="fSumBestStreak">0</b> • Czas: <b id="fSumTime">0.0 s</b> • Rekord czasu: <b id="fSumBestTime">—</b></div>
-        <div class="row" style="margin-top:6px">
-          <button class="btn secondary" id="fSumMenu">🏠 Menu</button>
-          <button class="btn" id="fSumRetry">⟳ Zagraj ponownie</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    Zapis wyników, rekordów i odznak działa w <b>localStorage</b>. Tryby i statystyki osobno dla: <b>kategoria</b> × <b>poziom</b> × <b>tryb</b>. Offline ✅
-  </footer>
-</div>
-
-<script src="assets/js/app.js" defer></script>
+  <div class="app" id="appRoot">
+    <div data-partial="header"></div>
+    <main id="appMain">
+      <div data-partial="menu"></div>
+      <div data-partial="flashcards"></div>
+      <div data-partial="quiz"></div>
+      <div data-partial="finditem"></div>
+    </main>
+    <div data-partial="footer"></div>
+  </div>
+  <script src="assets/js/bootstrap.js" defer></script>
 </body>
 </html>
