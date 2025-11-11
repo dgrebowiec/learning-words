@@ -86,11 +86,50 @@ main{ padding-bottom: calc(16px + var(--safe-bot)); }
 
 /* Wyraźniejsze opcje w quizie */
 .choice{ background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.22);
-  border-radius:14px; display:flex; gap:12px; align-items:center; justify-content:flex-start; min-height:64px; padding:14px; }
+  border-radius:14px; display:flex; gap:12px; align-items:center;
+  /* ZMIANA: justowanie do krawędzi, aby głośnik był po prawej */
+  justify-content: space-between;
+  min-height:64px; padding:14px;
+}
 .choice b{ font-size:18px; color:#ffffff; letter-spacing:.2px }
 .choice:focus, .choice:hover{ outline:none; border-color:rgba(96,165,250,.90); }
 .choice.correct{ border-color:rgba(34,197,94,1); background:rgba(34,197,94,.18); }
 .choice.wrong{ border-color:rgba(239,68,68,1); background:rgba(239,68,68,.18); }
+
+/* ZMIANA: Dodatkowe style dla głośnika w przycisku wyboru */
+.choice-speak{
+  appearance: none;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3);
+  color: #fff;
+  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  flex-shrink: 0; /* Zapobiegaj kurczeniu się przycisku */
+  transition: background .1s ease;
+}
+.choice-speak:hover{
+  background: rgba(255,255,255,.25);
+}
+.choice-speak:active{
+  background: rgba(255,255,255,.10);
+  transform: scale(.95);
+}
+/* Zapobiegaj podwójnemu fokusowi, gdy przycisk jest w przycisku */
+.choice:focus .choice-speak,
+.choice:hover .choice-speak {
+  outline: none;
+}
+/* Ukryj głośnik gdy opcja jest wyłączona (po odpowiedzi) */
+.choice:disabled .choice-speak {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
 
 .scorebar{ height:10px; background:rgba(255,255,255,.10); border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,.16); }
 .scorebar > span{ display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--good), var(--accent)); transition:width .25s ease; }

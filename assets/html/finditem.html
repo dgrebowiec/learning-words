@@ -23,12 +23,18 @@
   </div>
 
   <div id="fSummary" class="summary hidden">
-    <div class="big">Podsumowanie</div>
+    <div class="big" id="fSummaryTitle">Podsumowanie</div>
     <div><b>Wynik:</b> <span id="fSumScore">0</span>/<span id="fSumTotal">0</span> (<span id="fSumPct">0</span>%)</div>
     <div class="muted">Najlepsza seria: <b id="fSumBestStreak">0</b> • Czas: <b id="fSumTime">0.0 s</b> • Rekord czasu: <b id="fSumBestTime">—</b></div>
     <div class="row" style="margin-top:6px">
       <button class="btn secondary" id="fSumMenu">🏠 Menu</button>
+      <button class="btn secondary hidden" id="fSumReview">🔁 Powtórz błędne</button>
       <button class="btn" id="fSumRetry">⟳ Zagraj ponownie</button>
+    </div>
+    <p class="muted hidden" id="fMistakeSuccess">Brak błędnych odpowiedzi – świetna robota!</p>
+    <div id="fMistakeInfo" class="summary-mistakes hidden">
+      <p class="muted" id="fMistakeHeader">Błędne odpowiedzi: <span id="fMistakeCount">0</span></p>
+      <ul id="fMistakeList" class="mistake-list"></ul>
     </div>
   </div>
 </section>
