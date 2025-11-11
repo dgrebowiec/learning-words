@@ -435,21 +435,86 @@ document.getElementById('speakAllBtn').addEventListener('click', async ()=>{
 /* ---------- Quiz PL -> ES ---------- */
 let qRound=0, qScore=0, qStreak=0, qBestStreak=0, qAnswer=null, qLen=LEVELS[currentLevel].len, qOpts=LEVELS[currentLevel].options, qStartTime=0;
 let qPool = [];
+let qMistakes = [];
+let qMistakeSet = new Set();
+let qIsReviewMode = false;
+let qAnswered = false;
+let qAnsweredCorrect = false;
 function applyLevelToQuiz(){ qLen=LEVELS[currentLevel].len; qOpts=LEVELS[currentLevel].options; document.getElementById('qTotal').textContent=qLen; }
 function makeQuestionPool(){ const list = dataset(); qPool = shuffle([...list]).slice(0, Math.min(list.length, qLen)); }
+function resetMistakeSummaryUI(){
+  const info = document.getElementById('qMistakeInfo');
+  const list = document.getElementById('qMistakeList');
+  const count = document.getElementById('qMistakeCount');
+  const reviewBtn = document.getElementById('qSumReview');
+  const success = document.getElementById('qMistakeSuccess');
+  if (info) info.classList.add('hidden');
+  if (list) list.innerHTML = '';
+  if (count) count.textContent = '0';
+  if (reviewBtn){
+    reviewBtn.classList.add('hidden');
+    reviewBtn.disabled = true;
+    reviewBtn.textContent = '🔁 Powtórz błędne';
+  }
+  if (success) success.classList.add('hidden');
+}
+function registerMistake(word){
+  if (!word) return;
+  const key = (word.es || '').toLowerCase();
+  if (qMistakeSet.has(key)) return;
+  qMistakeSet.add(key);
+  qMistakes.push(word);
+}
+function updateMistakeSummary(){
+  const info = document.getElementById('qMistakeInfo');
+  const list = document.getElementById('qMistakeList');
+  const count = document.getElementById('qMistakeCount');
+  const reviewBtn = document.getElementById('qSumReview');
+  const success = document.getElementById('qMistakeSuccess');
+  if (!info || !list || !count || !reviewBtn || !success) return;
+  list.innerHTML = '';
+  count.textContent = qMistakes.length.toString();
+  if (qMistakes.length){
+    info.classList.remove('hidden');
+    success.classList.add('hidden');
+    qMistakes.forEach(word => {
+      const li = document.createElement('li');
+      li.innerHTML = `<b>${word.es}</b> – ${word.pl}`;
+      list.appendChild(li);
+    });
+    reviewBtn.classList.remove('hidden');
+    reviewBtn.disabled = false;
+    reviewBtn.textContent = `🔁 Powtórz błędne (${qMistakes.length})`;
+  } else {
+    info.classList.add('hidden');
+    success.textContent = qIsReviewMode ? 'Powtórka ukończona – brak błędów!' : 'Brak błędnych odpowiedzi – świetna robota!';
+    success.classList.remove('hidden');
+    reviewBtn.disabled = true;
+    reviewBtn.classList.add('hidden');
+  }
+}
 function startQuiz(){
+  qIsReviewMode = false;
   applyLevelToQuiz();
   makeQuestionPool();
   qRound=0; qScore=0; qStreak=0; qBestStreak = getModeStats('QUIZ_PL_ES', currentLevel, currentCat).bestStreak || 0;
+  qMistakes = [];
+  qMistakeSet = new Set();
+  qAnswered = false;
+  qAnsweredCorrect = false;
   document.getElementById('qScore').textContent='0'; document.getElementById('qStreak').textContent='0'; document.getElementById('qBestStreak').textContent=qBestStreak;
   document.getElementById('scoreFill').style.width='0%'; document.getElementById('qNext').disabled=false; document.getElementById('qSkip').disabled=false;
   document.getElementById('qRetry').disabled=true;
   document.getElementById('qSummary').classList.add('hidden');
+  resetMistakeSummaryUI();
+  const sumTitle = document.getElementById('qSummaryTitle'); if (sumTitle) sumTitle.textContent = 'Podsumowanie';
   qStartTime = performance.now();
   newQuestion();
 }
 function newQuestion(){
   qRound++; if (qRound>qLen){ endQuiz(); return; }
+  qAnswered = false;
+  qAnsweredCorrect = false;
   const list = dataset();
   const correct = qPool[qRound-1] || pick(list,1)[0]; qAnswer = correct;
   document.getElementById('qImg').src = correct.img;
@@ -460,13 +525,18 @@ function newQuestion(){
   options.forEach(opt=>{
     const btn=document.createElement('button'); btn.className='choice'; btn.innerHTML = `<b>${opt.es}</b>`;
     btn.addEventListener('click', ()=>{
+      if (qAnswered) return;
       const isOk = opt===correct;
+      qAnswered = true;
+      qAnsweredCorrect = isOk;
       if (isOk){
         btn.classList.add('correct'); qScore++; qStreak++; qBestStreak = Math.max(qBestStreak, qStreak);
         markLearned('QUIZ_PL_ES', currentLevel, currentCat, correct);
         registerCorrectAnswer();
       }
-      else { btn.classList.add('wrong'); qStreak = 0;
+      else {
+        btn.classList.add('wrong'); qStreak = 0;
+        registerMistake(correct);
         [...wrap.children].forEach(c=>{ if (c.textContent.toLowerCase().includes(correct.es.split(' ')[0])) c.classList.add('correct'); });
       }
       document.getElementById('qScore').textContent=qScore; document.getElementById('qStreak').textContent=qStreak; document.getElementById('qBestStreak').textContent=qBestStreak;
@@ -476,31 +546,40 @@ function newQuestion(){
     wrap.appendChild(btn);
   });
 }
-document.getElementById('qNext').addEventListener('click', newQuestion);
-document.getElementById('qSkip').addEventListener('click', newQuestion);
+document.getElementById('qNext').addEventListener('click', ()=>{
+  if (!qAnswered && qAnswer){ registerMistake(qAnswer); }
+  newQuestion();
+});
+document.getElementById('qSkip').addEventListener('click', ()=>{
+  if (qAnswer && (!qAnswered || !qAnsweredCorrect)){ registerMistake(qAnswer); }
+  newQuestion();
+});
 document.getElementById('qSpeak').addEventListener('click', ()=> { if (qAnswer) speakEs(qAnswer.es); });
 document.getElementById('qRetry').addEventListener('click', ()=> { startQuiz(); });
+document.getElementById('qSumReview').addEventListener('click', ()=> { startMistakeReview(); });
 
 function endQuiz(){
   const elapsedSec = (performance.now() - qStartTime) / 1000;
   const st = getModeStats('QUIZ_PL_ES', currentLevel, currentCat);
-  st.games += 1; st.bestScore = Math.max(st.bestScore||0, qScore);
-  st.bestStreak = Math.max(st.bestStreak||0, qBestStreak);
-  st.totalCorrect += qScore; st.totalQuestions += qLen; st.lastPlayed = new Date().toISOString();
-  st.lastTime = elapsedSec;
-  if (!st.bestTime || elapsedSec < st.bestTime) st.bestTime = elapsedSec;
-  setModeStats('QUIZ_PL_ES', currentLevel, currentCat, st);
+  if (!qIsReviewMode){
+    st.games += 1; st.bestScore = Math.max(st.bestScore||0, qScore);
+    st.bestStreak = Math.max(st.bestStreak||0, qBestStreak);
+    st.totalCorrect += qScore; st.totalQuestions += qLen; st.lastPlayed = new Date().toISOString();
+    st.lastTime = elapsedSec;
+    if (!st.bestTime || elapsedSec < st.bestTime) st.bestTime = elapsedSec;
+    setModeStats('QUIZ_PL_ES', currentLevel, currentCat, st);
 
-  if (st.games === 1) awardBadge('first_quiz');
-  if (qScore === qLen){
-    if (currentLevel==='LATWY') awardBadge('perfect_easy');
-    if (currentLevel==='SREDNI') awardBadge('perfect_mid');
-    if (currentLevel==='TRUDNY') awardBadge('perfect_hard');
-    if (currentCat==='FRUITS') awardBadge('fruit_master');
-    if (currentCat==='VEGGIES') awardBadge('veggie_master');
+    if (st.games === 1) awardBadge('first_quiz');
+    if (qScore === qLen){
+      if (currentLevel==='LATWY') awardBadge('perfect_easy');
+      if (currentLevel==='SREDNI') awardBadge('perfect_mid');
+      if (currentLevel==='TRUDNY') awardBadge('perfect_hard');
+      if (currentCat==='FRUITS') awardBadge('fruit_master');
+      if (currentCat==='VEGGIES') awardBadge('veggie_master');
+    }
+    if (qBestStreak >= 5) awardBadge('streak_5');
+    if (elapsedSec < 60) awardBadge('speed_runner');
   }
-  if (qBestStreak >= 5) awardBadge('streak_5');
-  if (elapsedSec < 60) awardBadge('speed_runner');
 
   document.getElementById('choices').innerHTML='';
   document.getElementById('qNum').textContent=qLen;
@@ -515,11 +594,44 @@ function endQuiz(){
   document.getElementById('qSumTime').textContent = elapsedSec.toFixed(1)+' s';
   const bestTime = st.bestTime ? st.bestTime.toFixed(1)+' s' : '—';
   document.getElementById('qSumBestTime').textContent = bestTime;
+  const sumTitle = document.getElementById('qSummaryTitle'); if (sumTitle) sumTitle.textContent = qIsReviewMode ? 'Podsumowanie powtórki' : 'Podsumowanie';
+  updateMistakeSummary();
   document.getElementById('qSummary').classList.remove('hidden');
 
   document.getElementById('qSumRetry').onclick = ()=> startQuiz();
   document.getElementById('qSumMenu').onclick  = ()=> { show('menu'); updateMenuStats('QUIZ_PL_ES'); };
   updateGlobalStats();
+}
+
+function startMistakeReview(){
+  if (!qMistakes.length) return;
+  const reviewPool = [...qMistakes];
+  qIsReviewMode = true;
+  qPool = reviewPool;
+  qLen = reviewPool.length;
+  qOpts = LEVELS[currentLevel].options;
+  qRound = 0;
+  qScore = 0;
+  qStreak = 0;
+  qBestStreak = 0;
+  qAnswered = false;
+  qAnsweredCorrect = false;
+  qMistakes = [];
+  qMistakeSet = new Set();
+  document.getElementById('qScore').textContent='0';
+  document.getElementById('qStreak').textContent='0';
+  document.getElementById('qBestStreak').textContent='0';
+  document.getElementById('scoreFill').style.width='0%';
+  document.getElementById('qNext').disabled=false;
+  document.getElementById('qSkip').disabled=false;
+  document.getElementById('qRetry').disabled=true;
+  document.getElementById('qSummary').classList.add('hidden');
+  const sumTitle = document.getElementById('qSummaryTitle'); if (sumTitle) sumTitle.textContent = 'Podsumowanie powtórki';
+  resetMistakeSummaryUI();
+  document.getElementById('qTotal').textContent = qLen;
+  qStartTime = performance.now();
+  if (typeof toast === 'function'){ toast('Rozpoczynamy powtórkę błędnych odpowiedzi!'); }
+  newQuestion();
 }
 
 /* ---------- Find Item (ES -> IMG) ---------- */
