@@ -1,5 +1,5 @@
 (function(){
-  const requiredIds = ['menu','flashcards','quiz','finditem','badgeShelf','achievementsCard'];
+  const requiredIds = ['menu','flashcards','quiz','finditem','badgeShelf','achievementsCard','starProgressBar','recentRewardCard'];
   const missing = requiredIds.filter(id => !document.getElementById(id));
   const hasConsole = typeof console !== 'undefined';
   if (hasConsole && console.groupCollapsed){

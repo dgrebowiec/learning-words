@@ -67,8 +67,23 @@
       <span class="pill">Gwiazdy: <b id="statStars">0</b></span>
       <span class="pill">Postęp do gwiazdki: <b id="statStarProgress">0/0</b></span>
       <span class="pill">Naklejki: <b id="statStickers">0</b></span>
+      <span class="pill">Do kolejnej naklejki: <b id="statNextSticker">—</b></span>
     </div>
+    <div class="progress" id="starProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
+      <span id="starProgressFill"></span>
+    </div>
+    <p class="sub small" id="nextStickerInfo">Zdobywaj gwiazdki, aby odblokować pierwszą naklejkę.</p>
     <div class="badges" id="stickerShelf" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card" id="recentRewardCard" style="margin-top:12px">
+    <div class="row" style="justify-content:space-between">
+      <h3 style="margin:0">🎁 Ostatnia nagroda</h3>
+      <span class="pill" id="recentRewardTime">—</span>
+    </div>
+    <div class="recent-reward" id="recentRewardDetails">
+      <p class="sub small placeholder" style="margin:0">Brak nagród – rozegraj rundę, aby zdobywać gwiazdki.</p>
+    </div>
   </div>
 
   <div class="card" style="margin-top:12px">
