@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Hiszpańskie Owoce &amp; Warzywa – mini-gra (odznaki, retry, mieszane, podsumowanie)</title>
-<link rel="stylesheet" href="assets/css/style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Hiszpańskie Owoce &amp; Warzywa – mini-gra (odznaki, retry, mieszane, podsumowanie)</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 <div class="app">
@@ -17,7 +17,6 @@
   </header>
 
   <main>
-    <!-- MENU -->
     <section id="menu" class="card">
       <div class="center" style="margin-bottom:10px">
         <div class="pill" id="ttsStatus">TTS: wykrywanie…</div>
@@ -46,6 +45,11 @@
         <div class="mode-card">
           <div><h3>Wybierz element (ES ➜ obraz)</h3><p>Podajemy nazwę po hiszp.; wybierz właściwy obraz.</p></div>
           <button class="btn" data-go="finditem">Start ➜</button>
+        </div>
+
+        <div class="mode-card" id="reviewModeCard" style="display: none; background:linear-gradient(160deg, rgba(239,68,68,.10), rgba(255,255,255,.03)); border-color:rgba(239,68,68,.3);">
+          <div><h3>Powtórka (Błędy)</h3><p>Przećwicz słowa, z którymi masz problem.</p></div>
+          <button class="btn" id="startReviewBtn">Start (0 słów) ➜</button>
         </div>
       </div>
 
@@ -76,7 +80,6 @@
         </div>
       </div>
 
-      <!-- Półka odznak -->
       <div class="card" style="margin-top:12px">
         <div class="row" style="justify-content:space-between">
           <h3 style="margin:0">🏅 Odznaki</h3>
@@ -86,7 +89,6 @@
       </div>
     </section>
 
-    <!-- FISZKI -->
     <section id="flashcards" class="card hidden">
       <div class="imgwrap"><img id="fcImg" alt="obraz" /></div>
       <div class="word" id="fcEs">manzana</div>
@@ -99,7 +101,6 @@
       </div>
     </section>
 
-    <!-- QUIZ PL -> ES -->
     <section id="quiz" class="card hidden">
       <div class="row" style="justify-content:space-between;">
         <span class="pill">Pytanie: <b id="qNum">1</b>/<span id="qTotal">10</span></span>
@@ -123,7 +124,6 @@
         </div>
       </div>
 
-      <!-- Podsumowanie quizu -->
       <div id="qSummary" class="summary hidden">
         <div class="big">Podsumowanie</div>
         <div><b>Wynik:</b> <span id="qSumScore">0</span>/<span id="qSumTotal">0</span> (<span id="qSumPct">0</span>%)</div>
@@ -135,7 +135,6 @@
       </div>
     </section>
 
-    <!-- FIND ITEM ES -> IMG -->
     <section id="finditem" class="card hidden">
       <div class="row" style="justify-content:space-between;">
         <span class="pill">Pytanie: <b id="fNum">1</b>/<span id="fTotal">10</span></span>
@@ -159,7 +158,6 @@
         </div>
       </div>
 
-      <!-- Podsumowanie wybierz element -->
       <div id="fSummary" class="summary hidden">
         <div class="big">Podsumowanie</div>
         <div><b>Wynik:</b> <span id="fSumScore">0</span>/<span id="fSumTotal">0</span> (<span id="fSumPct">0</span>%)</div>
