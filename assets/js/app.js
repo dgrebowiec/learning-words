@@ -144,6 +144,22 @@ const STICKER_CATALOG = [
   {id:'crown',   icon:'👑', name:'Korona językowa', desc:'Zgromadź 60 gwiazdek.'}
 ];
 
+const LIVE_STAR_TARGETS = ['quizStarProgress', 'findStarProgress'];
+
+function normalizeStarProgress(value){
+  const numeric = Number(value);
+  return Math.max(0, Math.min(STAR_INTERVAL, Number.isFinite(numeric) ? numeric : 0));
+}
+
+function updateLiveStarProgress(state){
+  const progressValue = normalizeStarProgress(state?.starProgress);
+  const label = `${progressValue}/${STAR_INTERVAL}`;
+  LIVE_STAR_TARGETS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = label;
+  });
+}
+
 function achievementDefaults(){
   return { stars:0, starProgress:0, stickers:[], totalCorrect:0, recentReward:null };
 }
@@ -172,8 +188,10 @@ function pluralizeStars(count){
 function renderAchievements(){
   const state = loadAchievements();
   const stars = state.stars || 0;
-  const progress = state.starProgress || 0;
+  const progress = normalizeStarProgress(state.starProgress);
   const stickers = Array.isArray(state.stickers) ? state.stickers : [];
+
+  updateLiveStarProgress(state);
 
   const progressEl = document.getElementById('statStarProgress');
   if (progressEl) progressEl.textContent = `${progress}/${STAR_INTERVAL}`;
@@ -282,6 +300,7 @@ function renderAchievements(){
 
 function registerCorrectAnswer(){
   const state = loadAchievements();
+  const prevProgress = normalizeStarProgress(state.starProgress);
   state.totalCorrect = (state.totalCorrect || 0) + 1;
   state.starProgress = (state.starProgress || 0) + 1;
   let starsEarned = 0;
@@ -312,7 +331,16 @@ function registerCorrectAnswer(){
     toast(`⭐ Zdobyto ${starsEarned} ${plural}!`);
   }
   if (starsEarned === 0 && ((state.stickers || []).length === stickersBefore)){
-    // brak nowych nagród – tylko aktualizacja postępu
+    const newProgress = normalizeStarProgress(state.starProgress);
+    if (newProgress !== prevProgress){
+      const remaining = Math.max(0, STAR_INTERVAL - newProgress);
+      const remainText = remaining > 0 ? ` (pozostało ${remaining} ${pluralizeStars(remaining)}).` : '.';
+      const menu = document.getElementById('menu');
+      const menuVisible = menu ? !menu.classList.contains('hidden') : false;
+      if (!menuVisible){
+        toast(`⭐ Postęp do gwiazdki: ${newProgress}/${STAR_INTERVAL}${remainText}`);
+      }
+    }
   }
 }
 
@@ -639,6 +667,8 @@ function runFunctionalTests(){
     {name:'Sekcja znajdź element obecna', pass: !!document.getElementById('finditem')},
     {name:'Kontener naklejek obecny', pass: !!document.getElementById('stickerShelf')},
     {name:'Licznik postępu gwiazdek obecny', pass: !!document.getElementById('statStarProgress')},
+    {name:'Licznik gwiazd w quizie obecny', pass: !!document.getElementById('quizStarProgress')},
+    {name:'Licznik gwiazd w trybie znajdź obecny', pass: !!document.getElementById('findStarProgress')},
     {name:'Pasek postępu gwiazdek obecny', pass: !!document.getElementById('starProgressFill')},
     {name:'Panel ostatniej nagrody obecny', pass: !!document.getElementById('recentRewardCard')},
     {name:'Informacja o kolejnej naklejce obecna', pass: !!document.getElementById('statNextSticker')}

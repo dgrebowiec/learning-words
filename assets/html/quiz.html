@@ -1,8 +1,9 @@
 <section id="quiz" class="card hidden">
-  <div class="row" style="justify-content:space-between;">
-    <span class="pill">Pytanie: <b id="qNum">1</b>/<span id="qTotal">10</span></span>
-    <span class="pill">Wynik: <b id="qScore">0</b></span>
-    <span class="pill">Seria: <b id="qStreak">0</b> (rek.: <span id="qBestStreak">0</span>)</span>
+  <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
+    <span class="pill" title="Numer pytania w bieżącej rundzie">Pytanie: <b id="qNum">1</b>/<span id="qTotal">10</span></span>
+    <span class="pill" title="Twój obecny wynik w tej rundzie">Wynik: <b id="qScore">0</b></span>
+    <span class="pill" title="Aktualna i najlepsza seria poprawnych odpowiedzi">Seria: <b id="qStreak">0</b> (rek.: <span id="qBestStreak">0</span>)</span>
+    <span class="pill" title="Postęp do kolejnej gwiazdki">Gwiazda: <b id="quizStarProgress">0/5</b></span>
   </div>
   <div class="scorebar" aria-hidden="true" style="margin:10px 0 14px 0"><span id="scoreFill"></span></div>
   <div class="center" style="margin-bottom:6px">
