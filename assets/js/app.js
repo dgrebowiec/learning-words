@@ -1,48 +1,53 @@
-/* ----------------- Dane ----------------- */
+/* ----------------- Dane offline ----------------- */
+/*
+ * Ta wersja pliku app.js korzysta wyłącznie z lokalnych obrazów umieszczonych
+ * w katalogu assets/img/fruits i assets/img/veggies. Aplikacja nie pobiera
+ * grafik z internetu.
+ */
 const FRUITS = [
-  {img:"https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg", pl:"jabłko", es:"manzana"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqfg0Wha6sW-FYXe11D8ZcKNZ69zUbxAiostHCtyUzl04RmW9IpfiaxtcPvck&s", pl:"truskawka", es:"fresa"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.jpg", pl:"pomarańcza", es:"naranja"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSysuFcNwDyhq-1xqnhkv4poX4Z6ivLqLOoDrIoNADPG3HPAETaIiDKiLksrts&s", pl:"mango", es:"mango"},
-  {img:"https://www.lokalnywarzywniak.pl/1472-medium_default/gruszka-czerwona.webp", pl:"gruszka", es:"pera"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMPTOSbFmiadO02IIzvvkv_8EgDnGnFrkKDAWXdJoZorn4M-vQxsel1AOBJZg&s", pl:"papaja", es:"papaya"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFPZFCC6SYcNhxp1NIPD6NZj6aPVpuVfjySHP7ojmC2M_Nox6QreZz84rJVA&s", pl:"ananas", es:"piña"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTur7v5PX6FGapp1e1thM8uDeDDp8mZ53tdzvNPXKEn7b0N_dTHaQpNg1Vuig&s", pl:"banan", es:"plátano"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkHovEZEWpcqmzZv6JQWzfQqMVEh_YNn-ODiQvqhxw6Cgo3i-HL9fSIJrz0vQ&s", pl:"arbuz", es:"sandía"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv58glmM-XVzRQ7Lmka88EM0MYnXN5Dx33md09qU44c4Nrdp1lWCTdgVdRhs0&s", pl:"kiwi", es:"kiwi"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrt6lf7jriPJA0G5Yjx2Dv6CUWGlhaguJrjihejjQi2cVpiPYdQ1enkEMkrLM&s", pl:"brzoskwinia", es:"durazno"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR33pyAkczMTgQz3wB-8fhyiGNtrc4TWhDvHHRXxw9S5VqT7rPbfDas0nYLQA&s", pl:"winogrono", es:"uva / uvas"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3622tUEv--Am_CudSE50JmlsF3auH13IvY3S_bacfGlef1l6oQCy83CgVXQ&s", pl:"granat", es:"granada"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMzhhnxijWWgPnSk9n2DCgN-wyNZv2Yg_0PyaAb3ksVI2dDhxYZroUSxyDXKA&s", pl:"kokos", es:"coco"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1J4RAXLeu8k4-wAwY49b4c72WPBsigwppodnh0ZM9CrE4reaPJuMG5PlSeg&s", pl:"melon", es:"melón"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu8Qf2JdCO-Y3Fq16cfTuaVVAB7TVWB_8w3D8v-JamlAE1Qvu3dwwfzbZ5lkI&s", pl:"jeżyna", es:"mora"}
+  {img:'assets/img/fruits/jablko.jpg',      pl:'jabłko',      es:'manzana'},
+  {img:'assets/img/fruits/truskawka.jpg',   pl:'truskawka',   es:'fresa'},
+  {img:'assets/img/fruits/pomarancza.jpg',  pl:'pomarańcza',  es:'naranja'},
+  {img:'assets/img/fruits/mango.jpg',       pl:'mango',       es:'mango'},
+  {img:'assets/img/fruits/gruszka.webp',    pl:'gruszka',     es:'pera'},
+  {img:'assets/img/fruits/papaja.jpg',      pl:'papaja',      es:'papaya'},
+  {img:'assets/img/fruits/ananas.jpg',      pl:'ananas',      es:'piña'},
+  {img:'assets/img/fruits/banan.jpg',       pl:'banan',       es:'plátano'},
+  {img:'assets/img/fruits/arbuz.jpg',       pl:'arbuz',       es:'sandía'},
+  {img:'assets/img/fruits/kiwi.jpg',        pl:'kiwi',        es:'kiwi'},
+  {img:'assets/img/fruits/brzoskwinia.jpg', pl:'brzoskwinia', es:'durazno'},
+  {img:'assets/img/fruits/winogrono.jpg',   pl:'winogrono',   es:'uva / uvas'},
+  {img:'assets/img/fruits/granat.jpg',      pl:'granat',      es:'granada'},
+  {img:'assets/img/fruits/kokos.jpg',       pl:'kokos',       es:'coco'},
+  {img:'assets/img/fruits/melon.jpg',       pl:'melon',       es:'melón'},
+  {img:'assets/img/fruits/jezyna.jpg',      pl:'jeżyna',      es:'mora'}
 ];
 
 const VEGGIES = [
-  {img:"https://d13l1gw8yx87m9.cloudfront.net/emelissa-cms/blog_pages/d2473bdb-7349-4719-a951-7ffec3e95f58.jpg?format=webp&preset=2xl", pl:"karczoch", es:"alcachofa"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Au_march%C3%A9_-_C%C3%A9leri_en_branches_et_c%C3%A9leri_rave.JPG/800px-Au_march%C3%A9_-_C%C3%A9leri_en_branches_et_c%C3%A9leri_rave.JPG", pl:"seler", es:"apio"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Ipomoea_batatas_006.JPG/250px-Ipomoea_batatas_006.JPG", pl:"batat", es:"batata"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/f/fb/Aubergine.jpg", pl:"bakłażan", es:"berenjena"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQylec9j5Y9ErEx1Bpx80kYahhjuzI8-pxHN0a-ewr6HQ83JJWgbdYsch1vG8U&s", pl:"brokuł", es:"brócoli"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDWUE7W0lOTBNf1pzme5GSOjFumrWsklN6jiavOx6MFi9MJ8rD1F85WVhoyg&s", pl:"cukinia", es:"calabacín"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbpHeF6CpPK9FbujPy42rQC3BGmJ_adB7mSoFFOn5cQIBmQPMdQ0Uk8iKT3g&s", pl:"cebula", es:"cebolla"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNnEkmjxBO88gTK3aT4upKikA11KblWenDnqsgh_0BqznKJiCvNX40sz-MdQ&s", pl:"pieczarki", es:"champiñones"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-uKbxG6IS0w-fY69lo-aJtbCawpZRZugkXafWZUNpaJ6TBM9iSDdOhU3BrQ&s", pl:"kapusta", es:"col"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQM3h3MAf3UhvyBOJK4-CSq-OIhPwVK3j4_7xttWONhXKTPIOGb0J9Oc7CDdJw&s", pl:"brukselka", es:"coles de Bruselas"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQufqj8he54DWgM4aurgiRSIBgaLVw_qV13KQe5QnNiqBMaK_KbNGp3qMR5FPs&s", pl:"kalafior", es:"coliflor"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKb6Z5l-mo7t-izZ4WtB6_LJGGJKxj9A_Kl5EPCP7Cjgi7LKAss-JfpNJgMw&s", pl:"szparagi", es:"espárragos"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQAMZhOAfpAcMkudP6rzvOUWMKOv219A1nP7iP9S6rtpzwEv79EOBIhJk28vg&s", pl:"groszek", es:"guisantes"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Heaps_of_beans.jpg/250px-Heaps_of_beans.jpg", pl:"fasolka", es:"judías"},
-  {img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPJpcO_9mND6RXOnsgnBjZLOEm1C4zPstjPxM0vAol4aUC3mCTMkyefirPxTY&s", pl:"sałata", es:"lechuga"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Zea_mays.jpg/800px-Zea_mays.jpg", pl:"kukurydza", es:"maíz"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Solanum_tuberosum_Vineta20100419_12.jpg/1024px-Solanum_tuberosum_Vineta20100419_12.jpg", pl:"ziemniak", es:"patata / papa"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Cucumis_sativus.jpg/800px/Cucumis_sativus.jpg", pl:"ogórek", es:"pepino"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Red_capsicum_and_cross_section.jpg/250px-Red_capsicum_and_cross_section.jpg", pl:"papryka", es:"pimiento"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/2018-06-01_%28132%29_Raphanus_sativus_%28Radish%29_at_Bichlh%C3%A4usl_in_Frankenfels%2C_Austria.jpg/800px-2018-06-01_%28132%29_Raphanus_sativus_%28Radish%29_at_Bichlh%C3%A4usl_in_Frankenfels%2C_Austria.jpg", pl:"rzodkiewka", es:"rábano"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/9/93/Beets_produce-1.jpg", pl:"burak", es:"remolacha"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Pomidory_-_tomato.jpg/800px-Pomidory_-_tomato.jpg", pl:"pomidor", es:"tomate"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Carrots.JPG/1024px-Carrots.JPG", pl:"marchewka", es:"zanahoria"},
-  {img:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/%D0%93%D0%B0%D1%80%D0%B1%D1%83%D0%B7_%D0%B2%D0%B5%D0%BB%D0%B8%D0%BA%D0%BE%D0%BF%D0%BB%D1%96%D0%B4%D0%BD%D0%B8%D0%B9_%D0%B0%D0%B1%D0%BE_%D0%B2%D0%BE%D0%BB%D0%BE%D1%81%D1%8C%D0%BA%D0%B8%D0%B9_Cucurbita_maxima.jpg/800px-%D0%93%D0%B0%D1%80%D0%B1%D1%83%D0%B7_%D0%B2%D0%B5%D0%BB%D0%B8%D0%BA%D0%BE%D0%BF%D0%BB%D1%96%D0%B4%D0%BD%D0%B8%D0%B9_%D0%B0%D0%B1%D0%BE_%D0%B2%D0%BE%D0%BB%D0%BE%D1%81%D1%8C%D0%BA%D0%B8%D0%B9_Cucurbita_maxima.jpg", pl:"dynia", es:"calabaza"}
+  {img:'assets/img/veggies/karczoch.jpg',    pl:'karczoch',    es:'alcachofa'},
+  {img:'assets/img/veggies/seler.jpg',       pl:'seler',       es:'apio'},
+  {img:'assets/img/veggies/batat.jpg',       pl:'batat',       es:'batata'},
+  {img:'assets/img/veggies/baklazan.jpg',    pl:'bakłażan',    es:'berenjena'},
+  {img:'assets/img/veggies/brokul.jpg',      pl:'brokuł',      es:'brócoli'},
+  {img:'assets/img/veggies/cukinia.jpg',     pl:'cukinia',     es:'calabacín'},
+  {img:'assets/img/veggies/cebula.jpg',      pl:'cebula',      es:'cebolla'},
+  {img:'assets/img/veggies/pieczarki.jpg',   pl:'pieczarki',   es:'champiñones'},
+  {img:'assets/img/veggies/kapusta.jpg',     pl:'kapusta',     es:'col'},
+  {img:'assets/img/veggies/brukselka.jpg',   pl:'brukselka',   es:'coles de Bruselas'},
+  {img:'assets/img/veggies/kalafior.jpg',    pl:'kalafior',    es:'coliflor'},
+  {img:'assets/img/veggies/szparagi.jpg',    pl:'szparagi',    es:'espárragos'},
+  {img:'assets/img/veggies/groszek.jpg',     pl:'groszek',     es:'guisantes'},
+  {img:'assets/img/veggies/fasolka.jpg',     pl:'fasolka',     es:'judías'},
+  {img:'assets/img/veggies/salata.jpg',      pl:'sałata',      es:'lechuga'},
+  {img:'assets/img/veggies/kukurydza.jpg',   pl:'kukurydza',   es:'maíz'},
+  {img:'assets/img/veggies/ziemniak.jpg',    pl:'ziemniak',    es:'patata / papa'},
+  {img:'assets/img/veggies/ogorek.jpg',      pl:'ogórek',      es:'pepino'},
+  {img:'assets/img/veggies/papryka.jpg',     pl:'papryka',     es:'pimiento'},
+  {img:'assets/img/veggies/rzodkiewka.jpg',  pl:'rzodkiewka',  es:'rábano'},
+  {img:'assets/img/veggies/burak.jpg',       pl:'burak',       es:'remolacha'},
+  {img:'assets/img/veggies/pomidor.jpg',     pl:'pomidor',     es:'tomate'},
+  {img:'assets/img/veggies/marchewka.jpg',   pl:'marchewka',   es:'zanahoria'},
+  {img:'assets/img/veggies/dynia.jpg',       pl:'dynia',       es:'calabaza'}
 ];
 
 /* ---------- Utils ---------- */
