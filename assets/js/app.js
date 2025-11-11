@@ -131,6 +131,191 @@ function renderBadges(){
   });
 }
 
+const ACHIEVEMENTS_KEY = 'hiszp_achievements_state_v1';
+const STAR_INTERVAL = 5; // co tyle poprawnych odpowiedzi przyznajemy gwiazdkę
+const STICKER_STAR_REQUIREMENT = 10; // liczba gwiazdek na naklejkę
+
+const STICKER_CATALOG = [
+  {id:'sunrise', icon:'🌅', name:'Świt nauki', desc:'Zgromadź 10 gwiazdek.'},
+  {id:'rocket',  icon:'🚀', name:'Rakietowy start', desc:'Zgromadź 20 gwiazdek.'},
+  {id:'compass', icon:'🧭', name:'Kierunek hiszpański', desc:'Zgromadź 30 gwiazdek.'},
+  {id:'palette', icon:'🎨', name:'Kolorowe słowa', desc:'Zgromadź 40 gwiazdek.'},
+  {id:'trophy',  icon:'🏆', name:'Mistrz nauki', desc:'Zgromadź 50 gwiazdek.'},
+  {id:'crown',   icon:'👑', name:'Korona językowa', desc:'Zgromadź 60 gwiazdek.'}
+];
+
+function achievementDefaults(){
+  return { stars:0, starProgress:0, stickers:[], totalCorrect:0, recentReward:null };
+}
+function loadAchievements(){
+  try {
+    const raw = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY));
+    return { ...achievementDefaults(), ...(raw || {}) };
+  } catch {
+    return achievementDefaults();
+  }
+}
+function saveAchievements(state){
+  localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(state));
+}
+function stickerThresholdForIndex(index){
+  return (index + 1) * STICKER_STAR_REQUIREMENT;
+}
+function pluralizeStars(count){
+  const abs = Math.abs(count);
+  const mod10 = abs % 10;
+  const mod100 = abs % 100;
+  if (abs === 1) return 'gwiazdka';
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return 'gwiazdki';
+  return 'gwiazdek';
+}
+function renderAchievements(){
+  const state = loadAchievements();
+  const stars = state.stars || 0;
+  const progress = state.starProgress || 0;
+  const stickers = Array.isArray(state.stickers) ? state.stickers : [];
+
+  const progressEl = document.getElementById('statStarProgress');
+  if (progressEl) progressEl.textContent = `${progress}/${STAR_INTERVAL}`;
+
+  const starsEl = document.getElementById('statStars');
+  if (starsEl) starsEl.textContent = stars;
+
+  const stickersEl = document.getElementById('statStickers');
+  if (stickersEl) stickersEl.textContent = stickers.length;
+
+  const progressBar = document.getElementById('starProgressBar');
+  const progressFill = document.getElementById('starProgressFill');
+  if (progressBar && progressFill){
+    const ratio = Math.max(0, Math.min(1, progress / STAR_INTERVAL));
+    progressFill.style.width = `${Math.round(ratio * 100)}%`;
+    progressBar.setAttribute('aria-valuenow', String(progress));
+    progressBar.setAttribute('aria-valuemax', String(STAR_INTERVAL));
+  }
+
+  const nextStickerEl = document.getElementById('statNextSticker');
+  const nextStickerInfo = document.getElementById('nextStickerInfo');
+  if (nextStickerEl){
+    if (stickers.length >= STICKER_CATALOG.length){
+      nextStickerEl.textContent = '—';
+      if (nextStickerInfo) nextStickerInfo.textContent = 'Wszystkie naklejki odblokowane! Graj dalej dla satysfakcji.';
+    } else {
+      const nextSticker = STICKER_CATALOG[stickers.length];
+      const threshold = stickerThresholdForIndex(stickers.length);
+      const remaining = Math.max(0, threshold - stars);
+      nextStickerEl.textContent = remaining;
+      if (nextStickerInfo){
+        if (remaining <= 0){
+          nextStickerInfo.textContent = `Naklejka ${nextSticker.icon} ${nextSticker.name} już gotowa – kontynuuj, aby ją zobaczyć!`;
+        } else {
+          const word = pluralizeStars(remaining);
+          nextStickerInfo.textContent = `Naklejka ${nextSticker.icon} ${nextSticker.name} już niedaleko – potrzeba ${remaining} ${word}.`;
+        }
+      }
+    }
+  }
+
+  const shelf = document.getElementById('stickerShelf');
+  if (shelf){
+    shelf.innerHTML='';
+    const recent = state.recentReward;
+    STICKER_CATALOG.forEach((sticker, index)=>{
+      const ownedOne = stickers.find(s=>s.id===sticker.id);
+      const el = document.createElement('div');
+      const isRecent = recent && recent.type === 'sticker' && recent.id === sticker.id;
+      el.className = `badge${isRecent ? ' recent' : ''}`;
+      el.style.opacity = ownedOne ? '1' : '.5';
+      const threshold = stickerThresholdForIndex(index);
+      const title = ownedOne
+        ? `${sticker.desc}\nZdobyto: ${new Date(ownedOne.earnedAt).toLocaleString()}`
+        : `${sticker.desc}\nZdobądź ${threshold} ${pluralizeStars(threshold)}.`;
+      el.title = title;
+      el.innerHTML = `<span style="font-size:18px">${sticker.icon}</span><b>${sticker.name}</b>`;
+      shelf.appendChild(el);
+    });
+  }
+
+  const rewardWrap = document.getElementById('recentRewardDetails');
+  const rewardTime = document.getElementById('recentRewardTime');
+  if (rewardWrap){
+    rewardWrap.innerHTML = '';
+    const reward = state.recentReward;
+    if (!reward){
+      const info = document.createElement('p');
+      info.className = 'sub small placeholder';
+      info.style.margin = '0';
+      info.textContent = 'Brak nagród – rozegraj rundę, aby zdobywać gwiazdki.';
+      rewardWrap.appendChild(info);
+      if (rewardTime) rewardTime.textContent = '—';
+    } else if (reward.type === 'sticker'){
+      const badge = document.createElement('div');
+      badge.className = 'badge recent';
+      badge.innerHTML = `<span style="font-size:18px">${reward.icon}</span><b>${reward.name}</b>`;
+      rewardWrap.appendChild(badge);
+      const info = document.createElement('p');
+      info.className = 'sub small';
+      info.style.margin = '0';
+      info.textContent = `Zdobyto dzięki ${STICKER_STAR_REQUIREMENT} ${pluralizeStars(STICKER_STAR_REQUIREMENT)}.`;
+      rewardWrap.appendChild(info);
+      if (rewardTime) rewardTime.textContent = reward.earnedAt ? new Date(reward.earnedAt).toLocaleString() : 'przed chwilą';
+    } else if (reward.type === 'star'){
+      const info = document.createElement('div');
+      info.className = 'badge';
+      info.innerHTML = `<span style="font-size:18px">⭐</span><b>+${reward.amount} ${pluralizeStars(reward.amount)}</b>`;
+      rewardWrap.appendChild(info);
+      const sub = document.createElement('p');
+      sub.className = 'sub small';
+      sub.style.margin = '0';
+      sub.textContent = `Łącznie na koncie: ${reward.total} ${pluralizeStars(reward.total)}.`;
+      rewardWrap.appendChild(sub);
+      if (rewardTime) rewardTime.textContent = reward.earnedAt ? new Date(reward.earnedAt).toLocaleString() : 'przed chwilą';
+    } else {
+      const info = document.createElement('p');
+      info.className = 'sub small placeholder';
+      info.style.margin = '0';
+      info.textContent = 'Nowe nagrody będą widoczne tutaj.';
+      rewardWrap.appendChild(info);
+      if (rewardTime) rewardTime.textContent = '—';
+    }
+  }
+}
+
+function registerCorrectAnswer(){
+  const state = loadAchievements();
+  state.totalCorrect = (state.totalCorrect || 0) + 1;
+  state.starProgress = (state.starProgress || 0) + 1;
+  let starsEarned = 0;
+  while (state.starProgress >= STAR_INTERVAL){
+    state.starProgress -= STAR_INTERVAL;
+    state.stars = (state.stars || 0) + 1;
+    starsEarned++;
+  }
+  const stickersBefore = (state.stickers || []).length;
+  const unlockedThisRound = [];
+  while (state.stars >= stickerThresholdForIndex((state.stickers || []).length) && (state.stickers || []).length < STICKER_CATALOG.length){
+    const newSticker = STICKER_CATALOG[(state.stickers || []).length];
+    const earnedAt = new Date().toISOString();
+    state.stickers.push({id:newSticker.id, earnedAt});
+    unlockedThisRound.push({id:newSticker.id, name:newSticker.name, icon:newSticker.icon, earnedAt});
+    toast(`🏅 Nowa naklejka: ${newSticker.icon} ${newSticker.name}`);
+  }
+  if (unlockedThisRound.length){
+    const latest = unlockedThisRound[unlockedThisRound.length - 1];
+    state.recentReward = { type:'sticker', id:latest.id, name:latest.name, icon:latest.icon, earnedAt:latest.earnedAt };
+  } else if (starsEarned > 0){
+    state.recentReward = { type:'star', amount:starsEarned, total: state.stars, earnedAt: new Date().toISOString() };
+  }
+  saveAchievements(state);
+  renderAchievements();
+  if (starsEarned > 0){
+    const plural = pluralizeStars(starsEarned);
+    toast(`⭐ Zdobyto ${starsEarned} ${plural}!`);
+  }
+  if (starsEarned === 0 && ((state.stickers || []).length === stickersBefore)){
+    // brak nowych nagród – tylko aktualizacja postępu
+  }
+}
+
 /* ---------- TTS ---------- */
 let voices = []; let esVoice = null;
 function chooseEsVoice(){
@@ -165,7 +350,10 @@ function toast(msg){
 /* ---------- Nawigacja ---------- */
 function show(sectionId){
   ['menu','flashcards','quiz','finditem'].forEach(id => document.getElementById(id).classList.toggle('hidden', id!==sectionId));
-  if (sectionId==='menu') renderBadges();
+  if (sectionId==='menu'){
+    renderBadges();
+    renderAchievements();
+  }
 }
 document.getElementById('toMenuBtn').addEventListener('click', ()=> { show('menu'); updateMenuStats('QUIZ_PL_ES'); });
 document.getElementById('catSeg').addEventListener('click', e => {
@@ -248,6 +436,7 @@ function newQuestion(){
       if (isOk){
         btn.classList.add('correct'); qScore++; qStreak++; qBestStreak = Math.max(qBestStreak, qStreak);
         markLearned('QUIZ_PL_ES', currentLevel, currentCat, correct);
+        registerCorrectAnswer();
       }
       else { btn.classList.add('wrong'); qStreak = 0;
         [...wrap.children].forEach(c=>{ if (c.textContent.toLowerCase().includes(correct.es.split(' ')[0])) c.classList.add('correct'); });
@@ -338,6 +527,7 @@ function newFindQuestion(){
       if (isOk){
         btn.classList.add('correct'); fScore++; fStreak++; fBestStreak = Math.max(fBestStreak, fStreak);
         markLearned('FIND_ITEM', currentLevel, currentCat, correct);
+        registerCorrectAnswer();
       }
       else { btn.classList.add('wrong'); fStreak=0;
         [...wrap.children].forEach(c=>{
@@ -442,7 +632,16 @@ function runFunctionalTests(){
     {name:'Zestaw owoców niepusty', pass: FRUITS.length > 0},
     {name:'Zestaw warzyw niepusty', pass: VEGGIES.length > 0},
     {name:'Poziomy skonfigurowane', pass: Object.keys(LEVELS).length === 3},
-    {name:'Łączny zestaw spójny', pass: datasetFor('MIXED').length === datasetFor('FRUITS').length + datasetFor('VEGGIES').length}
+    {name:'Łączny zestaw spójny', pass: datasetFor('MIXED').length === datasetFor('FRUITS').length + datasetFor('VEGGIES').length},
+    {name:'Sekcja menu obecna', pass: !!document.getElementById('menu')},
+    {name:'Sekcja fiszek obecna', pass: !!document.getElementById('flashcards')},
+    {name:'Sekcja quizu obecna', pass: !!document.getElementById('quiz')},
+    {name:'Sekcja znajdź element obecna', pass: !!document.getElementById('finditem')},
+    {name:'Kontener naklejek obecny', pass: !!document.getElementById('stickerShelf')},
+    {name:'Licznik postępu gwiazdek obecny', pass: !!document.getElementById('statStarProgress')},
+    {name:'Pasek postępu gwiazdek obecny', pass: !!document.getElementById('starProgressFill')},
+    {name:'Panel ostatniej nagrody obecny', pass: !!document.getElementById('recentRewardCard')},
+    {name:'Informacja o kolejnej naklejce obecna', pass: !!document.getElementById('statNextSticker')}
   ];
   const hasConsole = typeof console !== 'undefined';
   if (hasConsole && console.groupCollapsed){
@@ -473,4 +672,5 @@ function updateMenuStats(mode){
 /* ---------- Inicjalizacja ---------- */
 updateMenuStats('QUIZ_PL_ES');
 renderBadges();
+renderAchievements();
 runFunctionalTests();
