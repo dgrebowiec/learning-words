@@ -28,9 +28,29 @@
       <button class="btn" data-go="finditem">Start ➜</button>
     </div>
 
-    <div class="mode-card" id="reviewModeCard" style="display: none; background:linear-gradient(160deg, rgba(239,68,68,.10), rgba(255,255,255,.03)); border-color:rgba(239,68,68,.3);">
-      <div><h3>Powtórka (Błędy)</h3><p>Przećwicz słowa, z którymi masz problem.</p></div>
-      <button class="btn" id="startReviewBtn">Start (0 słów) ➜</button>
+    <div class="mode-card review-card" id="reviewModeCard" style="background:linear-gradient(160deg, rgba(239,68,68,.10), rgba(255,255,255,.03)); border-color:rgba(239,68,68,.3);">
+      <div>
+        <h3>Powtórki (błędy)</h3>
+        <p>Wróć do trudniejszych słówek wybierając kategorię i tryb.</p>
+      </div>
+      <p class="review-empty" id="reviewEmptyMsg">Brak zapisanych błędów – super!</p>
+      <div class="review-grid">
+        <div class="review-group">
+          <h4>Owoce</h4>
+          <button class="btn secondary review-btn" id="reviewQuizFruitsBtn" data-review-mode="QUIZ_PL_ES" data-review-cat="FRUITS">Quiz: 0 słów</button>
+          <button class="btn secondary review-btn" id="reviewFindFruitsBtn" data-review-mode="FIND_ITEM" data-review-cat="FRUITS">Wybierz element: 0 słów</button>
+        </div>
+        <div class="review-group">
+          <h4>Warzywa</h4>
+          <button class="btn secondary review-btn" id="reviewQuizVeggiesBtn" data-review-mode="QUIZ_PL_ES" data-review-cat="VEGGIES">Quiz: 0 słów</button>
+          <button class="btn secondary review-btn" id="reviewFindVeggiesBtn" data-review-mode="FIND_ITEM" data-review-cat="VEGGIES">Wybierz element: 0 słów</button>
+        </div>
+        <div class="review-group">
+          <h4>Mieszane</h4>
+          <button class="btn secondary review-btn" id="reviewQuizMixedBtn" data-review-mode="QUIZ_PL_ES" data-review-cat="MIXED">Quiz: 0 słów</button>
+          <button class="btn secondary review-btn" id="reviewFindMixedBtn" data-review-mode="FIND_ITEM" data-review-cat="MIXED">Wybierz element: 0 słów</button>
+        </div>
+      </div>
     </div>
   </div>
 

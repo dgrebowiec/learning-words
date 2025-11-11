@@ -55,6 +55,14 @@ const pick = (arr,n) => { const pool=[...arr]; const out=[]; while(n-- > 0 && po
 const LEVELS = { LATWY:{options:2,len:6}, SREDNI:{options:3,len:8}, TRUDNY:{options:4,len:10} };
 const LEVEL_NAMES = { LATWY:'Łatwy', SREDNI:'Średni', TRUDNY:'Trudny' };
 const CAT_NAMES = { FRUITS:'Owoce', VEGGIES:'Warzywa', MIXED:'Mieszane' };
+const REVIEW_BUTTON_CONFIG = [
+  {id:'reviewQuizFruitsBtn', mode:'QUIZ_PL_ES', cat:'FRUITS', label:'Quiz'},
+  {id:'reviewFindFruitsBtn', mode:'FIND_ITEM',   cat:'FRUITS', label:'Wybierz element'},
+  {id:'reviewQuizVeggiesBtn', mode:'QUIZ_PL_ES', cat:'VEGGIES', label:'Quiz'},
+  {id:'reviewFindVeggiesBtn', mode:'FIND_ITEM',   cat:'VEGGIES', label:'Wybierz element'},
+  {id:'reviewQuizMixedBtn', mode:'QUIZ_PL_ES', cat:'MIXED', label:'Quiz'},
+  {id:'reviewFindMixedBtn', mode:'FIND_ITEM',   cat:'MIXED', label:'Wybierz element'}
+];
 let currentLevel = 'LATWY';
 let currentCat = 'FRUITS'; // FRUITS / VEGGIES / MIXED
 function datasetFor(cat){
@@ -67,6 +75,7 @@ function dataset(){ return datasetFor(currentCat); }
 /* ---------- Persistencja + Odznaki ---------- */
 const STORAGE_KEY = 'hiszp_owoce_warzywa_stats_v4';
 const BADGES_KEY  = 'hiszp_owoce_warzywa_badges_v2';
+const REVIEW_KEY  = 'hiszp_owoce_warzywa_review_v1';
 
 function getDefaultStats(){
   return { games:0, bestScore:0, bestStreak:0, totalCorrect:0, totalQuestions:0, lastPlayed:null, lastTime:null, bestTime:null, learnedWords:[] };
@@ -81,6 +90,52 @@ function getModeStats(mode, level, cat){
 function setModeStats(mode, level, cat, data){
   const s = loadStats(); s[statKey(mode, level, cat)] = { ...getDefaultStats(), ...data };
   saveStats(s);
+}
+
+function sanitizeWord(word){
+  if (!word || typeof word !== 'object') return null;
+  return { img: word.img || '', pl: word.pl || '', es: word.es || '' };
+}
+
+function loadReviewPools(){
+  try {
+    const parsed = JSON.parse(localStorage.getItem(REVIEW_KEY));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveReviewPools(pools){
+  localStorage.setItem(REVIEW_KEY, JSON.stringify(pools));
+}
+
+function getReviewPool(mode, cat){
+  const pools = loadReviewPools();
+  const list = pools?.[mode]?.[cat];
+  if (!Array.isArray(list)) return [];
+  return list.map(item => sanitizeWord(item)).filter(Boolean);
+}
+
+function setReviewPool(mode, cat, list){
+  const pools = loadReviewPools();
+  if (!pools[mode]) pools[mode] = {};
+  pools[mode][cat] = Array.isArray(list) ? list.map(item => sanitizeWord(item)).filter(Boolean) : [];
+  saveReviewPools(pools);
+}
+
+function addToReviewPool(mode, cat, word){
+  const sanitized = sanitizeWord(word);
+  if (!sanitized || !sanitized.es) return;
+  const pools = loadReviewPools();
+  if (!pools[mode]) pools[mode] = {};
+  const list = Array.isArray(pools[mode][cat]) ? [...pools[mode][cat]] : [];
+  const key = sanitized.es.toLowerCase();
+  if (!list.some(item => (item.es || '').toLowerCase() === key)){
+    list.push(sanitized);
+    pools[mode][cat] = list;
+    saveReviewPools(pools);
+  }
 }
 
 function markLearned(mode, level, cat, word){
@@ -344,6 +399,58 @@ function registerCorrectAnswer(){
   }
 }
 
+function pluralizeWords(count){
+  const abs = Math.abs(count);
+  const mod10 = abs % 10;
+  const mod100 = abs % 100;
+  if (abs === 1) return 'słowo';
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return 'słowa';
+  return 'słów';
+}
+
+function applyCategory(cat, modeForStats){
+  if (!cat) return;
+  currentCat = cat;
+  $$('#catSeg .seg').forEach(seg => seg.classList.toggle('active', seg.dataset.cat === cat));
+  if (modeForStats){
+    updateMenuStats(modeForStats);
+  } else {
+    updateMenuStats('QUIZ_PL_ES');
+  }
+  updateReviewMenuUI();
+}
+
+function updateReviewMenuUI(){
+  let total = 0;
+  REVIEW_BUTTON_CONFIG.forEach(cfg => {
+    const btn = document.getElementById(cfg.id);
+    if (!btn) return;
+    const list = getReviewPool(cfg.mode, cfg.cat);
+    const count = list.length;
+    total += count;
+    btn.disabled = count === 0;
+    btn.textContent = `${cfg.label}: ${count} ${pluralizeWords(count)}`;
+  });
+  const empty = document.getElementById('reviewEmptyMsg');
+  if (empty){
+    empty.classList.toggle('hidden', total > 0);
+  }
+}
+
+function startStoredReview(mode, cat){
+  const pool = getReviewPool(mode, cat);
+  if (!pool.length) return;
+  if (mode === 'QUIZ_PL_ES'){
+    applyCategory(cat, 'QUIZ_PL_ES');
+    show('quiz');
+    startMistakeReview({ pool, cat, source:'stored' });
+  } else if (mode === 'FIND_ITEM'){
+    applyCategory(cat, 'FIND_ITEM');
+    show('finditem');
+    startFindReview({ pool, cat, source:'stored' });
+  }
+}
+
 /* ---------- TTS ---------- */
 let voices = []; let esVoice = null;
 function chooseEsVoice(){
@@ -381,14 +488,13 @@ function show(sectionId){
   if (sectionId==='menu'){
     renderBadges();
     renderAchievements();
+    updateReviewMenuUI();
   }
 }
 document.getElementById('toMenuBtn').addEventListener('click', ()=> { show('menu'); updateMenuStats('QUIZ_PL_ES'); });
 document.getElementById('catSeg').addEventListener('click', e => {
   const seg = e.target.closest('.seg'); if(!seg) return;
-  $$('#catSeg .seg').forEach(s=>s.classList.remove('active'));
-  seg.classList.add('active'); currentCat = seg.dataset.cat;
-  updateMenuStats('QUIZ_PL_ES');
+  applyCategory(seg.dataset.cat, 'QUIZ_PL_ES');
 });
 document.getElementById('levelSeg').addEventListener('click', e => {
   const seg = e.target.closest('.seg'); if(!seg) return;
@@ -402,6 +508,12 @@ $$('[data-go]').forEach(b => b.addEventListener('click', () => {
   if (target==='finditem'){ startFindItem(); updateMenuStats('FIND_ITEM'); }
   if (target==='flashcards'){ renderFlashcard(); }
 }));
+REVIEW_BUTTON_CONFIG.forEach(cfg => {
+  const btn = document.getElementById(cfg.id);
+  if (btn){
+    btn.addEventListener('click', ()=> startStoredReview(cfg.mode, cfg.cat));
+  }
+});
 
 /* ---------- Fiszki ---------- */
 let fcIndex = 0;
@@ -435,21 +547,90 @@ document.getElementById('speakAllBtn').addEventListener('click', async ()=>{
 /* ---------- Quiz PL -> ES ---------- */
 let qRound=0, qScore=0, qStreak=0, qBestStreak=0, qAnswer=null, qLen=LEVELS[currentLevel].len, qOpts=LEVELS[currentLevel].options, qStartTime=0;
 let qPool = [];
+let qMistakes = [];
+let qMistakeSet = new Set();
+let qIsReviewMode = false;
+let qAnswered = false;
+let qAnsweredCorrect = false;
+let qReviewSource = null;
 function applyLevelToQuiz(){ qLen=LEVELS[currentLevel].len; qOpts=LEVELS[currentLevel].options; document.getElementById('qTotal').textContent=qLen; }
 function makeQuestionPool(){ const list = dataset(); qPool = shuffle([...list]).slice(0, Math.min(list.length, qLen)); }
+function resetMistakeSummaryUI(){
+  const info = document.getElementById('qMistakeInfo');
+  const list = document.getElementById('qMistakeList');
+  const count = document.getElementById('qMistakeCount');
+  const reviewBtn = document.getElementById('qSumReview');
+  const success = document.getElementById('qMistakeSuccess');
+  if (info) info.classList.add('hidden');
+  if (list) list.innerHTML = '';
+  if (count) count.textContent = '0';
+  if (reviewBtn){
+    reviewBtn.classList.add('hidden');
+    reviewBtn.disabled = true;
+    reviewBtn.textContent = '🔁 Powtórz błędne';
+  }
+  if (success) success.classList.add('hidden');
+}
+function registerMistake(word){
+  if (!word) return;
+  const key = (word.es || '').toLowerCase();
+  if (qMistakeSet.has(key)) return;
+  qMistakeSet.add(key);
+  qMistakes.push(word);
+  addToReviewPool('QUIZ_PL_ES', currentCat, word);
+  updateReviewMenuUI();
+}
+function updateMistakeSummary(){
+  const info = document.getElementById('qMistakeInfo');
+  const list = document.getElementById('qMistakeList');
+  const count = document.getElementById('qMistakeCount');
+  const reviewBtn = document.getElementById('qSumReview');
+  const success = document.getElementById('qMistakeSuccess');
+  if (!info || !list || !count || !reviewBtn || !success) return;
+  list.innerHTML = '';
+  count.textContent = qMistakes.length.toString();
+  if (qMistakes.length){
+    info.classList.remove('hidden');
+    success.classList.add('hidden');
+    qMistakes.forEach(word => {
+      const li = document.createElement('li');
+      li.innerHTML = `<b>${word.es}</b> – ${word.pl}`;
+      list.appendChild(li);
+    });
+    reviewBtn.classList.remove('hidden');
+    reviewBtn.disabled = false;
+    reviewBtn.textContent = `🔁 Powtórz błędne (${qMistakes.length})`;
+  } else {
+    info.classList.add('hidden');
+    success.textContent = qIsReviewMode ? 'Powtórka ukończona – brak błędów!' : 'Brak błędnych odpowiedzi – świetna robota!';
+    success.classList.remove('hidden');
+    reviewBtn.disabled = true;
+    reviewBtn.classList.add('hidden');
+  }
+}
 function startQuiz(){
+  qIsReviewMode = false;
+  qReviewSource = null;
   applyLevelToQuiz();
   makeQuestionPool();
   qRound=0; qScore=0; qStreak=0; qBestStreak = getModeStats('QUIZ_PL_ES', currentLevel, currentCat).bestStreak || 0;
+  qMistakes = [];
+  qMistakeSet = new Set();
+  qAnswered = false;
+  qAnsweredCorrect = false;
   document.getElementById('qScore').textContent='0'; document.getElementById('qStreak').textContent='0'; document.getElementById('qBestStreak').textContent=qBestStreak;
   document.getElementById('scoreFill').style.width='0%'; document.getElementById('qNext').disabled=false; document.getElementById('qSkip').disabled=false;
   document.getElementById('qRetry').disabled=true;
   document.getElementById('qSummary').classList.add('hidden');
+  resetMistakeSummaryUI();
+  const sumTitle = document.getElementById('qSummaryTitle'); if (sumTitle) sumTitle.textContent = 'Podsumowanie';
   qStartTime = performance.now();
   newQuestion();
 }
 function newQuestion(){
   qRound++; if (qRound>qLen){ endQuiz(); return; }
+  qAnswered = false;
+  qAnsweredCorrect = false;
   const list = dataset();
   const correct = qPool[qRound-1] || pick(list,1)[0]; qAnswer = correct;
   document.getElementById('qImg').src = correct.img;
@@ -460,13 +641,18 @@ function newQuestion(){
   options.forEach(opt=>{
     const btn=document.createElement('button'); btn.className='choice'; btn.innerHTML = `<b>${opt.es}</b>`;
     btn.addEventListener('click', ()=>{
+      if (qAnswered) return;
       const isOk = opt===correct;
+      qAnswered = true;
+      qAnsweredCorrect = isOk;
       if (isOk){
         btn.classList.add('correct'); qScore++; qStreak++; qBestStreak = Math.max(qBestStreak, qStreak);
         markLearned('QUIZ_PL_ES', currentLevel, currentCat, correct);
         registerCorrectAnswer();
       }
-      else { btn.classList.add('wrong'); qStreak = 0;
+      else {
+        btn.classList.add('wrong'); qStreak = 0;
+        registerMistake(correct);
         [...wrap.children].forEach(c=>{ if (c.textContent.toLowerCase().includes(correct.es.split(' ')[0])) c.classList.add('correct'); });
       }
       document.getElementById('qScore').textContent=qScore; document.getElementById('qStreak').textContent=qStreak; document.getElementById('qBestStreak').textContent=qBestStreak;
@@ -476,31 +662,40 @@ function newQuestion(){
     wrap.appendChild(btn);
   });
 }
-document.getElementById('qNext').addEventListener('click', newQuestion);
-document.getElementById('qSkip').addEventListener('click', newQuestion);
+document.getElementById('qNext').addEventListener('click', ()=>{
+  if (!qAnswered && qAnswer){ registerMistake(qAnswer); }
+  newQuestion();
+});
+document.getElementById('qSkip').addEventListener('click', ()=>{
+  if (qAnswer && (!qAnswered || !qAnsweredCorrect)){ registerMistake(qAnswer); }
+  newQuestion();
+});
 document.getElementById('qSpeak').addEventListener('click', ()=> { if (qAnswer) speakEs(qAnswer.es); });
 document.getElementById('qRetry').addEventListener('click', ()=> { startQuiz(); });
+document.getElementById('qSumReview').addEventListener('click', ()=> { startMistakeReview(); });
 
 function endQuiz(){
   const elapsedSec = (performance.now() - qStartTime) / 1000;
   const st = getModeStats('QUIZ_PL_ES', currentLevel, currentCat);
-  st.games += 1; st.bestScore = Math.max(st.bestScore||0, qScore);
-  st.bestStreak = Math.max(st.bestStreak||0, qBestStreak);
-  st.totalCorrect += qScore; st.totalQuestions += qLen; st.lastPlayed = new Date().toISOString();
-  st.lastTime = elapsedSec;
-  if (!st.bestTime || elapsedSec < st.bestTime) st.bestTime = elapsedSec;
-  setModeStats('QUIZ_PL_ES', currentLevel, currentCat, st);
+  if (!qIsReviewMode){
+    st.games += 1; st.bestScore = Math.max(st.bestScore||0, qScore);
+    st.bestStreak = Math.max(st.bestStreak||0, qBestStreak);
+    st.totalCorrect += qScore; st.totalQuestions += qLen; st.lastPlayed = new Date().toISOString();
+    st.lastTime = elapsedSec;
+    if (!st.bestTime || elapsedSec < st.bestTime) st.bestTime = elapsedSec;
+    setModeStats('QUIZ_PL_ES', currentLevel, currentCat, st);
 
-  if (st.games === 1) awardBadge('first_quiz');
-  if (qScore === qLen){
-    if (currentLevel==='LATWY') awardBadge('perfect_easy');
-    if (currentLevel==='SREDNI') awardBadge('perfect_mid');
-    if (currentLevel==='TRUDNY') awardBadge('perfect_hard');
-    if (currentCat==='FRUITS') awardBadge('fruit_master');
-    if (currentCat==='VEGGIES') awardBadge('veggie_master');
+    if (st.games === 1) awardBadge('first_quiz');
+    if (qScore === qLen){
+      if (currentLevel==='LATWY') awardBadge('perfect_easy');
+      if (currentLevel==='SREDNI') awardBadge('perfect_mid');
+      if (currentLevel==='TRUDNY') awardBadge('perfect_hard');
+      if (currentCat==='FRUITS') awardBadge('fruit_master');
+      if (currentCat==='VEGGIES') awardBadge('veggie_master');
+    }
+    if (qBestStreak >= 5) awardBadge('streak_5');
+    if (elapsedSec < 60) awardBadge('speed_runner');
   }
-  if (qBestStreak >= 5) awardBadge('streak_5');
-  if (elapsedSec < 60) awardBadge('speed_runner');
 
   document.getElementById('choices').innerHTML='';
   document.getElementById('qNum').textContent=qLen;
@@ -515,6 +710,13 @@ function endQuiz(){
   document.getElementById('qSumTime').textContent = elapsedSec.toFixed(1)+' s';
   const bestTime = st.bestTime ? st.bestTime.toFixed(1)+' s' : '—';
   document.getElementById('qSumBestTime').textContent = bestTime;
+  const sumTitle = document.getElementById('qSummaryTitle'); if (sumTitle) sumTitle.textContent = qIsReviewMode ? 'Podsumowanie powtórki' : 'Podsumowanie';
+  updateMistakeSummary();
+  if (qIsReviewMode && qReviewSource){
+    setReviewPool('QUIZ_PL_ES', qReviewSource.cat, qMistakes);
+    updateReviewMenuUI();
+    qReviewSource = null;
+  }
   document.getElementById('qSummary').classList.remove('hidden');
 
   document.getElementById('qSumRetry').onclick = ()=> startQuiz();
@@ -522,24 +724,133 @@ function endQuiz(){
   updateGlobalStats();
 }
 
+function startMistakeReview(options = {}){
+  const sourceList = Array.isArray(options.pool) && options.pool.length ? options.pool : qMistakes;
+  const reviewPool = sourceList.map(item => sanitizeWord(item)).filter(Boolean);
+  const cat = options.cat || currentCat;
+  if (!reviewPool.length) return;
+  if (cat !== currentCat){
+    applyCategory(cat, 'QUIZ_PL_ES');
+  }
+  qIsReviewMode = true;
+  qPool = reviewPool;
+  qLen = reviewPool.length;
+  qOpts = LEVELS[currentLevel].options;
+  qRound = 0;
+  qScore = 0;
+  qStreak = 0;
+  qBestStreak = 0;
+  qAnswered = false;
+  qAnsweredCorrect = false;
+  qMistakes = [];
+  qMistakeSet = new Set();
+  qReviewSource = { mode:'QUIZ_PL_ES', cat };
+  document.getElementById('qScore').textContent='0';
+  document.getElementById('qStreak').textContent='0';
+  document.getElementById('qBestStreak').textContent='0';
+  document.getElementById('scoreFill').style.width='0%';
+  document.getElementById('qNext').disabled=false;
+  document.getElementById('qSkip').disabled=false;
+  document.getElementById('qRetry').disabled=true;
+  document.getElementById('qSummary').classList.add('hidden');
+  const sumTitle = document.getElementById('qSummaryTitle'); if (sumTitle) sumTitle.textContent = 'Podsumowanie powtórki';
+  resetMistakeSummaryUI();
+  document.getElementById('qTotal').textContent = qLen;
+  qStartTime = performance.now();
+  if (typeof toast === 'function'){
+    const msg = options.source === 'stored' ? 'Powtórka zapisanych błędów (quiz).' : 'Rozpoczynamy powtórkę błędnych odpowiedzi!';
+    toast(msg);
+  }
+  newQuestion();
+}
+
 /* ---------- Find Item (ES -> IMG) ---------- */
 let fRound=0, fScore=0, fStreak=0, fBestStreak=0, fAnswer=null, fLen=LEVELS[currentLevel].len, fOpts=LEVELS[currentLevel].options, fStartTime=0;
 let fPool = [];
+let fMistakes = [];
+let fMistakeSet = new Set();
+let fIsReviewMode = false;
+let fAnswered = false;
+let fAnsweredCorrect = false;
+let fReviewSource = null;
 function applyLevelToFind(){ fLen=LEVELS[currentLevel].len; fOpts=LEVELS[currentLevel].options; document.getElementById('fTotal').textContent=fLen; }
 function makeFindPool(){ const list = dataset(); fPool = shuffle([...list]).slice(0, Math.min(list.length, fLen)); }
+function resetFindMistakeSummaryUI(){
+  const info = document.getElementById('fMistakeInfo');
+  const list = document.getElementById('fMistakeList');
+  const count = document.getElementById('fMistakeCount');
+  const reviewBtn = document.getElementById('fSumReview');
+  const success = document.getElementById('fMistakeSuccess');
+  if (info) info.classList.add('hidden');
+  if (list) list.innerHTML = '';
+  if (count) count.textContent = '0';
+  if (reviewBtn){
+    reviewBtn.classList.add('hidden');
+    reviewBtn.disabled = true;
+    reviewBtn.textContent = '🔁 Powtórz błędne';
+  }
+  if (success) success.classList.add('hidden');
+}
+function registerFindMistake(word){
+  if (!word) return;
+  const key = (word.es || '').toLowerCase();
+  if (fMistakeSet.has(key)) return;
+  fMistakeSet.add(key);
+  fMistakes.push(word);
+  addToReviewPool('FIND_ITEM', currentCat, word);
+  updateReviewMenuUI();
+}
+function updateFindMistakeSummary(){
+  const info = document.getElementById('fMistakeInfo');
+  const list = document.getElementById('fMistakeList');
+  const count = document.getElementById('fMistakeCount');
+  const reviewBtn = document.getElementById('fSumReview');
+  const success = document.getElementById('fMistakeSuccess');
+  if (!info || !list || !count || !reviewBtn || !success) return;
+  list.innerHTML = '';
+  count.textContent = fMistakes.length.toString();
+  if (fMistakes.length){
+    info.classList.remove('hidden');
+    success.classList.add('hidden');
+    fMistakes.forEach(word => {
+      const li = document.createElement('li');
+      li.innerHTML = `<b>${word.es}</b> – ${word.pl}`;
+      list.appendChild(li);
+    });
+    reviewBtn.classList.remove('hidden');
+    reviewBtn.disabled = false;
+    reviewBtn.textContent = `🔁 Powtórz błędne (${fMistakes.length})`;
+  } else {
+    info.classList.add('hidden');
+    success.textContent = fIsReviewMode ? 'Powtórka ukończona – brak błędów!' : 'Brak błędów – świetnie!';
+    success.classList.remove('hidden');
+    reviewBtn.classList.add('hidden');
+    reviewBtn.disabled = true;
+  }
+}
 function startFindItem(){
+  fIsReviewMode = false;
+  fReviewSource = null;
   applyLevelToFind();
   makeFindPool();
   fRound=0; fScore=0; fStreak=0; fBestStreak = getModeStats('FIND_ITEM', currentLevel, currentCat).bestStreak || 0;
+  fMistakes = [];
+  fMistakeSet = new Set();
+  fAnswered = false;
+  fAnsweredCorrect = false;
   document.getElementById('fScore').textContent='0'; document.getElementById('fStreak').textContent='0'; document.getElementById('fBestStreak').textContent=fBestStreak;
   document.getElementById('fFill').style.width='0%'; document.getElementById('fNext').disabled=false; document.getElementById('fSkip').disabled=false;
   document.getElementById('fRetry').disabled=true;
   document.getElementById('fSummary').classList.add('hidden');
+  const sumTitle = document.getElementById('fSummaryTitle'); if (sumTitle) sumTitle.textContent = 'Podsumowanie';
+  resetFindMistakeSummaryUI();
   fStartTime = performance.now();
   newFindQuestion();
 }
 function newFindQuestion(){
   fRound++; if (fRound>fLen){ endFind(); return; }
+  fAnswered = false;
+  fAnsweredCorrect = false;
   const list = dataset();
   const correct = fPool[fRound-1] || pick(list,1)[0]; fAnswer = correct;
   document.getElementById('fEs').textContent = correct.es;
@@ -551,13 +862,17 @@ function newFindQuestion(){
     const btn=document.createElement('button'); btn.className='choice'; btn.style.flexDirection='column'; btn.style.alignItems='stretch';
     btn.innerHTML = `<div class="imgwrap"><img alt="obraz" src="${opt.img}"/></div>`;
     btn.addEventListener('click', ()=>{
+      if (fAnswered) return;
       const isOk = opt===correct;
+      fAnswered = true;
+      fAnsweredCorrect = isOk;
       if (isOk){
         btn.classList.add('correct'); fScore++; fStreak++; fBestStreak = Math.max(fBestStreak, fStreak);
         markLearned('FIND_ITEM', currentLevel, currentCat, correct);
         registerCorrectAnswer();
       }
       else { btn.classList.add('wrong'); fStreak=0;
+        registerFindMistake(correct);
         [...wrap.children].forEach(c=>{
           const has = c.querySelector('img')?.src === (new URL(correct.img, document.baseURI)).href;
           if (has) c.classList.add('correct');
@@ -571,20 +886,29 @@ function newFindQuestion(){
   });
   setTimeout(()=> speakEs(correct.es), 120);
 }
-document.getElementById('fNext').addEventListener('click', newFindQuestion);
-document.getElementById('fSkip').addEventListener('click', newFindQuestion);
+document.getElementById('fNext').addEventListener('click', ()=>{
+  if (!fAnswered && fAnswer){ registerFindMistake(fAnswer); }
+  newFindQuestion();
+});
+document.getElementById('fSkip').addEventListener('click', ()=>{
+  if (fAnswer && (!fAnswered || !fAnsweredCorrect)){ registerFindMistake(fAnswer); }
+  newFindQuestion();
+});
 document.getElementById('fSpeak').addEventListener('click', ()=> { if (fAnswer) speakEs(fAnswer.es); });
 document.getElementById('fRetry').addEventListener('click', ()=> { startFindItem(); });
+document.getElementById('fSumReview').addEventListener('click', ()=> { startFindReview(); });
 
 function endFind(){
   const elapsedSec = (performance.now() - fStartTime) / 1000;
   const st = getModeStats('FIND_ITEM', currentLevel, currentCat);
-  st.games += 1; st.bestScore = Math.max(st.bestScore||0, fScore);
-  st.bestStreak = Math.max(st.bestStreak||0, fBestStreak);
-  st.totalCorrect += fScore; st.totalQuestions += fLen; st.lastPlayed = new Date().toISOString();
-  st.lastTime = elapsedSec;
-  if (!st.bestTime || elapsedSec < st.bestTime) st.bestTime = elapsedSec;
-  setModeStats('FIND_ITEM', currentLevel, currentCat, st);
+  if (!fIsReviewMode){
+    st.games += 1; st.bestScore = Math.max(st.bestScore||0, fScore);
+    st.bestStreak = Math.max(st.bestStreak||0, fBestStreak);
+    st.totalCorrect += fScore; st.totalQuestions += fLen; st.lastPlayed = new Date().toISOString();
+    st.lastTime = elapsedSec;
+    if (!st.bestTime || elapsedSec < st.bestTime) st.bestTime = elapsedSec;
+    setModeStats('FIND_ITEM', currentLevel, currentCat, st);
+  }
 
   document.getElementById('itemChoices').innerHTML='';
   document.getElementById('fNum').textContent=fLen;
@@ -599,11 +923,58 @@ function endFind(){
   document.getElementById('fSumTime').textContent = elapsedSec.toFixed(1)+' s';
   const bestTime = st.bestTime ? st.bestTime.toFixed(1)+' s' : '—';
   document.getElementById('fSumBestTime').textContent = bestTime;
+  const sumTitle = document.getElementById('fSummaryTitle'); if (sumTitle) sumTitle.textContent = fIsReviewMode ? 'Podsumowanie powtórki' : 'Podsumowanie';
+  updateFindMistakeSummary();
+  if (fIsReviewMode && fReviewSource){
+    setReviewPool('FIND_ITEM', fReviewSource.cat, fMistakes);
+    updateReviewMenuUI();
+    fReviewSource = null;
+  }
   document.getElementById('fSummary').classList.remove('hidden');
 
   document.getElementById('fSumRetry').onclick = ()=> startFindItem();
   document.getElementById('fSumMenu').onclick  = ()=> { show('menu'); updateMenuStats('FIND_ITEM'); };
   updateGlobalStats();
+}
+
+function startFindReview(options = {}){
+  const sourceList = Array.isArray(options.pool) && options.pool.length ? options.pool : fMistakes;
+  const reviewPool = sourceList.map(item => sanitizeWord(item)).filter(Boolean);
+  const cat = options.cat || currentCat;
+  if (!reviewPool.length) return;
+  if (cat !== currentCat){
+    applyCategory(cat, 'FIND_ITEM');
+  }
+  fIsReviewMode = true;
+  fPool = reviewPool;
+  fLen = reviewPool.length;
+  fOpts = LEVELS[currentLevel].options;
+  fRound = 0;
+  fScore = 0;
+  fStreak = 0;
+  fBestStreak = 0;
+  fAnswered = false;
+  fAnsweredCorrect = false;
+  fMistakes = [];
+  fMistakeSet = new Set();
+  fReviewSource = { mode:'FIND_ITEM', cat };
+  document.getElementById('fScore').textContent='0';
+  document.getElementById('fStreak').textContent='0';
+  document.getElementById('fBestStreak').textContent='0';
+  document.getElementById('fFill').style.width='0%';
+  document.getElementById('fNext').disabled=false;
+  document.getElementById('fSkip').disabled=false;
+  document.getElementById('fRetry').disabled=true;
+  document.getElementById('fSummary').classList.add('hidden');
+  const sumTitle = document.getElementById('fSummaryTitle'); if (sumTitle) sumTitle.textContent = 'Podsumowanie powtórki';
+  resetFindMistakeSummaryUI();
+  document.getElementById('fTotal').textContent = fLen;
+  fStartTime = performance.now();
+  if (typeof toast === 'function'){
+    const msg = options.source === 'stored' ? 'Powtórka zapisanych błędów (wybierz element).' : 'Rozpoczynamy powtórkę błędnych odpowiedzi!';
+    toast(msg);
+  }
+  newFindQuestion();
 }
 
 /* ---------- Statystyki w menu ---------- */
@@ -671,7 +1042,16 @@ function runFunctionalTests(){
     {name:'Licznik gwiazd w trybie znajdź obecny', pass: !!document.getElementById('findStarProgress')},
     {name:'Pasek postępu gwiazdek obecny', pass: !!document.getElementById('starProgressFill')},
     {name:'Panel ostatniej nagrody obecny', pass: !!document.getElementById('recentRewardCard')},
-    {name:'Informacja o kolejnej naklejce obecna', pass: !!document.getElementById('statNextSticker')}
+    {name:'Informacja o kolejnej naklejce obecna', pass: !!document.getElementById('statNextSticker')},
+    {name:'Karta powtórek obecna', pass: !!document.getElementById('reviewModeCard')},
+    {name:'Przycisk powtórek quiz (owoce) obecny', pass: !!document.getElementById('reviewQuizFruitsBtn')},
+    {name:'Przycisk powtórek quiz (warzywa) obecny', pass: !!document.getElementById('reviewQuizVeggiesBtn')},
+    {name:'Przycisk powtórek quiz (mieszane) obecny', pass: !!document.getElementById('reviewQuizMixedBtn')},
+    {name:'Przycisk powtórek znajdź (owoce) obecny', pass: !!document.getElementById('reviewFindFruitsBtn')},
+    {name:'Przycisk powtórek znajdź (warzywa) obecny', pass: !!document.getElementById('reviewFindVeggiesBtn')},
+    {name:'Przycisk powtórek znajdź (mieszane) obecny', pass: !!document.getElementById('reviewFindMixedBtn')},
+    {name:'Przycisk powtórek w trybie znajdź dostępny', pass: !!document.getElementById('fSumReview')},
+    {name:'Lista błędów trybu znajdź obecna', pass: !!document.getElementById('fMistakeList')}
   ];
   const hasConsole = typeof console !== 'undefined';
   if (hasConsole && console.groupCollapsed){
@@ -703,4 +1083,5 @@ function updateMenuStats(mode){
 updateMenuStats('QUIZ_PL_ES');
 renderBadges();
 renderAchievements();
+updateReviewMenuUI();
 runFunctionalTests();
