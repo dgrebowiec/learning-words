@@ -23,12 +23,18 @@
   </div>
 
   <div id="qSummary" class="summary hidden">
-    <div class="big">Podsumowanie</div>
+    <div class="big" id="qSummaryTitle">Podsumowanie</div>
     <div><b>Wynik:</b> <span id="qSumScore">0</span>/<span id="qSumTotal">0</span> (<span id="qSumPct">0</span>%)</div>
     <div class="muted">Najlepsza seria: <b id="qSumBestStreak">0</b> • Czas: <b id="qSumTime">0.0 s</b> • Rekord czasu: <b id="qSumBestTime">—</b></div>
     <div class="row" style="margin-top:6px">
       <button class="btn secondary" id="qSumMenu">🏠 Menu</button>
+      <button class="btn secondary hidden" id="qSumReview">🔁 Powtórz błędne</button>
       <button class="btn" id="qSumRetry">⟳ Zagraj ponownie</button>
+    </div>
+    <p class="muted hidden" id="qMistakeSuccess">Brak błędnych odpowiedzi – świetna robota!</p>
+    <div id="qMistakeInfo" class="summary-mistakes hidden">
+      <p class="muted" id="qMistakeHeader">Błędne odpowiedzi: <span id="qMistakeCount">0</span></p>
+      <ul id="qMistakeList" class="mistake-list"></ul>
     </div>
   </div>
 </section>
