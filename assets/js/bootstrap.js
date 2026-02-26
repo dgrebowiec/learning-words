@@ -1,11 +1,28 @@
 (function(){
   const PARTIALS = [
+    {name:'profile-select', path:'assets/html/profile-select.html'},
     {name:'header', path:'assets/html/header.html'},
     {name:'menu', path:'assets/html/menu.html'},
     {name:'flashcards', path:'assets/html/flashcards.html'},
     {name:'quiz', path:'assets/html/quiz.html'},
     {name:'finditem', path:'assets/html/finditem.html'},
+    {name:'memory', path:'assets/html/memory.html'},
+    {name:'articulos', path:'assets/html/articulos.html'},
+    {name:'wordsearch', path:'assets/html/wordsearch.html'},
+    {name:'spelling', path:'assets/html/spelling.html'},
     {name:'footer', path:'assets/html/footer.html'}
+  ];
+
+  const SCRIPTS = [
+    'assets/js/data.js',
+    'assets/js/confetti.js',
+    'assets/js/app.js',
+    'assets/js/modes/memory.js',
+    'assets/js/modes/articulos.js',
+    'assets/js/modes/wordsearch.js',
+    'assets/js/modes/spelling.js',
+    'assets/js/tests/layout-smoke-test.js',
+    'assets/js/profiles.js'
   ];
 
   async function fetchFragment(url){
@@ -53,13 +70,14 @@
       }
     }
 
-    try {
-      await loadScript('assets/js/app.js');
-      await loadScript('assets/js/tests/layout-smoke-test.js');
-    } catch (err) {
-      console.error(err);
-      if (typeof toast === 'function'){
-        toast('⚠️ Nie udało się załadować zasobów aplikacji.');
+    for (const src of SCRIPTS){
+      try {
+        await loadScript(src);
+      } catch (err) {
+        console.error(err);
+        if (typeof toast === 'function'){
+          toast('⚠️ Nie udało się załadować zasobów aplikacji.');
+        }
       }
     }
   }

@@ -1,5 +1,5 @@
 (function(){
-  const requiredIds = ['menu','flashcards','quiz','finditem','badgeShelf','achievementsCard','starProgressBar','recentRewardCard','qSumReview','qMistakeList','qMistakeSuccess','qMistakeInfo','qMistakeCount','qSummaryTitle'];
+  const requiredIds = ['menu','flashcards','quiz','finditem','memory','articulos','wordsearch','spelling','catGrid','badgeShelf','achievementsCard','starProgressBar','recentRewardCard','qSumReview','qMistakeList','qMistakeSuccess','qMistakeInfo','qMistakeCount','qSummaryTitle'];
   const missing = requiredIds.filter(id => !document.getElementById(id));
   const hasConsole = typeof console !== 'undefined';
   if (hasConsole && console.groupCollapsed){

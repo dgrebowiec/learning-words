@@ -1,0 +1,27 @@
+<section id="articulos" class="card hidden">
+  <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
+    <span class="pill">Słowo: <b id="artNum">1</b>/<span id="artTotal">10</span></span>
+    <span class="pill">Wynik: <b id="artScore">0</b></span>
+  </div>
+  <div class="scorebar" style="margin:10px 0 14px 0"><span id="artFill"></span></div>
+  
+  <div class="center" style="margin-bottom:20px">
+    <div id="artVisual" style="margin-bottom:10px"></div>
+    <div class="word" id="artWord">???</div>
+    <div class="sub" id="artPl">(???)</div>
+  </div>
+
+  <div class="choices-row" id="artChoices" style="display:flex; gap:16px; justify-content:center; margin-top:20px">
+    <button class="btn large-art" data-art="el" style="flex:1; max-width:140px; font-size:1.5rem; padding:20px">EL</button>
+    <button class="btn large-art" data-art="la" style="flex:1; max-width:140px; font-size:1.5rem; padding:20px">LA</button>
+  </div>
+
+  <div id="artSummary" class="summary hidden">
+    <div class="big" id="artSummaryTitle">Brawo!</div>
+    <div id="artFinalStats">Wynik: 0/0</div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn secondary" id="artSumMenuBtn">🏠 Menu</button>
+      <button class="btn" id="artSumRetryBtn">⟳ Zagraj ponownie</button>
+    </div>
+  </div>
+</section>

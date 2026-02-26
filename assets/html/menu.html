@@ -1,41 +1,60 @@
-<section id="menu" class="card">
+<section id="menu">
   <div class="center" style="margin-bottom:10px">
-    <div class="pill" id="ttsStatus">TTS: wykrywanie…</div>
-    <p class="sub" style="margin-top:8px">Wybierz kategorię, poziom i tryb:</p>
+    <p class="sub" style="margin-top:8px">Wybierz kategorię:</p>
   </div>
-  <div class="row segmented" id="catSeg">
-    <div class="seg active" data-cat="FRUITS">Owoce</div>
-    <div class="seg" data-cat="VEGGIES">Warzywa</div>
-    <div class="seg" data-cat="MIXED">Mieszane</div>
+
+  <div class="cat-grid" id="catGrid"></div>
+
+  <div class="center" style="margin-top:14px">
+    <p class="sub">Wybierz poziom trudności:</p>
   </div>
-  <div class="row segmented" id="levelSeg" style="margin-top:8px">
+  <div class="row segmented" id="levelSeg" style="margin-top:4px">
     <div class="seg active" data-level="LATWY">Łatwy</div>
     <div class="seg" data-level="SREDNI">Średni</div>
     <div class="seg" data-level="TRUDNY">Trudny</div>
   </div>
 
-  <div class="menu-grid" style="margin-top:12px">
+  <div class="center" style="margin-top:14px">
+    <p class="sub">Wybierz tryb gry:</p>
+  </div>
+  <div class="menu-grid" style="margin-top:8px">
     <div class="mode-card">
       <div><h3>Fiszki</h3><p>Ucz się nazw + odsłuch, bez punktacji.</p></div>
-      <button class="btn" data-go="flashcards">Start ➜</button>
+      <button class="btn" data-go="flashcards">Start</button>
     </div>
     <div class="mode-card">
-      <div><h3>Quiz (PL ➜ ES)</h3><p>Wybierz hiszpańską nazwę.</p></div>
-      <button class="btn" data-go="quiz">Start ➜</button>
+      <div><h3>Quiz (PL → ES)</h3><p>Wybierz hiszpańską nazwę.</p></div>
+      <button class="btn" data-go="quiz">Start</button>
     </div>
     <div class="mode-card">
-      <div><h3>Wybierz element (ES ➜ obraz)</h3><p>Podajemy nazwę po hiszp.; wybierz właściwy obraz.</p></div>
-      <button class="btn" data-go="finditem">Start ➜</button>
+      <div><h3>Wybierz element (ES → obraz)</h3><p>Podajemy nazwę po hiszp.; wybierz właściwy obraz.</p></div>
+      <button class="btn" data-go="finditem">Start</button>
+    </div>
+    <div class="mode-card">
+      <div><h3>Memory</h3><p>Dopasuj pary: emoji/obraz do słowa.</p></div>
+      <button class="btn" data-go="memory">Start</button>
+    </div>
+    <div class="mode-card">
+      <div><h3>El / La</h3><p>Wybierz poprawny rodzajnik.</p></div>
+      <button class="btn" data-go="articulos">Start</button>
+    </div>
+    <div class="mode-card">
+      <div><h3>Sopa de Letras</h3><p>Znajdź ukryte słowa w siatce liter.</p></div>
+      <button class="btn" data-go="wordsearch">Start</button>
+    </div>
+    <div class="mode-card">
+      <div><h3>Wpisz słowo</h3><p>Wpisz poprawne słowo po hiszpańsku.</p></div>
+      <button class="btn" data-go="spelling">Start</button>
     </div>
 
     <div class="mode-card" id="reviewModeCard" style="display: none; background:linear-gradient(160deg, rgba(239,68,68,.10), rgba(255,255,255,.03)); border-color:rgba(239,68,68,.3);">
       <div><h3>Powtórka (Błędy)</h3><p>Przećwicz słowa, z którymi masz problem.</p></div>
-      <button class="btn" id="startReviewBtn">Start (0 słów) ➜</button>
+      <button class="btn" id="startReviewBtn">Start (0 słów)</button>
     </div>
 
     <div class="mode-card" id="unlearnedModeCard" style="display: none; background:linear-gradient(160deg, rgba(96,165,250,.10), rgba(255,255,255,.03)); border-color:rgba(96,165,250,.3);">
       <div><h3>Ćwicz nienauczone</h3><p>Skup się na słowach, których jeszcze nie znasz.</p></div>
-      <button class="btn" id="startUnlearnedBtn">Start (0 słów) ➜</button>
+      <button class="btn" id="startUnlearnedBtn">Start (0 słów)</button>
     </div>
   </div>
 

@@ -1,54 +1,5 @@
 /* ----------------- Dane offline ----------------- */
-/*
- * Ta wersja pliku app.js korzysta wyłącznie z lokalnych obrazów umieszczonych
- * w katalogu assets/img/fruits i assets/img/veggies. Aplikacja nie pobiera
- * grafik z internetu.
- */
-const FRUITS = [
-  {img:'assets/img/fruits/jablko.jpg',      pl:'jabłko',      es:'manzana'},
-  {img:'assets/img/fruits/truskawka.jpg',   pl:'truskawka',   es:'fresa'},
-  {img:'assets/img/fruits/pomarancza.jpg',  pl:'pomarańcza',  es:'naranja'},
-  {img:'assets/img/fruits/mango.jpg',       pl:'mango',       es:'mango'},
-  {img:'assets/img/fruits/gruszka.webp',    pl:'gruszka',     es:'pera'},
-  {img:'assets/img/fruits/papaja.jpg',      pl:'papaja',      es:'papaya'},
-  {img:'assets/img/fruits/ananas.jpg',      pl:'ananas',      es:'piña'},
-  {img:'assets/img/fruits/banan.jpg',       pl:'banan',       es:'plátano'},
-  {img:'assets/img/fruits/arbuz.jpg',       pl:'arbuz',       es:'sandía'},
-  {img:'assets/img/fruits/kiwi.jpg',        pl:'kiwi',        es:'kiwi'},
-  {img:'assets/img/fruits/brzoskwinia.jpg', pl:'brzoskwinia', es:'durazno'},
-  {img:'assets/img/fruits/winogrono.jpg',   pl:'winogrono',   es:'uva / uvas'},
-  {img:'assets/img/fruits/granat.jpg',      pl:'granat',      es:'granada'},
-  {img:'assets/img/fruits/kokos.jpg',       pl:'kokos',       es:'coco'},
-  {img:'assets/img/fruits/melon.jpg',       pl:'melon',       es:'melón'},
-  {img:'assets/img/fruits/jezyna.jpg',      pl:'jeżyna',      es:'mora'}
-];
-
-const VEGGIES = [
-  {img:'assets/img/veggies/karczoch.jpg',    pl:'karczoch',    es:'alcachofa'},
-  {img:'assets/img/veggies/seler.jpg',       pl:'seler',       es:'apio'},
-  {img:'assets/img/veggies/batat.jpg',       pl:'batat',       es:'batata'},
-  {img:'assets/img/veggies/baklazan.jpg',    pl:'bakłażan',    es:'berenjena'},
-  {img:'assets/img/veggies/brokul.jpg',      pl:'brokuł',      es:'brócoli'},
-  {img:'assets/img/veggies/cukinia.jpg',     pl:'cukinia',     es:'calabacín'},
-  {img:'assets/img/veggies/cebula.jpg',      pl:'cebula',      es:'cebolla'},
-  {img:'assets/img/veggies/pieczarki.jpg',   pl:'pieczarki',   es:'champiñones'},
-  {img:'assets/img/veggies/kapusta.jpg',     pl:'kapusta',     es:'col'},
-  {img:'assets/img/veggies/brukselka.jpg',   pl:'brukselka',   es:'coles de Bruselas'},
-  {img:'assets/img/veggies/kalafior.jpg',    pl:'kalafior',    es:'coliflor'},
-  {img:'assets/img/veggies/szparagi.jpg',    pl:'szparagi',    es:'espárragos'},
-  {img:'assets/img/veggies/groszek.jpg',     pl:'groszek',     es:'guisantes'},
-  {img:'assets/img/veggies/fasolka.jpg',     pl:'fasolka',     es:'judías'},
-  {img:'assets/img/veggies/salata.jpg',      pl:'sałata',      es:'lechuga'},
-  {img:'assets/img/veggies/kukurydza.jpg',   pl:'kukurydza',   es:'maíz'},
-  {img:'assets/img/veggies/ziemniak.jpg',    pl:'ziemniak',    es:'patata / papa'},
-  {img:'assets/img/veggies/ogorek.jpg',      pl:'ogórek',      es:'pepino'},
-  {img:'assets/img/veggies/papryka.jpg',     pl:'papryka',     es:'pimiento'},
-  {img:'assets/img/veggies/rzodkiewka.jpg',  pl:'rzodkiewka',  es:'rábano'},
-  {img:'assets/img/veggies/burak.jpg',       pl:'burak',       es:'remolacha'},
-  {img:'assets/img/veggies/pomidor.jpg',     pl:'pomidor',     es:'tomate'},
-  {img:'assets/img/veggies/marchewka.jpg',   pl:'marchewka',   es:'zanahoria'},
-  {img:'assets/img/veggies/dynia.jpg',       pl:'dynia',       es:'calabaza'}
-];
+/* Dane FRUITS, VEGGIES i reszta kategorii są w data.js (ładowany przed app.js) */
 
 /* ---------- Utils ---------- */
 const $ = s => document.querySelector(s);
@@ -58,29 +9,67 @@ const shuffle = a => { for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.r
 const pick = (arr,n) => { const pool=[...arr]; const out=[]; while(n-- > 0 && pool.length) out.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); return out; };
 
 /* ---------- Konfiguracja ---------- */
-// Długości lekcji (9/12/15)
 const LEVELS = { LATWY:{options:2,len:9}, SREDNI:{options:3,len:12}, TRUDNY:{options:4,len:15} };
 const LEVEL_NAMES = { LATWY:'Łatwy', SREDNI:'Średni', TRUDNY:'Trudny' };
-const CAT_NAMES = { FRUITS:'Owoce', VEGGIES:'Warzywa', MIXED:'Mieszane' };
+const ALL_SECTIONS = ['menu','flashcards','quiz','finditem','memory','articulos','wordsearch','spelling'];
 let currentLevel = 'LATWY';
-let currentCat = 'FRUITS'; // FRUITS / VEGGIES / MIXED
+let currentCat = 'FRUITS';
+
 function datasetFor(cat){
-  if (cat==='FRUITS') return FRUITS;
-  if (cat==='VEGGIES') return VEGGIES;
-  return [...FRUITS, ...VEGGIES];
+  if (cat === 'MIXED'){
+    let all = [];
+    Object.entries(CATEGORIES).forEach(([k,v]) => { if (k !== 'MIXED' && v.data) all = all.concat(v.data); });
+    return all;
+  }
+  const entry = CATEGORIES[cat];
+  return (entry && entry.data) ? entry.data : FRUITS;
 }
 function dataset(){ return datasetFor(currentCat); }
 
+function catLabel(cat){
+  const entry = CATEGORIES[cat];
+  return entry ? entry.label : cat;
+}
+
+function renderItemVisual(item, size){
+  size = size || '5rem';
+  if (item.emoji){
+    return '<span class="emoji-visual" style="font-size:'+size+'" role="img" aria-label="'+item.pl+'">'+item.emoji+'</span>';
+  }
+  return '<img src="'+item.img+'" alt="'+item.pl+'" class="item-img" />';
+}
+
+function renderCatGrid(){
+  const grid = document.getElementById('catGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.entries(CATEGORIES).forEach(([key, cat]) => {
+    const card = document.createElement('div');
+    card.className = 'cat-card' + (key === currentCat ? ' active' : '');
+    card.dataset.cat = key;
+    const count = key === 'MIXED' ? datasetFor('MIXED').length : (cat.data ? cat.data.length : 0);
+    card.innerHTML = '<span class="cat-emoji">'+cat.emoji+'</span><span class="cat-label">'+cat.label+'</span><span class="cat-count">'+count+' słów</span>';
+    card.addEventListener('click', () => {
+      $$('.cat-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      currentCat = key;
+      updateMenuStats('QUIZ_PL_ES');
+    });
+    grid.appendChild(card);
+  });
+}
+
 /* ---------- Persistencja + Odznaki ---------- */
-const STORAGE_KEY = 'hiszp_owoce_warzywa_stats_v4';
-const BADGES_KEY  = 'hiszp_owoce_warzywa_badges_v2';
-const MISTAKES_KEY = 'hiszp_persistent_mistakes_v1';
+function profileId(){ return window.ACTIVE_PROFILE_ID || 'default'; }
+function STORAGE_KEY(){ return `hiszp_${profileId()}_stats_v4`; }
+function BADGES_KEY(){  return `hiszp_${profileId()}_badges_v2`; }
+function MISTAKES_KEY(){ return `hiszp_${profileId()}_mistakes_v1`; }
 
 function getDefaultStats(){
   return { games:0, bestScore:0, bestStreak:0, totalCorrect:0, totalQuestions:0, lastPlayed:null, lastTime:null, bestTime:null, learnedWords:[] };
 }
-function loadStats(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
-function saveStats(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+function loadStats(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY())) || {}; } catch { return {}; } }
+function saveStats(s){ localStorage.setItem(STORAGE_KEY(), JSON.stringify(s)); }
 function statKey(mode, level, cat){ return `${mode}__${level}__${cat}`; }
 function getModeStats(mode, level, cat){
   const s = loadStats(); const key = statKey(mode, level, cat);
@@ -104,17 +93,17 @@ function markLearned(mode, level, cat, word){
 }
 
 /* --- Trwałe błędy --- */
-function loadPersistentMistakes(){ try { return JSON.parse(localStorage.getItem(MISTAKES_KEY)) || {}; } catch { return {}; } }
-function savePersistentMistakes(s){ localStorage.setItem(MISTAKES_KEY, JSON.stringify(s)); }
+function loadPersistentMistakes(){ try { return JSON.parse(localStorage.getItem(MISTAKES_KEY())) || {}; } catch { return {}; } }
+function savePersistentMistakes(s){ localStorage.setItem(MISTAKES_KEY(), JSON.stringify(s)); }
 
 function getPersistentMistakes(cat){
   const all = loadPersistentMistakes();
-  if (cat === 'FRUITS') return new Set(all.FRUITS || []);
-  if (cat === 'VEGGIES') return new Set(all.VEGGIES || []);
-  // 'MIXED'
-  const fruits = new Set(all.FRUITS || []);
-  const veggies = new Set(all.VEGGIES || []);
-  return new Set([...fruits, ...veggies]);
+  if (cat === 'MIXED'){
+    const combined = new Set();
+    Object.values(all).forEach(arr => (arr || []).forEach(w => combined.add(w)));
+    return combined;
+  }
+  return new Set(all[cat] || []);
 }
 
 function addPersistentMistake(word){
@@ -122,27 +111,13 @@ function addPersistentMistake(word){
   const w_es = word.es.toLowerCase();
   const all = loadPersistentMistakes();
   let changed = false;
-
-  const isFruit = FRUITS.some(f => f.es.toLowerCase() === w_es);
-  if (isFruit){
-    const s = new Set(all.FRUITS || []);
-    if (!s.has(w_es)) {
-      s.add(w_es);
-      all.FRUITS = [...s];
-      changed = true;
+  Object.entries(CATEGORIES).forEach(([key, cat]) => {
+    if (key === 'MIXED' || !cat.data) return;
+    if (cat.data.some(item => item.es.toLowerCase() === w_es)){
+      const s = new Set(all[key] || []);
+      if (!s.has(w_es)){ s.add(w_es); all[key] = [...s]; changed = true; }
     }
-  }
-
-  const isVeggie = VEGGIES.some(v => v.es.toLowerCase() === w_es);
-  if (isVeggie){
-    const s = new Set(all.VEGGIES || []);
-    if (!s.has(w_es)) {
-      s.add(w_es);
-      all.VEGGIES = [...s];
-      changed = true;
-    }
-  }
-
+  });
   if (changed) savePersistentMistakes(all);
 }
 
@@ -151,19 +126,11 @@ function removePersistentMistake(word){
   const w_es = word.es.toLowerCase();
   const all = loadPersistentMistakes();
   let changed = false;
-
-  const isFruit = FRUITS.some(f => f.es.toLowerCase() === w_es);
-  if (isFruit && all.FRUITS){
-    const s = new Set(all.FRUITS);
-    if(s.delete(w_es)){ all.FRUITS = [...s]; changed = true; }
-  }
-
-  const isVeggie = VEGGIES.some(v => v.es.toLowerCase() === w_es);
-  if (isVeggie && all.VEGGIES){
-    const s = new Set(all.VEGGIES);
-    if(s.delete(w_es)){ all.VEGGIES = [...s]; changed = true; }
-  }
-
+  Object.keys(all).forEach(key => {
+    if (!all[key]) return;
+    const s = new Set(all[key]);
+    if (s.delete(w_es)){ all[key] = [...s]; changed = true; }
+  });
   if (changed) savePersistentMistakes(all);
 }
 
@@ -178,10 +145,19 @@ const BADGES_CATALOG = [
   {id:'streak_5',     icon:'🔥', name:'Seria 5',        desc:'Osiągnij serię 5 poprawnych odpowiedzi.'},
   {id:'speed_runner', icon:'⏱️', name:'Szybka runda',   desc:'Ukończ grę w < 60 s (dowolny poziom).'},
   {id:'fruit_master', icon:'🍓', name:'Mistrz owoców',  desc:'100% w grze w kategorii Owoce (dowolny poziom).'},
-  {id:'veggie_master',icon:'🥦', name:'Mistrz warzyw',  desc:'100% w grze w kategorii Warzywa (dowolny poziom).'}
+  {id:'veggie_master',icon:'🥦', name:'Mistrz warzyw',  desc:'100% w grze w kategorii Warzywa (dowolny poziom).'},
+  {id:'emociones_master', icon:'😊', name:'Mistrz emocji', desc:'100% w grze w kategorii Emocje.'},
+  {id:'pronombres_master', icon:'👤', name:'Mistrz zaimków', desc:'100% w grze w kategorii Zaimki.'},
+  {id:'colores_master', icon:'🎨', name:'Mistrz kolorów', desc:'100% w grze w kategorii Kolory.'},
+  {id:'escolar_master', icon:'🎒', name:'Mistrz przyborów', desc:'100% w grze w kategorii Przybory szkolne.'},
+  {id:'halloween_master', icon:'🎃', name:'Mistrz Halloween', desc:'100% w grze w kategorii Halloween.'},
+  {id:'navidad_master', icon:'🎄', name:'Mistrz świąt', desc:'100% w grze w kategorii Boże Narodzenie.'},
+  {id:'otono_master', icon:'🍂', name:'Mistrz jesieni', desc:'100% w grze w kategorii Jesień.'},
+  {id:'invierno_master', icon:'❄️', name:'Mistrz zimy', desc:'100% w grze w kategorii Zima.'},
+  {id:'estaciones_master', icon:'🌸', name:'Mistrz pór roku', desc:'100% w grze w kategorii Pory roku.'}
 ];
-function loadBadges(){ try { return JSON.parse(localStorage.getItem(BADGES_KEY)) || []; } catch { return []; } }
-function saveBadges(arr){ localStorage.setItem(BADGES_KEY, JSON.stringify(arr)); }
+function loadBadges(){ try { return JSON.parse(localStorage.getItem(BADGES_KEY())) || []; } catch { return []; } }
+function saveBadges(arr){ localStorage.setItem(BADGES_KEY(), JSON.stringify(arr)); }
 function hasBadge(id){ return loadBadges().some(b=>b.id===id); }
 function awardBadge(id){
   if (hasBadge(id)) return false;
@@ -217,13 +193,88 @@ function checkAndAwardBadges(level, cat, score, len, streak, time, games) {
     if (level === 'TRUDNY') awardBadge('perfect_hard');
     if (cat === 'FRUITS') awardBadge('fruit_master');
     if (cat === 'VEGGIES') awardBadge('veggie_master');
+    if (cat === 'EMOCIONES') awardBadge('emociones_master');
+    if (cat === 'PRONOMBRES') awardBadge('pronombres_master');
+    if (cat === 'COLORES') awardBadge('colores_master');
+    if (cat === 'MATERIAL_ESCOLAR') awardBadge('escolar_master');
+    if (cat === 'HALLOWEEN') awardBadge('halloween_master');
+    if (cat === 'NAVIDAD') awardBadge('navidad_master');
+    if (cat === 'OTONO') awardBadge('otono_master');
+    if (cat === 'INVIERNO') awardBadge('invierno_master');
+    if (cat === 'ESTACIONES') awardBadge('estaciones_master');
   }
   if (streak >= 5) awardBadge('streak_5');
   if (time < 60) awardBadge('speed_runner');
 }
 
 /* --- Osiągnięcia (Gwiazdki/Naklejki) --- */
-const ACHIEVEMENTS_KEY = 'hiszp_achievements_state_v1';
+function ACHIEVEMENTS_KEY(){ return `hiszp_${profileId()}_achievements_v1`; }
+function XP_KEY(){ return `hiszp_${profileId()}_xp_v1`; }
+function STREAK_KEY(){ return `hiszp_${profileId()}_streak_v1`; }
+
+function xpDefaults() { return { xp: 0, level: 1 }; }
+function loadXP() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(XP_KEY()));
+    return { ...xpDefaults(), ...(raw || {}) };
+  } catch { return xpDefaults(); }
+}
+function saveXP(state) { localStorage.setItem(XP_KEY(), JSON.stringify(state)); }
+
+function getCurrentLevel(xp) {
+  let found = XP_LEVELS[0];
+  for (const lvl of XP_LEVELS) {
+    if (xp >= lvl.minXp) found = lvl;
+  }
+  return found;
+}
+
+function renderXPBar() {
+  const state = loadXP();
+  const currentLvl = getCurrentLevel(state.xp);
+  const nextLvl = XP_LEVELS.find(l => l.level === currentLvl.level + 1);
+  
+  const pill = document.getElementById('xpLevelPill');
+  if (pill) pill.textContent = `${currentLvl.emoji} ${currentLvl.label}`;
+  
+  const fill = document.getElementById('xpBarFill');
+  if (fill) {
+    fill.classList.remove('pulse');
+    void fill.offsetWidth; // trigger reflow
+    fill.classList.add('pulse');
+    
+    if (!nextLvl) {
+      fill.style.width = '100%';
+    } else {
+      const range = nextLvl.minXp - currentLvl.minXp;
+      const progress = state.xp - currentLvl.minXp;
+      const pct = Math.max(0, Math.min(100, (progress / range) * 100));
+      fill.style.width = pct + '%';
+    }
+  }
+}
+
+function addXP(amount, reason) {
+  const state = loadXP();
+  const oldLvl = getCurrentLevel(state.xp);
+  state.xp += amount;
+  const newLvl = getCurrentLevel(state.xp);
+  
+  saveXP(state);
+  renderXPBar();
+  
+  if (reason && typeof toast === 'function') {
+    toast(`+${amount} XP (${reason})`);
+  }
+  
+  if (newLvl.level > oldLvl.level) {
+    if (typeof launchConfetti === 'function') launchConfetti();
+    if (typeof toast === 'function') {
+      toast(`🎊 Awans na poziom: ${newLvl.label}!`);
+    }
+  }
+}
+
 const STAR_INTERVAL = 5; // co tyle poprawnych odpowiedzi przyznajemy gwiazdkę
 const STICKER_STAR_REQUIREMENT = 10; // liczba gwiazdek na naklejkę
 
@@ -257,14 +308,14 @@ function achievementDefaults(){
 }
 function loadAchievements(){
   try {
-    const raw = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY));
+    const raw = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY()));
     return { ...achievementDefaults(), ...(raw || {}) };
   } catch {
     return achievementDefaults();
   }
 }
 function saveAchievements(state){
-  localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(state));
+  localStorage.setItem(ACHIEVEMENTS_KEY(), JSON.stringify(state));
 }
 function stickerThresholdForIndex(index){
   return (index + 1) * STICKER_STAR_REQUIREMENT;
@@ -277,6 +328,47 @@ function pluralizeStars(count){
   if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return 'gwiazdki';
   return 'gwiazdek';
 }
+function streakDefaults() { return { lastDate: null, count: 0 }; }
+function loadStreak() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(STREAK_KEY()));
+    return { ...streakDefaults(), ...(raw || {}) };
+  } catch { return streakDefaults(); }
+}
+function saveStreak(state) { localStorage.setItem(STREAK_KEY(), JSON.stringify(state)); }
+
+function updateStreak() {
+  const state = loadStreak();
+  const today = new Date().toISOString().split('T')[0];
+  
+  if (state.lastDate === today) return; // już naliczone dzisiaj
+  
+  const lastDate = state.lastDate ? new Date(state.lastDate) : null;
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  
+  if (state.lastDate === yesterdayStr) {
+    state.count += 1;
+  } else {
+    state.count = 1;
+  }
+  
+  state.lastDate = today;
+  saveStreak(state);
+  renderStreak();
+  
+  if (typeof toast === 'function') {
+    toast(`🔥 Dzienna seria: ${state.count} dni!`);
+  }
+}
+
+function renderStreak() {
+  const state = loadStreak();
+  const el = document.getElementById('streakPill');
+  if (el) el.textContent = `🔥 Seria: ${state.count} dni`;
+}
+
 function renderAchievements(){
   const state = loadAchievements();
   const stars = state.stars || 0;
@@ -391,6 +483,7 @@ function renderAchievements(){
 }
 
 function registerCorrectAnswer(correctWord){
+  updateStreak();
   const state = loadAchievements();
   const prevProgress = normalizeStarProgress(state.starProgress);
   state.totalCorrect = (state.totalCorrect || 0) + 1;
@@ -473,22 +566,20 @@ function toast(msg){
 
 /* ---------- Nawigacja ---------- */
 function show(sectionId){
-  ['menu','flashcards','quiz','finditem'].forEach(id => document.getElementById(id).classList.toggle('hidden', id!==sectionId));
+  ALL_SECTIONS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('hidden', id !== sectionId);
+  });
   if (sectionId==='menu'){
+    renderCatGrid();
     renderBadges();
     renderAchievements();
-    // Zawsze aktualizuj staty menu po powrocie
-    const currentModeBtn = document.querySelector('[data-partial="quiz"]') ? 'QUIZ_PL_ES' : 'FIND_ITEM';
-    updateMenuStats(currentModeBtn);
+    renderXPBar();
+    renderStreak();
+    updateMenuStats('QUIZ_PL_ES');
   }
 }
 document.getElementById('toMenuBtn').addEventListener('click', ()=> { show('menu'); });
-document.getElementById('catSeg').addEventListener('click', e => {
-  const seg = e.target.closest('.seg'); if(!seg) return;
-  $$('#catSeg .seg').forEach(s=>s.classList.remove('active'));
-  seg.classList.add('active'); currentCat = seg.dataset.cat;
-  updateMenuStats('QUIZ_PL_ES');
-});
 document.getElementById('levelSeg').addEventListener('click', e => {
   const seg = e.target.closest('.seg'); if(!seg) return;
   $$('#levelSeg .seg').forEach(s=>s.classList.remove('active'));
@@ -523,7 +614,7 @@ function renderFlashcard(){
   const list = dataset(); if (!list.length) return;
   const idx = ((fcIndex%list.length)+list.length)%list.length;
   const item = list[idx];
-  document.getElementById('fcImg').src = item.img;
+  document.getElementById('fcVisual').innerHTML = renderItemVisual(item, '8rem');
   document.getElementById('fcEs').textContent = item.es;
   document.getElementById('fcPl').textContent = item.pl;
 }
@@ -633,7 +724,7 @@ function newQuestion(){
   qAnsweredCorrect = false;
   const list = dataset();
   const correct = qPool[qRound-1] || pick(list,1)[0]; qAnswer = correct;
-  document.getElementById('qImg').src = correct.img;
+  document.getElementById('qVisual').innerHTML = renderItemVisual(correct, '10rem');
   document.getElementById('qHint').textContent = 'po polsku: ' + correct.pl;
   document.getElementById('qNum').textContent = qRound; document.getElementById('qTotal').textContent = qLen;
   const wrap = document.getElementById('choices'); wrap.innerHTML='';
@@ -695,6 +786,9 @@ function endQuiz(){
     st.lastTime = elapsedSec;
     if (!st.bestTime || elapsedSec < st.bestTime) st.bestTime = elapsedSec;
     setModeStats('QUIZ_PL_ES', currentLevel, currentCat, st);
+
+    addXP(qScore * 5, 'Quiz');
+    if (qScore === qLen) addXP(20, 'Bonus Perfekt');
 
     // ZMIANA: Wywołanie nowej, generycznej funkcji do odznak
     checkAndAwardBadges(currentLevel, currentCat, qScore, qLen, qBestStreak, elapsedSec, st.games);
@@ -864,7 +958,7 @@ function newFindQuestion(){
   const wrap = document.getElementById('itemChoices'); wrap.innerHTML='';
   options.forEach(opt=>{
     const btn=document.createElement('button'); btn.className='choice'; btn.style.flexDirection='column'; btn.style.alignItems='stretch';
-    btn.innerHTML = `<div class="imgwrap"><img alt="obraz" src="${opt.img}"/></div>`;
+    btn.innerHTML = `<div class="imgwrap">${renderItemVisual(opt, '5rem')}</div>`;
     btn.addEventListener('click', ()=>{
       const isOk = opt===correct;
       if (isOk){
@@ -954,6 +1048,9 @@ function endFind(){
     if (!st.bestTime || elapsedSec < st.bestTime) st.bestTime = elapsedSec;
     setModeStats('FIND_ITEM', currentLevel, currentCat, st);
 
+    addXP(fScore * 5, 'Znajdź element');
+    if (fScore === fLen) addXP(20, 'Bonus Perfekt');
+
     // ZMIANA: Wywołanie nowej, generycznej funkcji do odznak
     checkAndAwardBadges(currentLevel, currentCat, fScore, fLen, fBestStreak, elapsedSec, st.games);
   }
@@ -982,9 +1079,6 @@ function endFind(){
 }
 
 /* ---------- Statystyki w menu ---------- */
-function catLabel(cat){
-  return CAT_NAMES[cat] || cat;
-}
 function levelLabel(level){
   return LEVEL_NAMES[level] || level;
 }
@@ -1035,11 +1129,16 @@ function runFunctionalTests(){
     {name:'Zestaw owoców niepusty', pass: FRUITS.length > 0},
     {name:'Zestaw warzyw niepusty', pass: VEGGIES.length > 0},
     {name:'Poziomy skonfigurowane', pass: Object.keys(LEVELS).length === 3},
-    {name:'Łączny zestaw spójny', pass: datasetFor('MIXED').length === datasetFor('FRUITS').length + datasetFor('VEGGIES').length},
+    {name:'Łączny zestaw niepusty', pass: datasetFor('MIXED').length > 0},
     {name:'Sekcja menu obecna', pass: !!document.getElementById('menu')},
     {name:'Sekcja fiszek obecna', pass: !!document.getElementById('flashcards')},
     {name:'Sekcja quizu obecna', pass: !!document.getElementById('quiz')},
     {name:'Sekcja znajdź element obecna', pass: !!document.getElementById('finditem')},
+    {name:'Sekcja memory obecna', pass: !!document.getElementById('memory')},
+    {name:'Sekcja articulos obecna', pass: !!document.getElementById('articulos')},
+    {name:'Sekcja wordsearch obecna', pass: !!document.getElementById('wordsearch')},
+    {name:'Sekcja spelling obecna', pass: !!document.getElementById('spelling')},
+    {name:'Siatka kategorii obecna', pass: !!document.getElementById('catGrid')},
     {name:'Kontener naklejek obecny', pass: !!document.getElementById('stickerShelf')},
     {name:"Kontener powtórek (błędy) obecny", pass: !!document.getElementById('reviewModeCard')},
     {name:"Przycisk powtórek (błędy) obecny", pass: !!document.getElementById('startReviewBtn')},
@@ -1108,6 +1207,7 @@ function updateMenuStats(mode){
 }
 
 /* ---------- Inicjalizacja ---------- */
+renderCatGrid();
 updateMenuStats('QUIZ_PL_ES');
 renderBadges();
 renderAchievements();

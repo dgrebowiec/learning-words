@@ -1,0 +1,32 @@
+<section id="spelling" class="card hidden">
+  <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
+    <span class="pill">Słowo: <b id="spNum">1</b>/<span id="spTotal">10</span></span>
+    <span class="pill">Wynik: <b id="spScore">0</b></span>
+  </div>
+  <div class="scorebar" style="margin:10px 0 14px 0"><span id="spFill"></span></div>
+  
+  <div class="center" style="margin-bottom:20px">
+    <div id="spVisual" style="margin-bottom:10px"></div>
+    <div class="sub" id="spPl" style="font-size: 1.4rem; font-weight: 700; color: #fff">???</div>
+  </div>
+
+  <div class="sp-input-wrap center" style="margin-top:10px">
+    <input type="text" id="spInput" class="btn" style="width:100%; max-width:300px; text-align:center; font-size:1.5rem; background:rgba(255,255,255,0.05); border:2px solid rgba(255,255,255,0.2); cursor:text" placeholder="Wpisz po hiszpańsku..." autocomplete="off" />
+    <div id="spHintText" class="muted" style="margin-top:10px; font-family: monospace; letter-spacing: 2px; font-size: 1.2rem"></div>
+  </div>
+
+  <div class="row" style="margin-top:20px; justify-content:center; gap:10px">
+    <button class="btn secondary" id="spSkipBtn">Pomiń</button>
+    <button class="btn secondary" id="spHintBtn">Podpowiedź</button>
+    <button class="btn" id="spCheckBtn">Sprawdź</button>
+  </div>
+
+  <div id="spSummary" class="summary hidden">
+    <div class="big" id="spSummaryTitle">Podsumowanie</div>
+    <div id="spFinalStats">Wynik: 0/0</div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn secondary" id="spSumMenuBtn">🏠 Menu</button>
+      <button class="btn" id="spSumRetryBtn">⟳ Zagraj ponownie</button>
+    </div>
+  </div>
+</section>

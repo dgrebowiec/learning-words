@@ -1,7 +1,19 @@
 <header>
-  <h1>Hiszpańskie <span class="grad">Owoce &amp; Warzywa</span> – mini-gra</h1>
-  <div class="toolbar">
+  <div class="row" style="justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px">
+    <h1 style="margin:0"><span class="grad">Hiszpański</span> dla dzieci</h1>
+    <div class="xp-header" id="xpHeader">
+      <span class="pill" id="xpLevelPill">🌱 Początkujący</span>
+      <span class="pill" id="streakPill">🔥 Seria: 0 dni</span>
+    </div>
+  </div>
+  <div class="xp-bar-wrap" id="xpBarWrap" style="margin-top:8px">
+    <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
+  </div>
+  <div class="toolbar" style="margin-top:10px">
     <button class="btn secondary" id="toMenuBtn">🏠 Menu</button>
     <button class="btn" id="speakAllBtn">🔊 Lista</button>
+    <div class="pill" id="ttsStatus" style="font-size:11px">TTS: wykrywanie…</div>
+    <span class="pill" id="activePlayerDisplay" style="display:none"></span>
+    <button class="btn secondary" id="changePlayerBtn" style="display:none">👤 Zmień gracza</button>
   </div>
 </header>

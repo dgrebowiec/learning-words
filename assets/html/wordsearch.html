@@ -1,0 +1,29 @@
+<section id="wordsearch" class="card hidden">
+  <div class="center" style="margin-bottom:10px">
+    <h3 style="margin:0">Sopa de Letras</h3>
+    <p class="sub small">Znajdź słowa ukryte w siatce (poziomo i pionowo)</p>
+  </div>
+
+  <div class="ws-container" style="display:flex; flex-direction:column; align-items:center; gap:16px">
+    <div id="wsGrid" class="ws-grid"></div>
+    
+    <div class="ws-word-list-wrap card" style="width:100%; max-width:420px; padding:10px">
+      <p class="sub" style="margin-bottom:8px; font-weight:700">Słowa do znalezienia:</p>
+      <div id="wsWordList" class="ws-word-list"></div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:20px; justify-content:center;">
+    <button class="btn secondary" id="wsMenuBtn">🏠 Menu</button>
+    <button class="btn" id="wsRetryBtn" style="margin-left:8px">⟳ Nowa siatka</button>
+  </div>
+
+  <div id="wsSummary" class="summary hidden">
+    <div class="big">¡Felicidades!</div>
+    <div id="wsFinalStats">Wszystkie słowa znalezione!</div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn secondary" id="wsSumMenuBtn">🏠 Menu</button>
+      <button class="btn" id="wsSumRetryBtn">⟳ Zagraj ponownie</button>
+    </div>
+  </div>
+</section>
