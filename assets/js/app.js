@@ -11,9 +11,10 @@ const pick = (arr,n) => { const pool=[...arr]; const out=[]; while(n-- > 0 && po
 /* ---------- Konfiguracja ---------- */
 const LEVELS = { LATWY:{options:2,len:9}, SREDNI:{options:3,len:12}, TRUDNY:{options:4,len:15} };
 const LEVEL_NAMES = { LATWY:'Łatwy', SREDNI:'Średni', TRUDNY:'Trudny' };
-const ALL_SECTIONS = ['menu','flashcards','quiz','finditem','memory','articulos','wordsearch','spelling'];
+const ALL_SECTIONS = ['menu','flashcards','quiz','finditem','memory','articulos','wordsearch','spelling','scramble','repeat'];
 let currentLevel = 'LATWY';
 let currentCat = 'FRUITS';
+let menuStep = 1;
 
 function datasetFor(cat){
   if (cat === 'MIXED'){
@@ -53,7 +54,7 @@ function renderCatGrid(){
       $$('.cat-card').forEach(c => c.classList.remove('active'));
       card.classList.add('active');
       currentCat = key;
-      updateMenuStats('QUIZ_PL_ES');
+      showMenuStep(2);
     });
     grid.appendChild(card);
   });
@@ -553,6 +554,90 @@ function speakEs(text){
   window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
 }
 
+/* ---------- AudioFX (syntetyczny feedback dźwiękowy) ---------- */
+const AudioFX = (() => {
+  let _ctx = null;
+  function getCtx() {
+    if (!_ctx && window.AudioContext) _ctx = new AudioContext();
+    return _ctx;
+  }
+  function tone(freq, dur, type, gain) {
+    const ac = getCtx(); if (!ac) return;
+    try {
+      const osc = ac.createOscillator();
+      const g = ac.createGain();
+      osc.connect(g); g.connect(ac.destination);
+      osc.type = type || 'sine';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(gain || 0.28, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
+      osc.start(); osc.stop(ac.currentTime + dur);
+    } catch(e) {}
+  }
+  return {
+    correct() { tone(880, 0.13); setTimeout(() => tone(1320, 0.11), 70); },
+    wrong()   { tone(200, 0.22, 'sawtooth', 0.18); }
+  };
+})();
+
+/* ---------- renderCombo (F4) ---------- */
+function renderCombo(elId, val) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const fires = val >= 5 ? ' 🔥🔥🔥' : val >= 3 ? ' 🔥' : '';
+  el.textContent = val + fires;
+  const pill = el.closest('.pill');
+  if (!pill) return;
+  if (val >= 3) {
+    pill.classList.remove('streak-combo');
+    void pill.offsetWidth;
+    pill.classList.add('streak-combo');
+  } else {
+    pill.classList.remove('streak-combo');
+  }
+}
+
+/* ---------- miniConfetti (F5) ---------- */
+function miniConfetti(sourceEl) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors = ['#f59e0b','#ef4444','#10b981','#3b82f6','#8b5cf6','#ec4899'];
+  const rect = sourceEl ? sourceEl.getBoundingClientRect() : {left:window.innerWidth/2,top:window.innerHeight/2,width:0,height:0};
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    const size = 6 + Math.random() * 5;
+    p.style.cssText = `position:fixed;width:${size}px;height:${size}px;border-radius:50%;background:${colors[i%colors.length]};left:${cx}px;top:${cy}px;pointer-events:none;z-index:9999;`;
+    document.body.appendChild(p);
+    const angle = (i / 18) * 2 * Math.PI + Math.random() * 0.4;
+    const dist = 45 + Math.random() * 65;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 20;
+    p.animate(
+      [{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) scale(0)`,opacity:0}],
+      {duration:480+Math.random()*200,easing:'cubic-bezier(0,0,.2,1)',fill:'forwards'}
+    ).onfinish = () => p.remove();
+  }
+}
+
+/* ---------- showStarRating (F7) ---------- */
+function showStarRating(pct, elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '';
+  const count = pct >= 90 ? 3 : pct >= 60 ? 2 : 1;
+  for (let i = 0; i < 3; i++) {
+    const star = document.createElement('span');
+    star.className = 'star-icon' + (i >= count ? ' star-empty' : '');
+    star.textContent = '⭐';
+    if (i < count) star.style.animationDelay = (i * 320) + 'ms';
+    el.appendChild(star);
+  }
+  if (count === 3) {
+    setTimeout(() => { if (typeof launchConfetti === 'function') launchConfetti(); }, 1100);
+  }
+}
+
 /* ---------- UI: powiadomienia ---------- */
 function toast(msg){
   const t = document.createElement('div');
@@ -571,7 +656,7 @@ function show(sectionId){
     if (el) el.classList.toggle('hidden', id !== sectionId);
   });
   if (sectionId==='menu'){
-    renderCatGrid();
+    showMenuStep(1);
     renderBadges();
     renderAchievements();
     renderXPBar();
@@ -579,18 +664,72 @@ function show(sectionId){
     updateMenuStats('QUIZ_PL_ES');
   }
 }
+
+function showMenuStep(n){
+  menuStep = n;
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('menuStep'+i);
+    if (el) el.classList.toggle('hidden', i !== n);
+  });
+
+  const cat = CATEGORIES[currentCat] || {};
+  const wizCatChosen = document.getElementById('wizCatChosen');
+  const wizLvlChosen = document.getElementById('wizLvlChosen');
+  const wizStep1Btn  = document.getElementById('wizStep1Btn');
+  const wizStep2Btn  = document.getElementById('wizStep2Btn');
+  const wizStep3Btn  = document.getElementById('wizStep3Btn');
+
+  if (wizCatChosen) wizCatChosen.textContent = n >= 2 ? (cat.emoji || '') + ' ' + (cat.label || '') : '';
+  if (wizLvlChosen) wizLvlChosen.textContent = n >= 3 ? LEVEL_NAMES[currentLevel] || '' : '';
+
+  if (wizStep1Btn){ wizStep1Btn.classList.toggle('active', n===1); wizStep1Btn.disabled = false; }
+  if (wizStep2Btn){ wizStep2Btn.classList.toggle('active', n===2); wizStep2Btn.disabled = n < 2; }
+  if (wizStep3Btn){ wizStep3Btn.classList.toggle('active', n===3); wizStep3Btn.disabled = n < 3; }
+
+  if (n === 1){
+    renderCatGrid();
+  }
+  if (n === 2){
+    const step2CatEmoji = document.getElementById('step2CatEmoji');
+    const step2CatLabel = document.getElementById('step2CatLabel');
+    if (step2CatEmoji) step2CatEmoji.textContent = cat.emoji || '';
+    if (step2CatLabel) step2CatLabel.textContent = cat.label || catLabel(currentCat);
+    $$('.level-card').forEach(c => c.classList.toggle('active', c.dataset.level === currentLevel));
+  }
+  if (n === 3){
+    const step3CatEmoji = document.getElementById('step3CatEmoji');
+    const step3CatLabel = document.getElementById('step3CatLabel');
+    const step3LevelLabel = document.getElementById('step3LevelLabel');
+    if (step3CatEmoji) step3CatEmoji.textContent = cat.emoji || '';
+    if (step3CatLabel) step3CatLabel.textContent = cat.label || catLabel(currentCat);
+    if (step3LevelLabel) step3LevelLabel.textContent = LEVEL_NAMES[currentLevel] || '';
+    updateMenuStats('QUIZ_PL_ES');
+  }
+}
+
 document.getElementById('toMenuBtn').addEventListener('click', ()=> { show('menu'); });
-document.getElementById('levelSeg').addEventListener('click', e => {
-  const seg = e.target.closest('.seg'); if(!seg) return;
-  $$('#levelSeg .seg').forEach(s=>s.classList.remove('active'));
-  seg.classList.add('active'); currentLevel = seg.dataset.level;
-  updateMenuStats('QUIZ_PL_ES');
+
+document.getElementById('wizardBreadcrumb').addEventListener('click', e => {
+  const btn = e.target.closest('.wiz-step');
+  if (!btn || btn.disabled) return;
+  const step = parseInt(btn.dataset.step, 10);
+  if (step < menuStep) showMenuStep(step);
 });
+
+$$('.level-card').forEach(card => {
+  card.addEventListener('click', () => {
+    currentLevel = card.dataset.level;
+    showMenuStep(3);
+  });
+});
+
 $$('[data-go]').forEach(b => b.addEventListener('click', () => {
   const target = b.getAttribute('data-go'); show(target);
   if (target==='quiz'){ startQuiz(); updateMenuStats('QUIZ_PL_ES'); }
   if (target==='finditem'){ startFindItem(); updateMenuStats('FIND_ITEM'); }
   if (target==='flashcards'){ renderFlashcard(); }
+  if (target==='scramble'){ startScramble(); updateMenuStats('SCRAMBLE'); }
+  if (target==='repeat'){ startRepeat(); updateMenuStats('REPEAT'); }
 }));
 
 // Nowe tryby z menu
@@ -645,6 +784,7 @@ let qMistakeSet = new Set();
 let qIsReviewMode = false;
 let qAnswered = false;
 let qAnsweredCorrect = false;
+let qAutoTimer = null;
 function applyLevelToQuiz(){ qLen=LEVELS[currentLevel].len; qOpts=LEVELS[currentLevel].options; document.getElementById('qTotal').textContent=qLen; }
 function makeQuestionPool(){ const list = dataset(); qPool = shuffle([...list]).slice(0, Math.min(list.length, qLen)); }
 function resetMistakeSummaryUI(){
@@ -701,6 +841,7 @@ function updateMistakeSummary(){
   }
 }
 function startQuiz(){
+  clearTimeout(qAutoTimer);
   qIsReviewMode = false;
   applyLevelToQuiz();
   makeQuestionPool();
@@ -709,10 +850,11 @@ function startQuiz(){
   qMistakeSet = new Set();
   qAnswered = false;
   qAnsweredCorrect = false;
-  document.getElementById('qScore').textContent='0'; document.getElementById('qStreak').textContent='0'; document.getElementById('qBestStreak').textContent=qBestStreak;
+  document.getElementById('qScore').textContent='0'; renderCombo('qStreak', 0); document.getElementById('qBestStreak').textContent=qBestStreak;
   document.getElementById('scoreFill').style.width='0%'; document.getElementById('qNext').disabled=false; document.getElementById('qSkip').disabled=false;
   document.getElementById('qRetry').disabled=true;
   document.getElementById('qSummary').classList.add('hidden');
+  const qStarEl = document.getElementById('qStarRating'); if (qStarEl) qStarEl.innerHTML = '';
   resetMistakeSummaryUI();
   const sumTitle = document.getElementById('qSummaryTitle'); if (sumTitle) sumTitle.textContent = 'Podsumowanie';
   qStartTime = performance.now();
@@ -720,6 +862,8 @@ function startQuiz(){
 }
 function newQuestion(){
   qRound++; if (qRound>qLen){ endQuiz(); return; }
+  [{pct:25,msg:'Dobry start! 🚀'},{pct:50,msg:'Połowa za Tobą! ⭐'},{pct:75,msg:'Prawie koniec! 💪'}]
+    .forEach(m=>{ if (qRound === Math.ceil(qLen * m.pct / 100)) toast(m.msg); });
   qAnswered = false;
   qAnsweredCorrect = false;
   const list = dataset();
@@ -740,16 +884,20 @@ function newQuestion(){
       qAnswered = true;
       qAnsweredCorrect = isOk;
       if (isOk){
-        btn.classList.add('correct'); qScore++; qStreak++; qBestStreak = Math.max(qBestStreak, qStreak);
+        btn.classList.add('correct', 'anim-bounce'); qScore++; qStreak++; qBestStreak = Math.max(qBestStreak, qStreak);
         markLearned('QUIZ_PL_ES', currentLevel, currentCat, correct);
         registerCorrectAnswer(correct);
+        AudioFX.correct();
+        miniConfetti(btn);
+        qAutoTimer = setTimeout(() => { if (qAnswered && qAnsweredCorrect) newQuestion(); }, 1000);
       }
       else {
-        btn.classList.add('wrong'); qStreak = 0;
+        btn.classList.add('wrong', 'anim-shake'); qStreak = 0;
         registerMistake(correct);
         [...wrap.children].forEach(c=>{ if (c.textContent.toLowerCase().includes(correct.es.split(' ')[0])) c.classList.add('correct'); });
+        AudioFX.wrong();
       }
-      document.getElementById('qScore').textContent=qScore; document.getElementById('qStreak').textContent=qStreak; document.getElementById('qBestStreak').textContent=qBestStreak;
+      document.getElementById('qScore').textContent=qScore; renderCombo('qStreak', qStreak); document.getElementById('qBestStreak').textContent=qBestStreak;
       document.getElementById('scoreFill').style.width=(qScore/qLen*100)+'%';
       [...wrap.children].forEach(c=>c.disabled=true);
     });
@@ -765,10 +913,12 @@ function newQuestion(){
   });
 }
 document.getElementById('qNext').addEventListener('click', ()=>{
+  clearTimeout(qAutoTimer);
   if (!qAnswered && qAnswer){ registerMistake(qAnswer); }
   newQuestion();
 });
 document.getElementById('qSkip').addEventListener('click', ()=>{
+  clearTimeout(qAutoTimer);
   if (qAnswer && (!qAnswered || !qAnsweredCorrect)){ registerMistake(qAnswer); }
   newQuestion();
 });
@@ -802,12 +952,14 @@ function endQuiz(){
 
   document.getElementById('qSumScore').textContent = qScore;
   document.getElementById('qSumTotal').textContent = qLen;
-  document.getElementById('qSumPct').textContent = Math.round((qScore/qLen)*100);
+  const qPct = Math.round((qScore/qLen)*100);
+  document.getElementById('qSumPct').textContent = qPct;
   document.getElementById('qSumBestStreak').textContent = qBestStreak;
   document.getElementById('qSumTime').textContent = elapsedSec.toFixed(1)+' s';
   const bestTime = st.bestTime ? st.bestTime.toFixed(1)+' s' : '—';
   document.getElementById('qSumBestTime').textContent = bestTime;
 
+  showStarRating(qPct, 'qStarRating');
   // Tytuł podsumowania jest ustawiany przy starcie quizu
   updateMistakeSummary();
   document.getElementById('qSummary').classList.remove('hidden');
@@ -844,13 +996,14 @@ function startSpecialQuiz(wordPool, title) {
   qMistakeSet = new Set();
 
   document.getElementById('qScore').textContent='0';
-  document.getElementById('qStreak').textContent='0';
+  renderCombo('qStreak', 0);
   document.getElementById('qBestStreak').textContent='0';
   document.getElementById('scoreFill').style.width='0%';
   document.getElementById('qNext').disabled=false;
   document.getElementById('qSkip').disabled=false;
   document.getElementById('qRetry').disabled=true;
   document.getElementById('qSummary').classList.add('hidden');
+  const qStarElS = document.getElementById('qStarRating'); if (qStarElS) qStarElS.innerHTML = '';
 
   const sumTitle = document.getElementById('qSummaryTitle');
   if (sumTitle) sumTitle.textContent = title;
@@ -871,6 +1024,7 @@ let fPool = [];
 let fMistakes = [];
 let fMistakeSet = new Set();
 let fIsReviewMode = false;
+let fAutoTimer = null;
 
 function applyLevelToFind(){ fLen=LEVELS[currentLevel].len; fOpts=LEVELS[currentLevel].options; document.getElementById('fTotal').textContent=fLen; }
 function makeFindPool(){ const list = dataset(); fPool = shuffle([...list]).slice(0, Math.min(list.length, fLen)); }
@@ -932,16 +1086,18 @@ function updateFindMistakeSummary(){
 }
 
 function startFindItem(){
+  clearTimeout(fAutoTimer);
   fIsReviewMode = false;
   applyLevelToFind();
   makeFindPool();
   fRound=0; fScore=0; fStreak=0; fBestStreak = getModeStats('FIND_ITEM', currentLevel, currentCat).bestStreak || 0;
   fMistakes = [];
   fMistakeSet = new Set();
-  document.getElementById('fScore').textContent='0'; document.getElementById('fStreak').textContent='0'; document.getElementById('fBestStreak').textContent=fBestStreak;
+  document.getElementById('fScore').textContent='0'; renderCombo('fStreak', 0); document.getElementById('fBestStreak').textContent=fBestStreak;
   document.getElementById('fFill').style.width='0%'; document.getElementById('fNext').disabled=false; document.getElementById('fSkip').disabled=false;
   document.getElementById('fRetry').disabled=true;
   document.getElementById('fSummary').classList.add('hidden');
+  const fStarEl = document.getElementById('fStarRating'); if (fStarEl) fStarEl.innerHTML = '';
   resetFindMistakeSummaryUI();
   const sumTitle = document.getElementById('fSummaryTitle'); if (sumTitle) sumTitle.textContent = 'Podsumowanie';
   fStartTime = performance.now();
@@ -949,6 +1105,8 @@ function startFindItem(){
 }
 function newFindQuestion(){
   fRound++; if (fRound>fLen){ endFind(); return; }
+  [{pct:25,msg:'Dobry start! 🚀'},{pct:50,msg:'Połowa za Tobą! ⭐'},{pct:75,msg:'Prawie koniec! 💪'}]
+    .forEach(m=>{ if (fRound === Math.ceil(fLen * m.pct / 100)) toast(m.msg); });
   const list = dataset();
   const correct = fPool[fRound-1] || pick(list,1)[0]; fAnswer = correct;
   document.getElementById('fEs').textContent = correct.es;
@@ -962,12 +1120,15 @@ function newFindQuestion(){
     btn.addEventListener('click', ()=>{
       const isOk = opt===correct;
       if (isOk){
-        btn.classList.add('correct'); fScore++; fStreak++; fBestStreak = Math.max(fBestStreak, fStreak);
+        btn.classList.add('correct', 'anim-bounce'); fScore++; fStreak++; fBestStreak = Math.max(fBestStreak, fStreak);
         markLearned('FIND_ITEM', currentLevel, currentCat, correct);
         registerCorrectAnswer(correct);
+        AudioFX.correct();
+        miniConfetti(btn);
+        fAutoTimer = setTimeout(() => newFindQuestion(), 1000);
       }
       else {
-        btn.classList.add('wrong'); fStreak=0;
+        btn.classList.add('wrong', 'anim-shake'); fStreak=0;
         registerFindMistake(correct);
         [...wrap.children].forEach(c=>{
           const img = c.querySelector('img');
@@ -975,8 +1136,9 @@ function newFindQuestion(){
             c.classList.add('correct');
           }
         });
+        AudioFX.wrong();
       }
-      document.getElementById('fScore').textContent=fScore; document.getElementById('fStreak').textContent=fStreak; document.getElementById('fBestStreak').textContent=fBestStreak;
+      document.getElementById('fScore').textContent=fScore; renderCombo('fStreak', fStreak); document.getElementById('fBestStreak').textContent=fBestStreak;
       document.getElementById('fFill').style.width=(fScore/fLen*100)+'%';
       [...wrap.children].forEach(c=>c.disabled=true);
     });
@@ -985,11 +1147,13 @@ function newFindQuestion(){
   setTimeout(()=> speakEs(correct.es), 120);
 }
 document.getElementById('fNext').addEventListener('click', ()=> {
+  clearTimeout(fAutoTimer);
   const answered = [...document.getElementById('itemChoices').children].some(c => c.classList.contains('correct') || c.classList.contains('wrong'));
   if (fAnswer && !answered) { registerFindMistake(fAnswer); }
   newFindQuestion();
 });
 document.getElementById('fSkip').addEventListener('click', ()=> {
+  clearTimeout(fAutoTimer);
   const answered = [...document.getElementById('itemChoices').children].some(c => c.classList.contains('correct') || c.classList.contains('wrong'));
   if (fAnswer && !answered) { registerFindMistake(fAnswer); }
   newFindQuestion();
@@ -1017,13 +1181,14 @@ function startMistakeReviewFind(){
   fMistakeSet = new Set();
 
   document.getElementById('fScore').textContent='0';
-  document.getElementById('fStreak').textContent='0';
+  renderCombo('fStreak', 0);
   document.getElementById('fBestStreak').textContent='0';
   document.getElementById('fFill').style.width='0%';
   document.getElementById('fNext').disabled=false;
   document.getElementById('fSkip').disabled=false;
   document.getElementById('fRetry').disabled=true;
   document.getElementById('fSummary').classList.add('hidden');
+  const fStarElR = document.getElementById('fStarRating'); if (fStarElR) fStarElR.innerHTML = '';
 
   const sumTitle = document.getElementById('fSummaryTitle');
   if (sumTitle) sumTitle.textContent = 'Podsumowanie powtórki';
@@ -1063,12 +1228,14 @@ function endFind(){
 
   document.getElementById('fSumScore').textContent = fScore;
   document.getElementById('fSumTotal').textContent = fLen;
-  document.getElementById('fSumPct').textContent = Math.round((fScore/fLen)*100);
+  const fPct = Math.round((fScore/fLen)*100);
+  document.getElementById('fSumPct').textContent = fPct;
   document.getElementById('fSumBestStreak').textContent = fBestStreak;
   document.getElementById('fSumTime').textContent = elapsedSec.toFixed(1)+' s';
   const bestTime = st.bestTime ? st.bestTime.toFixed(1)+' s' : '—';
   document.getElementById('fSumBestTime').textContent = bestTime;
 
+  showStarRating(fPct, 'fStarRating');
   // Tytuł podsumowania jest ustawiany przy starcie
   updateFindMistakeSummary();
   document.getElementById('fSummary').classList.remove('hidden');
@@ -1166,7 +1333,7 @@ function runFunctionalTests(){
 function updateMenuStats(mode){
   // Statystyki trybu (górna karta)
   const st = getModeStats(mode, currentLevel, currentCat);
-  document.getElementById('statMode').textContent = mode==='QUIZ_PL_ES' ? 'Quiz PL→ES' : (mode==='FIND_ITEM' ? 'Wybierz (ES→obraz)' : '—');
+  document.getElementById('statMode').textContent = mode==='QUIZ_PL_ES' ? 'Quiz PL→ES' : (mode==='FIND_ITEM' ? 'Wybierz (ES→obraz)' : (mode==='SCRAMBLE' ? 'Ułóż słowo' : (mode==='REPEAT' ? 'Powtórz słowo' : '—')));
   document.getElementById('statLvl').textContent = levelLabel(currentLevel);
   document.getElementById('statCat').textContent = catLabel(currentCat);
   document.getElementById('statBest').textContent = st.bestScore || 0;
@@ -1204,10 +1371,19 @@ function updateMenuStats(mode){
     rBtn.disabled = mistakesPool.length === 0;
     rCard.style.display = mistakesPool.length > 0 ? 'flex' : 'none';
   }
+
+  const el3Best = document.getElementById('statBest3');
+  const el3Time = document.getElementById('statBestTime3');
+  const el3Learned = document.getElementById('statLearned3');
+  const el3Total = document.getElementById('statTotalWords3');
+  if (el3Best) el3Best.textContent = st.bestScore || 0;
+  if (el3Time) el3Time.textContent = formatTime(st.bestTime);
+  if (el3Learned) el3Learned.textContent = (st.learnedWords || []).length;
+  if (el3Total) el3Total.textContent = dataset().length;
 }
 
 /* ---------- Inicjalizacja ---------- */
-renderCatGrid();
+showMenuStep(1);
 updateMenuStats('QUIZ_PL_ES');
 renderBadges();
 renderAchievements();

@@ -74,14 +74,15 @@
 
     if (isOk) {
       score++;
-      btn.classList.add('correct');
+      btn.classList.add('correct', 'anim-bounce');
       document.getElementById('artScore').textContent = score;
+      if (typeof AudioFX !== 'undefined') AudioFX.correct();
       if (typeof toast === 'function') toast('¡Muy bien! 🌟');
     } else {
-      btn.classList.add('incorrect');
-      // Pokaż poprawny przycisk
+      btn.classList.add('incorrect', 'anim-shake');
       const correctBtn = document.querySelector(`.large-art[data-art="${correct}"]`);
       if (correctBtn) correctBtn.classList.add('correct');
+      if (typeof AudioFX !== 'undefined') AudioFX.wrong();
       if (typeof toast === 'function') toast('Ups! Spróbuj zapamiętać. 💡');
     }
 

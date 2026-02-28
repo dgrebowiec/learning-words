@@ -10,6 +10,8 @@
     {name:'articulos', path:'assets/html/articulos.html'},
     {name:'wordsearch', path:'assets/html/wordsearch.html'},
     {name:'spelling', path:'assets/html/spelling.html'},
+    {name:'scramble', path:'assets/html/scramble.html'},
+    {name:'repeat', path:'assets/html/repeat.html'},
     {name:'footer', path:'assets/html/footer.html'}
   ];
 
@@ -21,6 +23,8 @@
     'assets/js/modes/articulos.js',
     'assets/js/modes/wordsearch.js',
     'assets/js/modes/spelling.js',
+    'assets/js/modes/scramble.js',
+    'assets/js/modes/repeat.js',
     'assets/js/tests/layout-smoke-test.js',
     'assets/js/profiles.js'
   ];

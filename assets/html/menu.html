@@ -1,120 +1,185 @@
 <section id="menu">
-  <div class="center" style="margin-bottom:10px">
-    <p class="sub" style="margin-top:8px">Wybierz kategorię:</p>
+
+  <nav class="wizard-breadcrumb" id="wizardBreadcrumb" aria-label="Kroki wyboru">
+    <button class="wiz-step active" id="wizStep1Btn" data-step="1">
+      <span class="wiz-num">1</span>
+      <span class="wiz-label">Kategoria</span>
+      <span class="wiz-chosen" id="wizCatChosen"></span>
+    </button>
+    <span class="wiz-arrow" aria-hidden="true">›</span>
+    <button class="wiz-step" id="wizStep2Btn" data-step="2" disabled>
+      <span class="wiz-num">2</span>
+      <span class="wiz-label">Poziom</span>
+      <span class="wiz-chosen" id="wizLvlChosen"></span>
+    </button>
+    <span class="wiz-arrow" aria-hidden="true">›</span>
+    <button class="wiz-step" id="wizStep3Btn" data-step="3" disabled>
+      <span class="wiz-num">3</span>
+      <span class="wiz-label">Ćwiczenie</span>
+    </button>
+  </nav>
+
+  <!-- ===== KROK 1: KATEGORIA ===== -->
+  <div class="menu-step" id="menuStep1">
+    <p class="sub" style="margin:12px 0 8px">Wybierz kategorię:</p>
+    <div class="cat-grid" id="catGrid"></div>
+
+    <details class="stats-details" id="statsDetails" style="margin-top:20px">
+      <summary>📊 Statystyki i osiągnięcia</summary>
+
+      <div class="card" style="margin-top:10px">
+        <div class="row" style="justify-content:center; gap:8px;">
+          <span class="pill">Kategoria: <b id="statCat">Owoce</b></span>
+          <span class="pill">Poziom: <b id="statLvl">Łatwy</b></span>
+          <span class="pill">Tryb: <b id="statMode">—</b></span>
+          <span class="pill">Najlepszy wynik: <b id="statBest">0</b></span>
+          <span class="pill">Najlepszy czas: <b id="statBestTime">—</b></span>
+          <span class="pill">Najlepsza seria: <b id="statBestStreak">0</b></span>
+          <span class="pill">Poznane słowa: <b id="statLearned">0</b>/<span id="statTotalWords">0</span></span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:10px">
+        <h3 style="margin:0 0 6px 0">⏱️ Najlepsze czasy dla tej kategorii i trybu</h3>
+        <ul class="stats-list" id="bestTimesList"></ul>
+      </div>
+
+      <div class="card" style="margin-top:10px">
+        <h3 style="margin:0 0 6px 0">📊 Postępy ogólne</h3>
+        <div class="row" style="justify-content:center; gap:8px;">
+          <span class="pill">Łącznie gier: <b id="globalGames">0</b></span>
+          <span class="pill">Średnia skuteczność: <b id="globalAccuracy">0%</b></span>
+          <span class="pill">Poznane słowa: <b id="globalLearned">0</b>/<span id="globalTotalWords">0</span></span>
+          <span class="pill">Ostatnia aktywność: <b id="globalLastPlayed">—</b></span>
+        </div>
+      </div>
+
+      <div class="card" id="achievementsCard" style="margin-top:10px">
+        <div class="row" style="justify-content:center; gap:8px;">
+          <h3 style="margin:0">⭐ Postęp osiągnięć</h3>
+          <span class="pill">Gwiazdy: <b id="statStars">0</b></span>
+          <span class="pill">Postęp do gwiazdki: <b id="statStarProgress">0/0</b></span>
+          <span class="pill">Naklejki: <b id="statStickers">0</b></span>
+          <span class="pill">Do kolejnej naklejki: <b id="statNextSticker">—</b></span>
+        </div>
+        <div class="progress" id="starProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
+          <span id="starProgressFill"></span>
+        </div>
+        <p class="sub small" id="nextStickerInfo">Zdobywaj gwiazdki, aby odblokować pierwszą naklejkę.</p>
+        <div class="badges" id="stickerShelf" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card" id="recentRewardCard" style="margin-top:10px">
+        <div class="row" style="justify-content:space-between">
+          <h3 style="margin:0">🎁 Ostatnia nagroda</h3>
+          <span class="pill" id="recentRewardTime">—</span>
+        </div>
+        <div class="recent-reward" id="recentRewardDetails">
+          <p class="sub small placeholder" style="margin:0">Brak nagród – rozegraj rundę, aby zdobywać gwiazdki.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:10px">
+        <div class="row" style="justify-content:space-between">
+          <h3 style="margin:0">🏅 Odznaki</h3>
+          <span class="pill">Zdobyte: <b id="badgeCount">0</b>/<span id="badgeTotal">0</span></span>
+        </div>
+        <div class="badges" id="badgeShelf" style="margin-top:10px"></div>
+      </div>
+    </details>
   </div>
 
-  <div class="cat-grid" id="catGrid"></div>
-
-  <div class="center" style="margin-top:14px">
-    <p class="sub">Wybierz poziom trudności:</p>
-  </div>
-  <div class="row segmented" id="levelSeg" style="margin-top:4px">
-    <div class="seg active" data-level="LATWY">Łatwy</div>
-    <div class="seg" data-level="SREDNI">Średni</div>
-    <div class="seg" data-level="TRUDNY">Trudny</div>
-  </div>
-
-  <div class="center" style="margin-top:14px">
-    <p class="sub">Wybierz tryb gry:</p>
-  </div>
-  <div class="menu-grid" style="margin-top:8px">
-    <div class="mode-card">
-      <div><h3>Fiszki</h3><p>Ucz się nazw + odsłuch, bez punktacji.</p></div>
-      <button class="btn" data-go="flashcards">Start</button>
+  <!-- ===== KROK 2: POZIOM ===== -->
+  <div class="menu-step hidden" id="menuStep2">
+    <div class="step-context" id="step2Context">
+      <span class="step-context-emoji" id="step2CatEmoji"></span>
+      <span class="step-context-label" id="step2CatLabel"></span>
     </div>
-    <div class="mode-card">
-      <div><h3>Quiz (PL → ES)</h3><p>Wybierz hiszpańską nazwę.</p></div>
-      <button class="btn" data-go="quiz">Start</button>
-    </div>
-    <div class="mode-card">
-      <div><h3>Wybierz element (ES → obraz)</h3><p>Podajemy nazwę po hiszp.; wybierz właściwy obraz.</p></div>
-      <button class="btn" data-go="finditem">Start</button>
-    </div>
-    <div class="mode-card">
-      <div><h3>Memory</h3><p>Dopasuj pary: emoji/obraz do słowa.</p></div>
-      <button class="btn" data-go="memory">Start</button>
-    </div>
-    <div class="mode-card">
-      <div><h3>El / La</h3><p>Wybierz poprawny rodzajnik.</p></div>
-      <button class="btn" data-go="articulos">Start</button>
-    </div>
-    <div class="mode-card">
-      <div><h3>Sopa de Letras</h3><p>Znajdź ukryte słowa w siatce liter.</p></div>
-      <button class="btn" data-go="wordsearch">Start</button>
-    </div>
-    <div class="mode-card">
-      <div><h3>Wpisz słowo</h3><p>Wpisz poprawne słowo po hiszpańsku.</p></div>
-      <button class="btn" data-go="spelling">Start</button>
-    </div>
-
-    <div class="mode-card" id="reviewModeCard" style="display: none; background:linear-gradient(160deg, rgba(239,68,68,.10), rgba(255,255,255,.03)); border-color:rgba(239,68,68,.3);">
-      <div><h3>Powtórka (Błędy)</h3><p>Przećwicz słowa, z którymi masz problem.</p></div>
-      <button class="btn" id="startReviewBtn">Start (0 słów)</button>
-    </div>
-
-    <div class="mode-card" id="unlearnedModeCard" style="display: none; background:linear-gradient(160deg, rgba(96,165,250,.10), rgba(255,255,255,.03)); border-color:rgba(96,165,250,.3);">
-      <div><h3>Ćwicz nienauczone</h3><p>Skup się na słowach, których jeszcze nie znasz.</p></div>
-      <button class="btn" id="startUnlearnedBtn">Start (0 słów)</button>
+    <p class="sub" style="margin:12px 0 10px">Wybierz poziom trudności:</p>
+    <div class="level-grid">
+      <button class="level-card" data-level="LATWY">
+        <span class="level-emoji">🌱</span>
+        <h3>Łatwy</h3>
+        <p>2 opcje do wyboru · 9 słów</p>
+      </button>
+      <button class="level-card" data-level="SREDNI">
+        <span class="level-emoji">⚡</span>
+        <h3>Średni</h3>
+        <p>3 opcje do wyboru · 12 słów</p>
+      </button>
+      <button class="level-card" data-level="TRUDNY">
+        <span class="level-emoji">🔥</span>
+        <h3>Trudny</h3>
+        <p>4 opcje do wyboru · 15 słów</p>
+      </button>
     </div>
   </div>
 
-  <div class="card" style="margin-top:12px">
-    <div class="row" style="justify-content:center; gap:8px;">
-      <span class="pill">Kategoria: <b id="statCat">Owoce</b></span>
-      <span class="pill">Poziom: <b id="statLvl">Łatwy</b></span>
-      <span class="pill">Tryb: <b id="statMode">—</b></span>
-      <span class="pill">Najlepszy wynik: <b id="statBest">0</b></span>
-      <span class="pill">Najlepszy czas: <b id="statBestTime">—</b></span>
-      <span class="pill">Najlepsza seria: <b id="statBestStreak">0</b></span>
-      <span class="pill">Poznane słowa: <b id="statLearned">0</b>/<span id="statTotalWords">0</span></span>
+  <!-- ===== KROK 3: TRYB GRY ===== -->
+  <div class="menu-step hidden" id="menuStep3">
+    <div class="step-context" id="step3Context">
+      <span class="step-context-emoji" id="step3CatEmoji"></span>
+      <span class="step-context-label" id="step3CatLabel"></span>
+      <span class="step-context-sep">·</span>
+      <span class="step-context-level" id="step3LevelLabel"></span>
+    </div>
+    <p class="sub" style="margin:12px 0 8px">Wybierz tryb gry:</p>
+    <div class="menu-grid">
+      <div class="mode-card">
+        <div><h3>Fiszki</h3><p>Ucz się nazw + odsłuch, bez punktacji.</p></div>
+        <button class="btn" data-go="flashcards">Start</button>
+      </div>
+      <div class="mode-card">
+        <div><h3>Quiz (PL → ES)</h3><p>Wybierz hiszpańską nazwę.</p></div>
+        <button class="btn" data-go="quiz">Start</button>
+      </div>
+      <div class="mode-card">
+        <div><h3>Wybierz element (ES → obraz)</h3><p>Podajemy nazwę po hiszp.; wybierz właściwy obraz.</p></div>
+        <button class="btn" data-go="finditem">Start</button>
+      </div>
+      <div class="mode-card">
+        <div><h3>Memory</h3><p>Dopasuj pary: emoji/obraz do słowa.</p></div>
+        <button class="btn" data-go="memory">Start</button>
+      </div>
+      <div class="mode-card">
+        <div><h3>El / La</h3><p>Wybierz poprawny rodzajnik.</p></div>
+        <button class="btn" data-go="articulos">Start</button>
+      </div>
+      <div class="mode-card">
+        <div><h3>Sopa de Letras</h3><p>Znajdź ukryte słowa w siatce liter.</p></div>
+        <button class="btn" data-go="wordsearch">Start</button>
+      </div>
+      <div class="mode-card">
+        <div><h3>Wpisz słowo</h3><p>Wpisz poprawne słowo po hiszpańsku.</p></div>
+        <button class="btn" data-go="spelling">Start</button>
+      </div>
+      <div class="mode-card">
+        <div><h3>Ułóż słowo</h3><p>Ułóż słowo z rozsypanych liter.</p></div>
+        <button class="btn" data-go="scramble">Start</button>
+      </div>
+      <div class="mode-card">
+        <div><h3>Powtórz słowo</h3><p>Wypowiedz słowo do mikrofonu.</p></div>
+        <button class="btn" data-go="repeat">Start</button>
+      </div>
+
+      <div class="mode-card" id="reviewModeCard" style="display: none; background:linear-gradient(160deg, rgba(239,68,68,.10), rgba(255,255,255,.03)); border-color:rgba(239,68,68,.3);">
+        <div><h3>Powtórka (Błędy)</h3><p>Przećwicz słowa, z którymi masz problem.</p></div>
+        <button class="btn" id="startReviewBtn">Start (0 słów)</button>
+      </div>
+
+      <div class="mode-card" id="unlearnedModeCard" style="display: none; background:linear-gradient(160deg, rgba(96,165,250,.10), rgba(255,255,255,.03)); border-color:rgba(96,165,250,.3);">
+        <div><h3>Ćwicz nienauczone</h3><p>Skup się na słowach, których jeszcze nie znasz.</p></div>
+        <button class="btn" id="startUnlearnedBtn">Start (0 słów)</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="row" style="justify-content:center; gap:8px;">
+        <span class="pill">Najlepszy wynik: <b id="statBest3">0</b></span>
+        <span class="pill">Najlepszy czas: <b id="statBestTime3">—</b></span>
+        <span class="pill">Poznane słowa: <b id="statLearned3">0</b>/<span id="statTotalWords3">0</span></span>
+      </div>
     </div>
   </div>
 
-  <div class="card" style="margin-top:12px">
-    <h3 style="margin:0 0 6px 0">⏱️ Najlepsze czasy dla tej kategorii i trybu</h3>
-    <ul class="stats-list" id="bestTimesList"></ul>
-  </div>
-
-  <div class="card" style="margin-top:12px">
-    <h3 style="margin:0 0 6px 0">📊 Postępy ogólne</h3>
-    <div class="row" style="justify-content:center; gap:8px;">
-      <span class="pill">Łącznie gier: <b id="globalGames">0</b></span>
-      <span class="pill">Średnia skuteczność: <b id="globalAccuracy">0%</b></span>
-      <span class="pill">Poznane słowa: <b id="globalLearned">0</b>/<span id="globalTotalWords">0</span></span>
-      <span class="pill">Ostatnia aktywność: <b id="globalLastPlayed">—</b></span>
-    </div>
-  </div>
-
-  <div class="card" id="achievementsCard" style="margin-top:12px">
-    <div class="row" style="justify-content:center; gap:8px;">
-      <h3 style="margin:0">⭐ Postęp osiągnięć</h3>
-      <span class="pill">Gwiazdy: <b id="statStars">0</b></span>
-      <span class="pill">Postęp do gwiazdki: <b id="statStarProgress">0/0</b></span>
-      <span class="pill">Naklejki: <b id="statStickers">0</b></span>
-      <span class="pill">Do kolejnej naklejki: <b id="statNextSticker">—</b></span>
-    </div>
-    <div class="progress" id="starProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
-      <span id="starProgressFill"></span>
-    </div>
-    <p class="sub small" id="nextStickerInfo">Zdobywaj gwiazdki, aby odblokować pierwszą naklejkę.</p>
-    <div class="badges" id="stickerShelf" style="margin-top:10px"></div>
-  </div>
-
-  <div class="card" id="recentRewardCard" style="margin-top:12px">
-    <div class="row" style="justify-content:space-between">
-      <h3 style="margin:0">🎁 Ostatnia nagroda</h3>
-      <span class="pill" id="recentRewardTime">—</span>
-    </div>
-    <div class="recent-reward" id="recentRewardDetails">
-      <p class="sub small placeholder" style="margin:0">Brak nagród – rozegraj rundę, aby zdobywać gwiazdki.</p>
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:12px">
-    <div class="row" style="justify-content:space-between">
-      <h3 style="margin:0">🏅 Odznaki</h3>
-      <span class="pill">Zdobyte: <b id="badgeCount">0</b>/<span id="badgeTotal">0</span></span>
-    </div>
-    <div class="badges" id="badgeShelf" style="margin-top:10px"></div>
-  </div>
 </section>

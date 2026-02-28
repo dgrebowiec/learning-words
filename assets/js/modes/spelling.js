@@ -100,6 +100,7 @@
     inputEl.style.borderColor = '#10b981';
     inputEl.disabled = true;
 
+    if (typeof AudioFX !== 'undefined') AudioFX.correct();
     if (typeof toast === 'function') toast('¡Excelente! 🌟');
     
     setTimeout(() => {
@@ -112,7 +113,6 @@
     const inputEl = document.getElementById('spInput');
     inputEl.style.borderColor = '#ef4444';
     
-    // Pulse effect
     inputEl.animate([
       { transform: 'translateX(0)' },
       { transform: 'translateX(-5px)' },
@@ -120,6 +120,7 @@
       { transform: 'translateX(0)' }
     ], { duration: 200, iterations: 2 });
 
+    if (typeof AudioFX !== 'undefined') AudioFX.wrong();
     if (typeof toast === 'function') toast('Spróbuj jeszcze raz! ❌');
     
     // Automatyczna podpowiedź przy błędzie

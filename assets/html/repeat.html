@@ -1,0 +1,42 @@
+<section id="repeat" class="card hidden">
+  <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
+    <span class="pill">Słowo: <b id="repNum">1</b>/<span id="repTotal">10</span></span>
+    <span class="pill">Wynik: <b id="repScore">0</b></span>
+  </div>
+  <div class="scorebar" style="margin:10px 0 14px 0"><span id="repFill"></span></div>
+  
+  <div class="center" style="margin-bottom:20px">
+    <div id="repVisual" style="margin-bottom:10px"></div>
+    <div class="sub" id="repEs" style="font-size: 1.8rem; font-weight: 700; color: #fff">???</div>
+    <div class="muted" id="repPl">???</div>
+  </div>
+
+  <div class="center" style="margin:20px 0">
+    <button class="btn" id="repListenBtn" style="padding: 15px 25px; font-size: 1.2rem; border-radius: 50%">🔊 Słuchaj</button>
+  </div>
+
+  <div class="center" style="margin:20px 0">
+    <button class="btn" id="repRecordBtn" style="padding: 20px 30px; font-size: 1.5rem; background: #e74c3c; border-radius: 50%; box-shadow: 0 0 15px rgba(231,76,60,0.5)">🎤 Powtórz</button>
+    <div id="repStatus" class="muted" style="margin-top:10px">Kliknij mikrofon i mów...</div>
+  </div>
+
+  <div class="center" style="margin:20px 0">
+    <div id="repAccuracy" style="font-size: 1.5rem; font-weight: 700; display: none">
+      Poprawność: <span id="repAccuracyVal">0</span>%
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:20px; justify-content:center; gap:10px">
+    <button class="btn secondary" id="repSkipBtn">Pomiń</button>
+    <button class="btn" id="repNextBtn" style="display: none">Dalej</button>
+  </div>
+
+  <div id="repSummary" class="summary hidden">
+    <div class="big" id="repSummaryTitle">Podsumowanie</div>
+    <div id="repFinalStats">Wynik: 0/0</div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn secondary" id="repSumMenuBtn">🏠 Menu</button>
+      <button class="btn" id="repSumRetryBtn">⟳ Zagraj ponownie</button>
+    </div>
+  </div>
+</section>

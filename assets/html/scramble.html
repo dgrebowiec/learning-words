@@ -1,0 +1,36 @@
+<section id="scramble" class="card hidden">
+  <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
+    <span class="pill">Słowo: <b id="scrNum">1</b>/<span id="scrTotal">10</span></span>
+    <span class="pill">Wynik: <b id="scrScore">0</b></span>
+  </div>
+  <div class="scorebar" style="margin:10px 0 14px 0"><span id="scrFill"></span></div>
+  
+  <div class="center" style="margin-bottom:20px">
+    <div id="scrVisual" style="margin-bottom:10px"></div>
+    <div class="sub" id="scrPl" style="font-size: 1.4rem; font-weight: 700; color: #fff">???</div>
+  </div>
+
+  <div id="scrResult" class="center" style="margin:20px 0; min-height: 3rem; border-bottom: 2px dashed rgba(255,255,255,0.2); padding-bottom: 5px; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap;">
+    <!-- Wybrane litery -->
+  </div>
+
+  <div id="scrLetters" class="center" style="margin:20px 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+    <!-- Dostępne litery -->
+  </div>
+
+  <div class="row" style="margin-top:20px; justify-content:center; gap:10px">
+    <button class="btn secondary" id="scrResetBtn">Reset</button>
+    <button class="btn secondary" id="scrHintBtn">Podpowiedź</button>
+    <button class="btn secondary" id="scrSkipBtn">Pomiń</button>
+    <button class="btn" id="scrCheckBtn">Sprawdź</button>
+  </div>
+
+  <div id="scrSummary" class="summary hidden">
+    <div class="big" id="scrSummaryTitle">Podsumowanie</div>
+    <div id="scrFinalStats">Wynik: 0/0</div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn secondary" id="scrSumMenuBtn">🏠 Menu</button>
+      <button class="btn" id="scrSumRetryBtn">⟳ Zagraj ponownie</button>
+    </div>
+  </div>
+</section>
