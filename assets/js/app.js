@@ -288,20 +288,110 @@ const STICKER_CATALOG = [
   {id:'crown',   icon:'👑', name:'Korona językowa', desc:'Zgromadź 60 gwiazdek.'}
 ];
 
-const LIVE_STAR_TARGETS = ['quizStarProgress', 'findStarProgress'];
+/* --- Sklep gwiazdkowy --- */
+const SHOP_CATALOG = [
+  {id:'shop_parrot',   icon:'🦜', name:'Papuga Hispanica', desc:'Ekspert od powtarzania słów.', cost:3},
+  {id:'shop_wizard',   icon:'🧙', name:'Czarodziej słów',   desc:'Prawdziwy mistrz języka.', cost:5},
+  {id:'shop_unicorn',  icon:'🦄', name:'Jednorożec nauki',  desc:'Rzadka i wyjątkowa naklejka.', cost:8},
+  {id:'shop_dragon',   icon:'🐉', name:'Smoczy mistrz',     desc:'Pokonaj wszystkie wyzwania.', cost:12},
+  {id:'shop_galaxy',   icon:'🌌', name:'Galaktyczny uczeń', desc:'Sięgnij gwiazd!', cost:20},
+  {id:'shop_diamond',  icon:'💎', name:'Diament wiedzy',    desc:'Najcenniejsza kolekcja.', cost:30},
+];
+
+function SHOP_KEY(){ return `hiszp_${profileId()}_shop_v1`; }
+function loadShopOwned(){ try { return JSON.parse(localStorage.getItem(SHOP_KEY())) || []; } catch { return []; } }
+function saveShopOwned(arr){ localStorage.setItem(SHOP_KEY(), JSON.stringify(arr)); }
+
+function buyShopItem(id){
+  const item = SHOP_CATALOG.find(x => x.id === id);
+  if (!item) return;
+  const owned = loadShopOwned();
+  if (owned.some(o => o.id === id)){ toast('Masz już tę naklejkę!'); return; }
+  const state = loadAchievements();
+  const stars = state.stars || 0;
+  if (stars < item.cost){ toast(`Potrzebujesz ${item.cost} ⭐, masz tylko ${stars}.`); return; }
+  state.stars = stars - item.cost;
+  saveAchievements(state);
+  owned.push({id: item.id, boughtAt: new Date().toISOString()});
+  saveShopOwned(owned);
+  toast(`🛒 Zakupiono: ${item.icon} ${item.name}!`);
+  if (typeof launchConfetti === 'function') launchConfetti();
+  renderAchievements();
+  renderShop();
+}
+
+function renderShop(){
+  const shelf = document.getElementById('shopShelf');
+  if (!shelf) return;
+  const owned = loadShopOwned();
+  const state = loadAchievements();
+  const stars = state.stars || 0;
+  const starsEl = document.getElementById('shopStarBalance');
+  if (starsEl) starsEl.textContent = stars;
+  shelf.innerHTML = '';
+  SHOP_CATALOG.forEach(item => {
+    const isOwned = owned.some(o => o.id === item.id);
+    const canAfford = stars >= item.cost;
+    const el = document.createElement('div');
+    el.className = 'shop-item' + (isOwned ? ' shop-owned' : '') + (!canAfford && !isOwned ? ' shop-unaffordable' : '');
+    el.innerHTML = `
+      <span class="shop-item-icon">${item.icon}</span>
+      <div class="shop-item-info">
+        <b>${item.name}</b>
+        <span class="shop-item-desc">${item.desc}</span>
+      </div>
+      <button class="btn shop-buy-btn${isOwned ? ' shop-owned-btn' : ''}" data-shop-id="${item.id}" ${isOwned ? 'disabled' : ''}>
+        ${isOwned ? '✓ Masz' : `⭐ ${item.cost}`}
+      </button>`;
+    shelf.appendChild(el);
+  });
+}
+
+const LIVE_STAR_SEG_TARGETS = [
+  'quizStarSegs','findStarSegs','memStarSegs','wsStarSegs',
+  'spStarSegs','scrStarSegs','artStarSegs','repStarSegs','headerStarSegs'
+];
+const LIVE_STAR_COUNT_TARGETS = [
+  'quizStarCount','findStarCount','memStarCount','wsStarCount',
+  'spStarCount','scrStarCount','artStarCount','repStarCount','headerStarCount'
+];
 
 function normalizeStarProgress(value){
   const numeric = Number(value);
   return Math.max(0, Math.min(STAR_INTERVAL, Number.isFinite(numeric) ? numeric : 0));
 }
 
+let _prevStarProgress = -1;
+
+function renderStarSegments(containerId, progress, total){
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const prevFilled = container.querySelectorAll('.star-seg.filled').length;
+  container.innerHTML = '';
+  for (let i = 0; i < total; i++){
+    const seg = document.createElement('span');
+    seg.className = 'star-seg' + (i < progress ? ' filled' : '');
+    if (i < progress && i >= prevFilled) seg.classList.add('just-filled');
+    container.appendChild(seg);
+  }
+}
+
 function updateLiveStarProgress(state){
   const progressValue = normalizeStarProgress(state?.starProgress);
-  const label = `${progressValue}/${STAR_INTERVAL}`;
-  LIVE_STAR_TARGETS.forEach(id => {
+  const stars = state?.stars || 0;
+  LIVE_STAR_SEG_TARGETS.forEach(id => renderStarSegments(id, progressValue, STAR_INTERVAL));
+  LIVE_STAR_COUNT_TARGETS.forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.textContent = label;
+    if (el) el.textContent = stars;
   });
+  if (progressValue === 0 && _prevStarProgress === STAR_INTERVAL){
+    LIVE_STAR_SEG_TARGETS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('star-earned');
+      setTimeout(() => { if (el) el.classList.remove('star-earned'); }, 700);
+    });
+  }
+  _prevStarProgress = progressValue;
 }
 
 function achievementDefaults(){
@@ -437,6 +527,8 @@ function renderAchievements(){
       shelf.appendChild(el);
     });
   }
+
+  renderShop();
 
   const rewardWrap = document.getElementById('recentRewardDetails');
   const rewardTime = document.getElementById('recentRewardTime');
@@ -707,6 +799,19 @@ function showMenuStep(n){
   }
 }
 
+function showModeSelect(){
+  ALL_SECTIONS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('hidden', id !== 'menu');
+  });
+  renderBadges();
+  renderAchievements();
+  renderXPBar();
+  renderStreak();
+  updateMenuStats('QUIZ_PL_ES');
+  showMenuStep(3);
+}
+
 document.getElementById('toMenuBtn').addEventListener('click', ()=> { show('menu'); });
 
 document.getElementById('wizardBreadcrumb').addEventListener('click', e => {
@@ -762,6 +867,7 @@ document.getElementById('fcNext').addEventListener('click', ()=> { fcIndex=(fcIn
 document.getElementById('fcPrev').addEventListener('click', ()=> { fcIndex=(fcIndex-1); renderFlashcard(); flashcardSpeak(); });
 document.getElementById('fcSpeak').addEventListener('click', flashcardSpeak);
 document.getElementById('resetBtn').addEventListener('click', ()=> { fcIndex=0; renderFlashcard(); });
+document.getElementById('fcGamesBtn').addEventListener('click', ()=> showModeSelect());
 renderFlashcard();
 
 /* ---------- Odsłuch całej listy ---------- */
@@ -966,6 +1072,8 @@ function endQuiz(){
 
   document.getElementById('qSumRetry').onclick = ()=> startQuiz();
   document.getElementById('qSumMenu').onclick  = ()=> { show('menu'); };
+  const qSumGames = document.getElementById('qSumGames');
+  if (qSumGames) qSumGames.onclick = ()=> showModeSelect();
   updateGlobalStats();
 }
 
@@ -1242,6 +1350,8 @@ function endFind(){
 
   document.getElementById('fSumRetry').onclick = ()=> startFindItem();
   document.getElementById('fSumMenu').onclick  = ()=> { show('menu'); };
+  const fSumGames = document.getElementById('fSumGames');
+  if (fSumGames) fSumGames.onclick = ()=> showModeSelect();
   updateGlobalStats();
 }
 
@@ -1382,9 +1492,16 @@ function updateMenuStats(mode){
   if (el3Total) el3Total.textContent = dataset().length;
 }
 
+/* ---------- Obsługa sklepu gwiazdkowego ---------- */
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-shop-id]');
+  if (btn) buyShopItem(btn.getAttribute('data-shop-id'));
+});
+
 /* ---------- Inicjalizacja ---------- */
 showMenuStep(1);
 updateMenuStats('QUIZ_PL_ES');
 renderBadges();
 renderAchievements();
+renderShop();
 runFunctionalTests();

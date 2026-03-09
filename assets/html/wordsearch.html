@@ -1,7 +1,10 @@
 <section id="wordsearch" class="card hidden">
-  <div class="center" style="margin-bottom:10px">
-    <h3 style="margin:0">Sopa de Letras</h3>
-    <p class="sub small">Znajdź słowa ukryte w siatce (poziomo i pionowo)</p>
+  <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px; margin-bottom:8px">
+    <div style="display:flex; align-items:center; gap:8px">
+      <h3 style="margin:0">Sopa de Letras</h3>
+      <p class="sub small" style="margin:0">Znajdź słowa ukryte w siatce</p>
+    </div>
+    <div class="star-game-widget pill" title="Postęp do kolejnej gwiazdki">⭐ <b id="wsStarCount">0</b> <div class="star-segs" id="wsStarSegs"></div></div>
   </div>
 
   <div class="ws-container" style="display:flex; flex-direction:column; align-items:center; gap:16px">
@@ -13,16 +16,20 @@
     </div>
   </div>
 
-  <div class="row" style="margin-top:20px; justify-content:center;">
+  <div class="row" style="margin-top:20px; justify-content:center; gap:10px">
     <button class="btn secondary" id="wsMenuBtn">🏠 Menu</button>
-    <button class="btn" id="wsRetryBtn" style="margin-left:8px">⟳ Nowa siatka</button>
+    <button class="btn secondary" id="wsGamesBtn">🎮 Ćwiczenia</button>
+    <button class="btn" id="wsRetryBtn">⟳ Nowa siatka</button>
   </div>
 
   <div id="wsSummary" class="summary hidden">
-    <div class="big">¡Felicidades!</div>
-    <div id="wsFinalStats">Wszystkie słowa znalezione!</div>
+    <div class="big">¡Felicidades! 🎉</div>
+    <div class="star-rating" id="wsStarRating"></div>
+    <div id="wsFinalStats" class="muted">Wszystkie słowa znalezione!</div>
+    <div class="muted" id="wsSumExtra"></div>
     <div class="row" style="margin-top:10px">
       <button class="btn secondary" id="wsSumMenuBtn">🏠 Menu</button>
+      <button class="btn secondary" id="wsSumGamesBtn">🎮 Wybierz ćwiczenie</button>
       <button class="btn" id="wsSumRetryBtn">⟳ Zagraj ponownie</button>
     </div>
   </div>

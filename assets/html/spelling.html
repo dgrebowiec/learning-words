@@ -2,6 +2,7 @@
   <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
     <span class="pill">Słowo: <b id="spNum">1</b>/<span id="spTotal">10</span></span>
     <span class="pill">Wynik: <b id="spScore">0</b></span>
+    <div class="star-game-widget pill" title="Postęp do kolejnej gwiazdki">⭐ <b id="spStarCount">0</b> <div class="star-segs" id="spStarSegs"></div></div>
   </div>
   <div class="scorebar" style="margin:10px 0 14px 0"><span id="spFill"></span></div>
   
@@ -16,6 +17,8 @@
   </div>
 
   <div class="row" style="margin-top:20px; justify-content:center; gap:10px">
+    <button class="btn secondary" id="spMenuBtn">🏠 Menu</button>
+    <button class="btn secondary" id="spGamesBtn">🎮 Ćwiczenia</button>
     <button class="btn secondary" id="spSkipBtn">Pomiń</button>
     <button class="btn secondary" id="spHintBtn">Podpowiedź</button>
     <button class="btn" id="spCheckBtn">Sprawdź</button>
@@ -23,9 +26,12 @@
 
   <div id="spSummary" class="summary hidden">
     <div class="big" id="spSummaryTitle">Podsumowanie</div>
-    <div id="spFinalStats">Wynik: 0/0</div>
+    <div class="star-rating" id="spStarRating"></div>
+    <div id="spFinalStats" class="muted">Wynik: 0/0</div>
+    <div class="muted" id="spSumExtra"></div>
     <div class="row" style="margin-top:10px">
       <button class="btn secondary" id="spSumMenuBtn">🏠 Menu</button>
+      <button class="btn secondary" id="spSumGamesBtn">🎮 Wybierz ćwiczenie</button>
       <button class="btn" id="spSumRetryBtn">⟳ Zagraj ponownie</button>
     </div>
   </div>

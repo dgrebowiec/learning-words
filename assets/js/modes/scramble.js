@@ -212,6 +212,13 @@
     }
   }
 
+  function scrSummaryMessage(pct) {
+    if (pct >= 100) return '¡Perfecto! Ułożyłeś wszystkie słowa! 🏆';
+    if (pct >= 80) return 'Świetna robota! Prawie idealny wynik! 💪';
+    if (pct >= 60) return 'Dobry wynik! Ćwicz układanie dalej! 😊';
+    return 'Nie poddawaj się – z każdą rundą idzie lepiej! 🌱';
+  }
+
   function endScramble() {
     const elapsed = (performance.now() - startTime) / 1000;
     const xp = score * 12;
@@ -220,7 +227,12 @@
     if (score === pool.length && typeof launchConfetti === 'function') launchConfetti();
 
     document.getElementById('scrFill').style.width = '100%';
-    document.getElementById('scrFinalStats').textContent = `Wynik: ${score}/${pool.length} (Czas: ${elapsed.toFixed(1)} s). Zdobyto ${xp} XP.`;
+    const pct = pool.length ? Math.round((score / pool.length) * 100) : 0;
+    if (typeof showStarRating === 'function') showStarRating(pct, 'scrStarRating');
+
+    document.getElementById('scrFinalStats').textContent = `Wynik: ${score}/${pool.length} (${pct}%) • Czas: ${elapsed.toFixed(1)} s • +${xp} XP`;
+    const extra = document.getElementById('scrSumExtra');
+    if (extra) extra.textContent = scrSummaryMessage(pct);
     document.getElementById('scrSummary').classList.remove('hidden');
 
     const st = getModeStats('SCRAMBLE', currentLevel, currentCat);
@@ -237,7 +249,10 @@
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
+    if (btn.id === 'scrMenuBtn') show('menu');
+    if (btn.id === 'scrGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
     if (btn.id === 'scrSumMenuBtn') show('menu');
+    if (btn.id === 'scrSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
     if (btn.id === 'scrSumRetryBtn') startScramble();
     if (btn.getAttribute('data-go') === 'scramble') startScramble();
     if (btn.id === 'scrResetBtn') resetCurrentQuestion();

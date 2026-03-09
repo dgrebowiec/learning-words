@@ -648,3 +648,139 @@ footer{
 .stats-details summary:hover { color: var(--text); background: rgba(255,255,255,.04); }
 .stats-details[open] summary { color: var(--text); }
 .stats-details > *:not(summary) { padding: 0 12px 12px; }
+
+/* ===== SKLEP GWIAZDKOWY ===== */
+.shop-shelf {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shop-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
+  transition: background .15s, border-color .15s;
+}
+
+.shop-item.shop-owned {
+  border-color: rgba(34,211,238,.35);
+  background: rgba(34,211,238,.07);
+}
+
+.shop-item.shop-unaffordable {
+  opacity: .55;
+}
+
+.shop-item-icon {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 2.4rem;
+  text-align: center;
+}
+
+.shop-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.shop-item-info b {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.shop-item-desc {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.shop-buy-btn {
+  flex-shrink: 0;
+  min-width: 72px;
+  padding: 8px 12px;
+  min-height: 36px;
+  font-size: 13px;
+}
+
+.shop-owned-btn {
+  background: rgba(34,211,238,.18) !important;
+  color: var(--accent) !important;
+  border: 1px solid rgba(34,211,238,.4) !important;
+  box-shadow: none !important;
+  cursor: default;
+}
+
+/* ===== STAR PROGRESS WIDGET ===== */
+.star-segs {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.star-seg {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.22);
+  transition: background .25s, transform .25s;
+  flex-shrink: 0;
+}
+
+.star-seg.filled {
+  background: #facc15;
+  border-color: #f59e0b;
+  box-shadow: 0 0 4px rgba(250,204,21,.6);
+}
+
+.star-seg.just-filled {
+  animation: seg-pop .32s ease-out both;
+}
+
+@keyframes seg-pop {
+  0%   { transform: scale(1.5); background: #fff; }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.star-segs.star-earned {
+  animation: segs-flash .6s ease-out both;
+}
+
+@keyframes segs-flash {
+  0%   { filter: brightness(1); }
+  30%  { filter: brightness(2.2); }
+  100% { filter: brightness(1); }
+}
+
+.star-game-widget {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 4px 10px;
+  user-select: none;
+}
+
+.star-hdr-widget {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 4px 10px;
+  user-select: none;
+  cursor: default;
+}
+
+.star-hdr-widget .star-segs .star-seg {
+  width: 9px;
+  height: 9px;
+}

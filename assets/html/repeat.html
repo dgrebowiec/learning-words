@@ -2,6 +2,7 @@
   <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
     <span class="pill">Słowo: <b id="repNum">1</b>/<span id="repTotal">10</span></span>
     <span class="pill">Wynik: <b id="repScore">0</b></span>
+    <div class="star-game-widget pill" title="Postęp do kolejnej gwiazdki">⭐ <b id="repStarCount">0</b> <div class="star-segs" id="repStarSegs"></div></div>
   </div>
   <div class="scorebar" style="margin:10px 0 14px 0"><span id="repFill"></span></div>
   
@@ -27,15 +28,20 @@
   </div>
 
   <div class="row" style="margin-top:20px; justify-content:center; gap:10px">
+    <button class="btn secondary" id="repMenuBtn">🏠 Menu</button>
+    <button class="btn secondary" id="repGamesBtn">🎮 Ćwiczenia</button>
     <button class="btn secondary" id="repSkipBtn">Pomiń</button>
     <button class="btn" id="repNextBtn" style="display: none">Dalej</button>
   </div>
 
   <div id="repSummary" class="summary hidden">
     <div class="big" id="repSummaryTitle">Podsumowanie</div>
-    <div id="repFinalStats">Wynik: 0/0</div>
+    <div class="star-rating" id="repStarRating"></div>
+    <div id="repFinalStats" class="muted">Wynik: 0/0</div>
+    <div class="muted" id="repSumExtra"></div>
     <div class="row" style="margin-top:10px">
       <button class="btn secondary" id="repSumMenuBtn">🏠 Menu</button>
+      <button class="btn secondary" id="repSumGamesBtn">🎮 Wybierz ćwiczenie</button>
       <button class="btn" id="repSumRetryBtn">⟳ Zagraj ponownie</button>
     </div>
   </div>

@@ -92,17 +92,28 @@
     }, 1000);
   }
 
+  function artSummaryMessage(pct) {
+    if (pct >= 100) return '¡Perfecto! Wszystkie rodzajniki poprawne! 🏆';
+    if (pct >= 80) return 'Świetna znajomość rodzajników! 💪';
+    if (pct >= 60) return 'Dobry wynik! Ćwicz el/la dalej! 😊';
+    return 'Nie poddawaj się – rodzajniki to trudna sprawa! 🌱';
+  }
+
   function endArticulos() {
     const elapsed = (performance.now() - startTime) / 1000;
-    const xp = score * 4; // 4 XP za poprawny rodzajnik
+    const xp = score * 4;
     if (typeof addXP === 'function') addXP(xp, 'Gra El/La');
     if (score === pool.length && typeof launchConfetti === 'function') launchConfetti();
 
     document.getElementById('artFill').style.width = '100%';
-    document.getElementById('artFinalStats').textContent = `Wynik: ${score}/${pool.length} (Czas: ${elapsed.toFixed(1)} s). Zdobyto ${xp} XP.`;
+    const pct = pool.length ? Math.round((score / pool.length) * 100) : 0;
+    if (typeof showStarRating === 'function') showStarRating(pct, 'artStarRating');
+
+    document.getElementById('artFinalStats').textContent = `Wynik: ${score}/${pool.length} (${pct}%) • Czas: ${elapsed.toFixed(1)} s • +${xp} XP`;
+    const extra = document.getElementById('artSumExtra');
+    if (extra) extra.textContent = artSummaryMessage(pct);
     document.getElementById('artSummary').classList.remove('hidden');
 
-    // Zapisz statystyki
     const st = getModeStats('ARTICULOS', currentLevel, currentCat);
     st.games = (st.games || 0) + 1;
     st.totalCorrect += score;
@@ -114,11 +125,11 @@
 
   window.startArticulos = startArticulos;
 
-  // Globalny listener (delegacja)
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
-    if (btn.id === 'artSumMenuBtn' || btn.id === 'artMenuBtn') show('menu');
+    if (btn.id === 'artMenuBtn' || btn.id === 'artSumMenuBtn') show('menu');
+    if (btn.id === 'artGamesBtn' || btn.id === 'artSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
     if (btn.id === 'artSumRetryBtn') startArticulos();
     if (btn.getAttribute('data-go') === 'articulos') startArticulos();
     if (btn.classList.contains('large-art')) handleArtClick(btn);

@@ -165,6 +165,13 @@
     window.speechSynthesis.speak(ut);
   }
 
+  function repSummaryMessage(pct) {
+    if (pct >= 100) return '¡Perfecto! Wymówiłeś wszystkie słowa poprawnie! 🏆';
+    if (pct >= 80) return 'Świetna wymowa! Prawie ideał! 💪';
+    if (pct >= 60) return 'Dobry wynik! Ćwicz wymowę dalej! 😊';
+    return 'Nie poddawaj się – wymowa to kwestia praktyki! 🌱';
+  }
+
   function endRepeat() {
     const elapsed = (performance.now() - startTime) / 1000;
     const xp = score * 15;
@@ -173,7 +180,12 @@
     if (score === pool.length && typeof launchConfetti === 'function') launchConfetti();
 
     document.getElementById('repFill').style.width = '100%';
-    document.getElementById('repFinalStats').textContent = `Wynik: ${score}/${pool.length} (Czas: ${elapsed.toFixed(1)} s). Zdobyto ${xp} XP.`;
+    const pct = pool.length ? Math.round((score / pool.length) * 100) : 0;
+    if (typeof showStarRating === 'function') showStarRating(pct, 'repStarRating');
+
+    document.getElementById('repFinalStats').textContent = `Wynik: ${score}/${pool.length} (${pct}%) • Czas: ${elapsed.toFixed(1)} s • +${xp} XP`;
+    const extra = document.getElementById('repSumExtra');
+    if (extra) extra.textContent = repSummaryMessage(pct);
     document.getElementById('repSummary').classList.remove('hidden');
 
     const st = getModeStats('REPEAT', currentLevel, currentCat);
@@ -191,7 +203,10 @@
     const btn = e.target.closest('button');
     if (!btn) return;
     
+    if (btn.id === 'repMenuBtn') show('menu');
+    if (btn.id === 'repGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
     if (btn.id === 'repSumMenuBtn') show('menu');
+    if (btn.id === 'repSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
     if (btn.id === 'repSumRetryBtn') startRepeat();
     if (btn.getAttribute('data-go') === 'repeat') startRepeat();
     

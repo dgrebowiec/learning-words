@@ -3,7 +3,7 @@
     <span class="pill" title="Numer pytania w bieżącej rundzie">Pytanie: <b id="fNum">1</b>/<span id="fTotal">10</span></span>
     <span class="pill" title="Twój obecny wynik w tej rundzie">Wynik: <b id="fScore">0</b></span>
     <span class="pill" title="Aktualna i najlepsza seria poprawnych odpowiedzi">Seria: <b id="fStreak">0</b> (rek.: <span id="fBestStreak">0</span>)</span>
-    <span class="pill" title="Postęp do kolejnej gwiazdki">Gwiazda: <b id="findStarProgress">0/5</b></span>
+    <div class="star-game-widget pill" title="Postęp do kolejnej gwiazdki">⭐ <b id="findStarCount">0</b> <div class="star-segs" id="findStarSegs"></div></div>
   </div>
   <div class="scorebar" aria-hidden="true" style="margin:10px 0 14px 0"><span id="fFill"></span></div>
   <div class="center" style="margin-bottom:6px">
@@ -29,6 +29,7 @@
     <div class="muted">Najlepsza seria: <b id="fSumBestStreak">0</b> • Czas: <b id="fSumTime">0.0 s</b> • Rekord czasu: <b id="fSumBestTime">—</b></div>
     <div class="row" style="margin-top:6px">
       <button class="btn secondary" id="fSumMenu">🏠 Menu</button>
+      <button class="btn secondary" id="fSumGames">🎮 Wybierz ćwiczenie</button>
       <button class="btn secondary hidden" id="fSumReview">🔁 Powtórz błędne</button>
       <button class="btn" id="fSumRetry">⟳ Zagraj ponownie</button>
     </div>

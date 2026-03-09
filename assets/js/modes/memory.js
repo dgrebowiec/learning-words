@@ -125,15 +125,35 @@
     updateProgress();
   }
 
+  function summaryMessage(pct) {
+    if (pct >= 100) return '¡Perfecto! Wszystkie pary dopasowane! 🏆';
+    if (pct >= 80) return 'Świetna robota! Prawie ideał! 💪';
+    if (pct >= 60) return 'Dobrze idzie! Ćwicz dalej! 😊';
+    return 'Nie poddawaj się – spróbuj jeszcze raz! 🌱';
+  }
+
+  function memoryStarPct(elapsed) {
+    const threshold3 = totalPairs * 5;
+    const threshold2 = totalPairs * 10;
+    if (elapsed <= threshold3) return 100;
+    if (elapsed <= threshold2) return 70;
+    return 40;
+  }
+
   function endMemory() {
     clearInterval(timerInterval);
     const elapsed = (performance.now() - startTime) / 1000;
     
-    const xp = totalPairs * 8; // 8 XP za każdą poprawną parę
+    const xp = totalPairs * 8;
     if (typeof addXP === 'function') addXP(xp, 'Memory Game');
     if (typeof launchConfetti === 'function') launchConfetti();
 
+    const pct = memoryStarPct(elapsed);
+    if (typeof showStarRating === 'function') showStarRating(pct, 'memStarRating');
+
     document.getElementById('memFinalStats').textContent = `Ukończono w ${elapsed.toFixed(1)} s! Zdobyto ${xp} XP.`;
+    const extra = document.getElementById('memSumExtra');
+    if (extra) extra.textContent = summaryMessage(100);
     document.getElementById('memSummary').classList.remove('hidden');
     
     const st = getModeStats('MEMORY', currentLevel, currentCat);
@@ -143,12 +163,11 @@
     updateGlobalStats();
   }
 
-  // Event Listeners - podpinamy bezpośrednio pod window, aby bootstrap mógł je wywołać
   window.startMemory = startMemory;
 
-  // Globalny listener dla przycisków menu i retry (delegacja)
   document.addEventListener('click', (e) => {
     if (e.target.id === 'memMenuBtn' || e.target.id === 'memSumMenuBtn') show('menu');
+    if (e.target.id === 'memGamesBtn' || e.target.id === 'memSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
     if (e.target.id === 'memRetryBtn' || e.target.id === 'memSumRetryBtn') startMemory();
     if (e.target.getAttribute('data-go') === 'memory') startMemory();
   });

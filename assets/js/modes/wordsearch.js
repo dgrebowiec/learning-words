@@ -209,13 +209,34 @@
     document.getElementById('wsSummary').classList.add('hidden');
   }
 
+  function wsSummaryMessage(elapsed, count) {
+    const threshold3 = count * 20;
+    const threshold2 = count * 40;
+    if (elapsed <= threshold3) return '¡Increíble! Ekspresowe tempo! 🚀';
+    if (elapsed <= threshold2) return 'Świetna robota! Wszystkie znalezione! 🌟';
+    return 'Udało się! Z każdą rundą idzie lepiej! 💪';
+  }
+
+  function wsStarPct(elapsed, count) {
+    const threshold3 = count * 20;
+    const threshold2 = count * 40;
+    if (elapsed <= threshold3) return 100;
+    if (elapsed <= threshold2) return 70;
+    return 40;
+  }
+
   function endWordSearch() {
     const elapsed = (performance.now() - startTime) / 1000;
     const xp = wordsToFind.length * 15;
     if (typeof addXP === 'function') addXP(xp, 'Sopa de Letras');
     if (typeof launchConfetti === 'function') launchConfetti();
 
-    document.getElementById('wsFinalStats').textContent = `Znaleziono ${foundWords.size} słów w ${elapsed.toFixed(1)} s. Zdobyto ${xp} XP.`;
+    const pct = wsStarPct(elapsed, wordsToFind.length);
+    if (typeof showStarRating === 'function') showStarRating(pct, 'wsStarRating');
+
+    document.getElementById('wsFinalStats').textContent = `Znaleziono ${foundWords.size}/${wordsToFind.length} słów w ${elapsed.toFixed(1)} s! Zdobyto ${xp} XP.`;
+    const extra = document.getElementById('wsSumExtra');
+    if (extra) extra.textContent = wsSummaryMessage(elapsed, wordsToFind.length);
     document.getElementById('wsSummary').classList.remove('hidden');
 
     const st = getModeStats('WORDSEARCH', currentLevel, currentCat);
@@ -227,11 +248,11 @@
 
   window.startWordSearch = startWordSearch;
 
-  // Globalny listener (delegacja)
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
     if (btn.id === 'wsMenuBtn' || btn.id === 'wsSumMenuBtn') show('menu');
+    if (btn.id === 'wsGamesBtn' || btn.id === 'wsSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
     if (btn.id === 'wsRetryBtn' || btn.id === 'wsSumRetryBtn') startWordSearch();
     if (btn.getAttribute('data-go') === 'wordsearch') startWordSearch();
   });

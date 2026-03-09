@@ -2,6 +2,7 @@
   <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
     <span class="pill">Słowo: <b id="scrNum">1</b>/<span id="scrTotal">10</span></span>
     <span class="pill">Wynik: <b id="scrScore">0</b></span>
+    <div class="star-game-widget pill" title="Postęp do kolejnej gwiazdki">⭐ <b id="scrStarCount">0</b> <div class="star-segs" id="scrStarSegs"></div></div>
   </div>
   <div class="scorebar" style="margin:10px 0 14px 0"><span id="scrFill"></span></div>
   
@@ -19,6 +20,8 @@
   </div>
 
   <div class="row" style="margin-top:20px; justify-content:center; gap:10px">
+    <button class="btn secondary" id="scrMenuBtn">🏠 Menu</button>
+    <button class="btn secondary" id="scrGamesBtn">🎮 Ćwiczenia</button>
     <button class="btn secondary" id="scrResetBtn">Reset</button>
     <button class="btn secondary" id="scrHintBtn">Podpowiedź</button>
     <button class="btn secondary" id="scrSkipBtn">Pomiń</button>
@@ -27,9 +30,12 @@
 
   <div id="scrSummary" class="summary hidden">
     <div class="big" id="scrSummaryTitle">Podsumowanie</div>
-    <div id="scrFinalStats">Wynik: 0/0</div>
+    <div class="star-rating" id="scrStarRating"></div>
+    <div id="scrFinalStats" class="muted">Wynik: 0/0</div>
+    <div class="muted" id="scrSumExtra"></div>
     <div class="row" style="margin-top:10px">
       <button class="btn secondary" id="scrSumMenuBtn">🏠 Menu</button>
+      <button class="btn secondary" id="scrSumGamesBtn">🎮 Wybierz ćwiczenie</button>
       <button class="btn" id="scrSumRetryBtn">⟳ Zagraj ponownie</button>
     </div>
   </div>

@@ -2,6 +2,7 @@
   <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
     <span class="pill">Słowo: <b id="artNum">1</b>/<span id="artTotal">10</span></span>
     <span class="pill">Wynik: <b id="artScore">0</b></span>
+    <div class="star-game-widget pill" title="Postęp do kolejnej gwiazdki">⭐ <b id="artStarCount">0</b> <div class="star-segs" id="artStarSegs"></div></div>
   </div>
   <div class="scorebar" style="margin:10px 0 14px 0"><span id="artFill"></span></div>
   
@@ -16,11 +17,19 @@
     <button class="btn large-art" data-art="la" style="flex:1; max-width:140px; font-size:1.5rem; padding:20px">LA</button>
   </div>
 
+  <div class="row" style="margin-top:14px; justify-content:center; gap:10px">
+    <button class="btn secondary" id="artMenuBtn">🏠 Menu</button>
+    <button class="btn secondary" id="artGamesBtn">🎮 Ćwiczenia</button>
+  </div>
+
   <div id="artSummary" class="summary hidden">
     <div class="big" id="artSummaryTitle">Brawo!</div>
-    <div id="artFinalStats">Wynik: 0/0</div>
+    <div class="star-rating" id="artStarRating"></div>
+    <div id="artFinalStats" class="muted">Wynik: 0/0</div>
+    <div class="muted" id="artSumExtra"></div>
     <div class="row" style="margin-top:10px">
       <button class="btn secondary" id="artSumMenuBtn">🏠 Menu</button>
+      <button class="btn secondary" id="artSumGamesBtn">🎮 Wybierz ćwiczenie</button>
       <button class="btn" id="artSumRetryBtn">⟳ Zagraj ponownie</button>
     </div>
   </div>

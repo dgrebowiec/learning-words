@@ -135,6 +135,13 @@
     }
   }
 
+  function spSummaryMessage(pct) {
+    if (pct >= 100) return '¡Perfecto! Wpisałeś wszystkie słowa poprawnie! 🏆';
+    if (pct >= 80) return 'Świetna robota! Prawie ideał! 💪';
+    if (pct >= 60) return 'Dobry wynik! Ćwicz pisownię dalej! 😊';
+    return 'Nie poddawaj się – z każdą rundą idzie lepiej! 🌱';
+  }
+
   function endSpelling() {
     const elapsed = (performance.now() - startTime) / 1000;
     const xp = score * 10;
@@ -143,10 +150,14 @@
     if (score === pool.length && typeof launchConfetti === 'function') launchConfetti();
 
     document.getElementById('spFill').style.width = '100%';
-    document.getElementById('spFinalStats').textContent = `Wynik: ${score}/${pool.length} (Czas: ${elapsed.toFixed(1)} s). Zdobyto ${xp} XP.`;
+    const pct = pool.length ? Math.round((score / pool.length) * 100) : 0;
+    if (typeof showStarRating === 'function') showStarRating(pct, 'spStarRating');
+
+    document.getElementById('spFinalStats').textContent = `Wynik: ${score}/${pool.length} (${pct}%) • Czas: ${elapsed.toFixed(1)} s • +${xp} XP`;
+    const extra = document.getElementById('spSumExtra');
+    if (extra) extra.textContent = spSummaryMessage(pct);
     document.getElementById('spSummary').classList.remove('hidden');
 
-    // Stats
     const st = getModeStats('SPELLING', currentLevel, currentCat);
     st.games = (st.games || 0) + 1;
     st.totalCorrect += score;
@@ -158,11 +169,13 @@
 
   window.startSpelling = startSpelling;
 
-  // Globalny listener (delegacja)
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
+    if (btn.id === 'spMenuBtn') show('menu');
+    if (btn.id === 'spGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
     if (btn.id === 'spSumMenuBtn') show('menu');
+    if (btn.id === 'spSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
     if (btn.id === 'spSumRetryBtn') startSpelling();
     if (btn.getAttribute('data-go') === 'spelling') startSpelling();
     if (btn.id === 'spCheckBtn') checkSpelling();
