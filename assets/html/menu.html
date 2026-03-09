@@ -32,76 +32,120 @@
     <div class="cat-grid" id="catGrid"></div>
 
     <details class="stats-details" id="statsDetails" style="margin-top:20px">
-      <summary>📊 Statystyki i osiągnięcia</summary>
+      <summary style="font-size:20px; font-weight:bold; color:var(--primary-color);">🏆 Twoje Super Osiągnięcia!</summary>
 
-      <div class="card" style="margin-top:10px">
-        <div class="row" style="justify-content:center; gap:8px;">
-          <span class="pill">Kategoria: <b id="statCat">Owoce</b></span>
-          <span class="pill">Poziom: <b id="statLvl">Łatwy</b></span>
-          <span class="pill">Tryb: <b id="statMode">—</b></span>
-          <span class="pill">Najlepszy wynik: <b id="statBest">0</b></span>
-          <span class="pill">Najlepszy czas: <b id="statBestTime">—</b></span>
-          <span class="pill">Najlepsza seria: <b id="statBestStreak">0</b></span>
-          <span class="pill">Poznane słowa: <b id="statLearned">0</b>/<span id="statTotalWords">0</span></span>
+      <!-- GŁÓWNE WSKAŹNIKI (Grid) -->
+      <div class="stats-hero-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:10px; margin-top:15px;">
+        <div class="card" style="text-align:center; padding:15px; background:linear-gradient(135deg, rgba(234,179,8,.15), rgba(250,204,21,.15)); border-color:rgba(250,204,21,.4);">
+          <div style="font-size:36px; margin-bottom:5px;">⭐</div>
+          <div style="font-size:24px; font-weight:bold; color:var(--text-color);" id="statStars">0</div>
+          <div style="font-size:14px; opacity:0.8;">Złote Gwiazdki</div>
+        </div>
+        <div class="card" style="text-align:center; padding:15px; background:linear-gradient(135deg, rgba(239,68,68,.15), rgba(248,113,113,.15)); border-color:rgba(248,113,113,.4);">
+          <div style="font-size:36px; margin-bottom:5px;">🔥</div>
+          <div style="font-size:24px; font-weight:bold; color:var(--text-color);" id="streakPillStats">0</div>
+          <div style="font-size:14px; opacity:0.8;">Dni z Rzędu</div>
+        </div>
+        <div class="card" style="text-align:center; padding:15px; background:linear-gradient(135deg, rgba(59,130,246,.15), rgba(96,165,250,.15)); border-color:rgba(96,165,250,.4);">
+          <div style="font-size:36px; margin-bottom:5px;">🧠</div>
+          <div style="font-size:24px; font-weight:bold; color:var(--text-color);"><span id="globalLearned">0</span></div>
+          <div style="font-size:14px; opacity:0.8;">Znasz słów z <span id="globalTotalWords">0</span></div>
         </div>
       </div>
 
-      <div class="card" style="margin-top:10px">
-        <h3 style="margin:0 0 6px 0">⏱️ Najlepsze czasy dla tej kategorii i trybu</h3>
-        <ul class="stats-list" id="bestTimesList"></ul>
+      <!-- POSTĘP DO NASTĘPNEJ GWIAZDKI -->
+      <div class="card" style="margin-top:15px; text-align:center;">
+        <h3 style="margin:0 0 10px 0; font-size:18px;">✨ Postęp do kolejnej gwiazdki</h3>
+        <div class="progress" id="starProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" style="height:24px; margin-bottom:5px;">
+          <span id="starProgressFill" style="background:var(--primary-color);"></span>
+        </div>
+        <p class="sub" style="margin:0;"><b id="statStarProgress" style="font-size:18px;">0/5</b></p>
       </div>
 
-      <div class="card" style="margin-top:10px">
-        <h3 style="margin:0 0 6px 0">📊 Postępy ogólne</h3>
-        <div class="row" style="justify-content:center; gap:8px;">
-          <span class="pill">Łącznie gier: <b id="globalGames">0</b></span>
-          <span class="pill">Średnia skuteczność: <b id="globalAccuracy">0%</b></span>
-          <span class="pill">Poznane słowa: <b id="globalLearned">0</b>/<span id="globalTotalWords">0</span></span>
-          <span class="pill">Ostatnia aktywność: <b id="globalLastPlayed">—</b></span>
+      <!-- NAKLEJKI / SKLEP -->
+      <div class="card" id="achievementsCard" style="margin-top:15px;">
+        <div class="row" style="justify-content:space-between; align-items:center;">
+          <h3 style="margin:0; font-size:20px;">🎒 Twój Plecak (<span id="statStickers">0</span>)</h3>
         </div>
+        <p class="sub small" id="nextStickerInfo" style="margin:5px 0 10px;">Graj, by zdobywać kolejne naklejki! (Za <span id="statNextSticker">—</span> ⭐)</p>
+        <div class="badges" id="stickerShelf" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;"></div>
       </div>
 
-      <div class="card" id="achievementsCard" style="margin-top:10px">
-        <div class="row" style="justify-content:center; gap:8px;">
-          <h3 style="margin:0">⭐ Postęp osiągnięć</h3>
-          <span class="pill">Gwiazdy: <b id="statStars">0</b></span>
-          <span class="pill">Postęp do gwiazdki: <b id="statStarProgress">0/0</b></span>
-          <span class="pill">Naklejki: <b id="statStickers">0</b></span>
-          <span class="pill">Do kolejnej naklejki: <b id="statNextSticker">—</b></span>
+      <div class="card" id="shopCard" style="margin-top:15px;">
+        <div class="row" style="justify-content:space-between; align-items:center;">
+          <h3 style="margin:0; font-size:20px;">🛒 Magiczny Sklepik</h3>
+          <span class="pill" style="font-size:16px;">Twoje ⭐: <b id="shopStarBalance">0</b></span>
         </div>
-        <div class="progress" id="starProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
-          <span id="starProgressFill"></span>
-        </div>
-        <p class="sub small" id="nextStickerInfo">Zdobywaj gwiazdki, aby odblokować pierwszą naklejkę.</p>
-        <div class="badges" id="stickerShelf" style="margin-top:10px"></div>
-      </div>
-
-      <div class="card" id="shopCard" style="margin-top:10px">
-        <div class="row" style="justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-          <h3 style="margin:0">🛒 Sklep gwiazdkowy</h3>
-          <span class="pill">Twoje ⭐: <b id="shopStarBalance">0</b></span>
-        </div>
-        <p class="sub small" style="margin:6px 0 10px">Zbieraj gwiazdki grając, a potem kup wyjątkowe naklejki!</p>
+        <p class="sub small" style="margin:5px 0 10px">Kupuj naklejki za gwiazdki!</p>
         <div id="shopShelf" class="shop-shelf"></div>
       </div>
 
-      <div class="card" id="recentRewardCard" style="margin-top:10px">
+      <!-- OSTATNIA NAGRODA -->
+      <div class="card" id="recentRewardCard" style="margin-top:15px; background:linear-gradient(135deg, rgba(168,85,247,.1), rgba(192,132,252,.1)); border-color:rgba(192,132,252,.3);">
         <div class="row" style="justify-content:space-between">
-          <h3 style="margin:0">🎁 Ostatnia nagroda</h3>
+          <h3 style="margin:0; font-size:18px;">🎁 Ostatnia Niespodzianka</h3>
           <span class="pill" id="recentRewardTime">—</span>
         </div>
-        <div class="recent-reward" id="recentRewardDetails">
-          <p class="sub small placeholder" style="margin:0">Brak nagród – rozegraj rundę, aby zdobywać gwiazdki.</p>
+        <div class="recent-reward" id="recentRewardDetails" style="margin-top:10px; text-align:center;">
+          <p class="sub small placeholder" style="margin:0">Zagraj, aby zdobyć pierwszą nagrodę!</p>
         </div>
       </div>
 
-      <div class="card" style="margin-top:10px">
-        <div class="row" style="justify-content:space-between">
-          <h3 style="margin:0">🏅 Odznaki</h3>
+      <!-- ODZNAKI -->
+      <div class="card" style="margin-top:15px;">
+        <div class="row" style="justify-content:space-between; align-items:center;">
+          <h3 style="margin:0; font-size:20px;">🏅 Twoje Odznaki</h3>
           <span class="pill">Zdobyte: <b id="badgeCount">0</b>/<span id="badgeTotal">0</span></span>
         </div>
-        <div class="badges" id="badgeShelf" style="margin-top:10px"></div>
+        <div class="badges" id="badgeShelf" style="margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center;"></div>
       </div>
+
+      <!-- SZCZEGÓŁOWE WYNIKI (Mniej wyeksponowane, w osobnym details) -->
+      <details class="stats-details" style="margin-top:15px; border:none; padding:0; background:transparent;">
+        <summary style="font-size:16px; opacity:0.8; padding:10px; background:var(--card-bg); border-radius:12px; border:1px solid var(--border-color);">📈 Zobacz dokładne wyniki</summary>
+        
+        <div class="card" style="margin-top:10px;">
+          <h3 style="margin:0 0 10px 0;">🎯 Twoje Osiągnięcia w tej kategorii</h3>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div style="background:var(--bg-color); padding:10px; border-radius:8px; border:1px solid var(--border-color); text-align:center;">
+              <div style="font-size:12px; opacity:0.8;">Kategoria</div>
+              <div style="font-weight:bold; font-size:16px;" id="statCat">Owoce</div>
+            </div>
+            <div style="background:var(--bg-color); padding:10px; border-radius:8px; border:1px solid var(--border-color); text-align:center;">
+              <div style="font-size:12px; opacity:0.8;">Poziom</div>
+              <div style="font-weight:bold; font-size:16px;" id="statLvl">Łatwy</div>
+            </div>
+            <div style="background:var(--bg-color); padding:10px; border-radius:8px; border:1px solid var(--border-color); text-align:center;">
+              <div style="font-size:12px; opacity:0.8;">Najlepszy Wynik</div>
+              <div style="font-weight:bold; font-size:16px; color:var(--primary-color);" id="statBest">0</div>
+            </div>
+            <div style="background:var(--bg-color); padding:10px; border-radius:8px; border:1px solid var(--border-color); text-align:center;">
+              <div style="font-size:12px; opacity:0.8;">Najlepszy Czas</div>
+              <div style="font-weight:bold; font-size:16px; color:var(--secondary-color);" id="statBestTime">—</div>
+            </div>
+            <div style="background:var(--bg-color); padding:10px; border-radius:8px; border:1px solid var(--border-color); text-align:center;">
+              <div style="font-size:12px; opacity:0.8;">Najlepsza Seria</div>
+              <div style="font-weight:bold; font-size:16px;" id="statBestStreak">0</div>
+            </div>
+            <div style="background:var(--bg-color); padding:10px; border-radius:8px; border:1px solid var(--border-color); text-align:center;">
+              <div style="font-size:12px; opacity:0.8;">Poznane słowa</div>
+              <div style="font-weight:bold; font-size:16px;"><span id="statLearned">0</span>/<span id="statTotalWords">0</span></div>
+            </div>
+          </div>
+          
+          <h3 style="margin:15px 0 5px 0; font-size:14px;">⏱️ Rekordy: <span id="statMode">—</span></h3>
+          <ul class="stats-list" id="bestTimesList" style="margin:0;"></ul>
+        </div>
+        
+        <div class="card" style="margin-top:10px;">
+          <h3 style="margin:0 0 10px 0;">📊 Twoje doświadczenie</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+            <span class="pill" style="flex:1; min-width:40%;">Gier: <b id="globalGames">0</b></span>
+            <span class="pill" style="flex:1; min-width:40%;">Poprawność: <b id="globalAccuracy">0%</b></span>
+            <span class="pill" style="width:100%;">Ostatnia gra: <b id="globalLastPlayed">—</b></span>
+          </div>
+        </div>
+      </details>
     </details>
   </div>
 

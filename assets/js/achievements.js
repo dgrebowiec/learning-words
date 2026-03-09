@@ -189,6 +189,9 @@ function renderStreak() {
   const state = loadStreak();
   const el = document.getElementById('streakPill');
   if (el) el.textContent = `🔥 Seria: ${state.count} dni`;
+  
+  const statsEl = document.getElementById('streakPillStats');
+  if (statsEl) statsEl.textContent = state.count;
 }
 
 function renderAchievements(){
