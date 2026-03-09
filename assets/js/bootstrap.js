@@ -19,7 +19,19 @@
   const SCRIPTS = [
     'assets/js/data.js',
     'assets/js/confetti.js',
-    'assets/js/app.js',
+    'assets/js/utils.js',
+    'assets/js/config.js',
+    'assets/js/ui.js',
+    'assets/js/tts.js',
+    'assets/js/storage.js',
+    'assets/js/badges.js',
+    'assets/js/achievements.js',
+    'assets/js/shop.js',
+    'assets/js/stats.js',
+    'assets/js/navigation.js',
+    'assets/js/modes/quiz.js',
+    'assets/js/modes/finditem.js',
+    'assets/js/modes/flashcards.js',
     'assets/js/modes/memory.js',
     'assets/js/modes/articulos.js',
     'assets/js/modes/wordsearch.js',
@@ -27,6 +39,7 @@
     'assets/js/modes/scramble.js',
     'assets/js/modes/repeat.js',
     'assets/js/modes/timerace.js',
+    'assets/js/app.js',
     'assets/js/tests/layout-smoke-test.js',
     'assets/js/profiles.js'
   ];
