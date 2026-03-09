@@ -11,7 +11,7 @@ const pick = (arr,n) => { const pool=[...arr]; const out=[]; while(n-- > 0 && po
 /* ---------- Konfiguracja ---------- */
 const LEVELS = { LATWY:{options:2,len:9}, SREDNI:{options:3,len:12}, TRUDNY:{options:4,len:15} };
 const LEVEL_NAMES = { LATWY:'Łatwy', SREDNI:'Średni', TRUDNY:'Trudny' };
-const ALL_SECTIONS = ['menu','flashcards','quiz','finditem','memory','articulos','wordsearch','spelling','scramble','repeat'];
+const ALL_SECTIONS = ['menu','flashcards','quiz','finditem','memory','articulos','wordsearch','spelling','scramble','repeat','timerace'];
 let currentLevel = 'LATWY';
 let currentCat = 'FRUITS';
 let menuStep = 1;
