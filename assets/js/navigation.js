@@ -111,6 +111,7 @@ $$('[data-go]').forEach(b => b.addEventListener('click', () => {
   if (target==='flashcards'){ renderFlashcard(); }
   if (target==='scramble'){ startScramble(); updateMenuStats('SCRAMBLE'); }
   if (target==='repeat'){ startRepeat(); updateMenuStats('REPEAT'); }
+  if (target==='tamagotchi'){ if(typeof window.renderTamagotchi === 'function') window.renderTamagotchi(); }
 }));
 
 document.getElementById('startReviewBtn').addEventListener('click', () => {

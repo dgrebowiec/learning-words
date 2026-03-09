@@ -13,6 +13,7 @@
     {name:'scramble', path:'assets/html/scramble.html'},
     {name:'repeat', path:'assets/html/repeat.html'},
     {name:'timerace', path:'assets/html/timerace.html'},
+    {name:'tamagotchi', path:'assets/html/tamagotchi.html'},
     {name:'footer', path:'assets/html/footer.html'}
   ];
 
@@ -39,6 +40,7 @@
     'assets/js/modes/scramble.js',
     'assets/js/modes/repeat.js',
     'assets/js/modes/timerace.js',
+    'assets/js/modes/tamagotchi.js',
     'assets/js/app.js',
     'assets/js/tests/layout-smoke-test.js',
     'assets/js/profiles.js'

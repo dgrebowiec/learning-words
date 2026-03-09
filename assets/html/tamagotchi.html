@@ -1,0 +1,16 @@
+<section id="tamagotchi" class="hidden">
+  <div class="card center" style="display:flex; flex-direction:column; align-items:center; gap:16px; margin-top:20px;">
+    <h2 style="margin:0">Mój Wirtualny Zwierzak</h2>
+    <div id="tamaPet" style="font-size:100px; transition: transform 0.3s; animation: tama-idle 2s infinite alternate;">🥚</div>
+    <h3 id="tamaName" style="margin:0; color:var(--accent); font-size:24px;">Jajko</h3>
+    <div class="xp-bar-wrap" style="width:100%; max-width:300px; height:12px; margin-top:8px;">
+      <div class="xp-bar-fill" id="tamaXpFill" style="width:0%; background:linear-gradient(90deg, #10b981, #34d399);"></div>
+    </div>
+    <p class="sub" id="tamaStatus">Zdobywaj punkty XP w grach, aby zwierzak rósł!</p>
+    <div style="display:flex; gap:10px; margin-top:10px;">
+        <button class="btn" id="tamaFeedBtn" style="min-width:120px;">🍎 Nakarm</button>
+        <button class="btn" id="tamaPetBtn" style="min-width:120px;">👋 Pogłaszcz</button>
+    </div>
+    <p class="sub small" id="tamaMessage" style="height:20px; margin:0; color:var(--good); font-weight:bold;"></p>
+  </div>
+</section>

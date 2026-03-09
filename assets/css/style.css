@@ -784,3 +784,21 @@ footer{
   width: 9px;
   height: 9px;
 }
+
+/* ===== TAMAGOTCHI ===== */
+@keyframes tama-idle {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-10px) scale(1.05); }
+}
+
+@keyframes tama-happy {
+  0% { transform: scale(1) rotate(0); }
+  25% { transform: scale(1.2) rotate(-15deg); }
+  50% { transform: scale(1.2) rotate(15deg); }
+  75% { transform: scale(1.2) rotate(-15deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.tama-happy-anim {
+  animation: tama-happy 0.8s ease !important;
+}
