@@ -2,15 +2,8 @@ let voices = []; let esVoice = null;
 function chooseEsVoice(){
   voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
   esVoice = voices.find(v => /es-ES|Spanish.*Spain/i.test(v.lang||"")) || voices.find(v => /es/i.test(v.lang||""));
-  const status = document.getElementById('ttsStatus');
-  if (status){
-    status.textContent = esVoice ? `TTS: ${esVoice.name} (${esVoice.lang})` : 'TTS: użyję głosu domyślnego';
-  }
 }
-if ('speechSynthesis' in window){ chooseEsVoice(); window.speechSynthesis.onvoiceschanged = chooseEsVoice; } else {
-  const status = document.getElementById('ttsStatus');
-  if (status) status.textContent='Brak wsparcia TTS';
-}
+if ('speechSynthesis' in window){ chooseEsVoice(); window.speechSynthesis.onvoiceschanged = chooseEsVoice; }
 function speakEs(text){
   if (!('speechSynthesis' in window)) return;
   const spokenText = text.replace(/\//g, ', ');

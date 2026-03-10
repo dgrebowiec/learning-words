@@ -26,6 +26,15 @@ function renderXPBar() {
 
   const pill = document.getElementById('xpLevelPill');
   if (pill) pill.textContent = `${currentLvl.emoji} ${currentLvl.label}`;
+  
+  const textPill = document.getElementById('xpTextPill');
+  if (textPill) {
+    if (nextLvl) {
+      textPill.textContent = `${state.xp} / ${nextLvl.minXp} XP`;
+    } else {
+      textPill.textContent = `${state.xp} XP (Maksimum!)`;
+    }
+  }
 
   const fill = document.getElementById('xpBarFill');
   if (fill) {

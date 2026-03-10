@@ -1,23 +1,29 @@
 <header>
-  <div class="row" style="justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px">
+  <div class="row" style="justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; width:100%;">
     <h1 style="margin:0"><span class="grad">Hiszpański</span> dla dzieci</h1>
-    <div class="xp-header" id="xpHeader">
-      <span class="pill" id="xpLevelPill">🌱 Początkujący</span>
-      <span class="pill" id="streakPill">🔥 Seria: 0 dni</span>
-      <div class="star-hdr-widget pill" id="headerStarWidget" title="Twoje gwiazdki i postęp do następnej">
-        <span>⭐ <b id="headerStarCount">0</b></span>
-        <div class="star-segs" id="headerStarSegs"></div>
-      </div>
+    <div class="toolbar" style="display:flex; gap:8px;">
+      <button class="btn secondary" id="toMenuBtn" style="min-height: 36px; padding: 8px 12px; font-size: 14px;">🏠 Menu</button>
+      <span class="pill" id="activePlayerDisplay" style="display:none; cursor:pointer;" title="Zmień gracza" onclick="showProfileSelect()"></span>
     </div>
   </div>
-  <div class="xp-bar-wrap" id="xpBarWrap" style="margin-top:8px">
-    <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
-  </div>
-  <div class="toolbar" style="margin-top:10px">
-    <button class="btn secondary" id="toMenuBtn">🏠 Menu</button>
-    <button class="btn" id="speakAllBtn">🔊 Lista</button>
-    <div class="pill" id="ttsStatus" style="font-size:11px">TTS: wykrywanie…</div>
-    <span class="pill" id="activePlayerDisplay" style="display:none"></span>
-    <button class="btn secondary" id="changePlayerBtn" style="display:none">👤 Zmień gracza</button>
+
+  <!-- Ulepszony widok postępu (XP, poziom i gwiazdki) -->
+  <div class="xp-header" id="xpHeader" style="width:100%; margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; width:100%;">
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <span id="xpLevelPill" style="font-weight:bold; font-size:16px; color:var(--text);">🌱 Początkujący</span>
+        <span id="xpTextPill" style="font-size:12px; color:var(--muted);">0 / 100 XP</span>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <span class="pill" id="streakPill">🔥 0 dni</span>
+        <div class="star-hdr-widget pill" id="headerStarWidget" title="Twoje gwiazdki i postęp do następnej" style="background:rgba(250,204,21,.15); border-color:rgba(250,204,21,.4); color:#fde047; font-weight:bold;">
+          <span>⭐ <b id="headerStarCount">0</b></span>
+          <div class="star-segs" id="headerStarSegs"></div>
+        </div>
+      </div>
+    </div>
+    <div class="xp-bar-wrap" id="xpBarWrap" style="width:100%; max-width:none; height:12px; border-radius:6px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1);">
+      <div class="xp-bar-fill" id="xpBarFill" style="width:0%; background:linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius:6px;"></div>
+    </div>
   </div>
 </header>

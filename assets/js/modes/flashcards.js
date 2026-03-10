@@ -18,18 +18,8 @@
   document.getElementById('resetBtn').addEventListener('click', ()=> { fcIndex=0; renderFlashcard(); });
   document.getElementById('fcGamesBtn').addEventListener('click', ()=> showModeSelect());
 
-  let speakingAll=false;
-  document.getElementById('speakAllBtn').addEventListener('click', async ()=>{
-    if (!('speechSynthesis' in window)) return;
-    speakingAll = !speakingAll; const btn=document.getElementById('speakAllBtn');
-    if (speakingAll){
-      btn.textContent='⏹️ Stop';
-      for (const it of dataset()){ if (!speakingAll) break; speakEs(it.es); await new Promise(r=>setTimeout(r,1200)); }
-      speakingAll=false; btn.textContent='🔊 Lista';
-    } else { window.speechSynthesis.cancel(); btn.textContent='🔊 Lista'; }
-  });
-
   renderFlashcard();
 
   window.renderFlashcard = renderFlashcard;
 })();
+
