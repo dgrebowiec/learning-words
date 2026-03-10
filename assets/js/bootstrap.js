@@ -41,6 +41,7 @@
     'assets/js/modes/repeat.js',
     'assets/js/modes/timerace.js',
     'assets/js/modes/tamagotchi.js',
+    'assets/js/missions.js',
     'assets/js/app.js',
     'assets/js/tests/layout-smoke-test.js',
     'assets/js/profiles.js'

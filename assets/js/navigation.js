@@ -1,14 +1,20 @@
-function show(sectionId){
+function show(sectionId, pushHistory = true, step = 1){
   ALL_SECTIONS.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('hidden', id !== sectionId);
   });
+  
+  if (pushHistory && sectionId !== 'menu') {
+    history.pushState({ sectionId, step: null }, '', `#${sectionId}`);
+  }
+
   if (sectionId==='menu'){
-    showMenuStep(1);
+    showMenuStep(step, pushHistory);
     renderBadges();
     renderAchievements();
     renderXPBar();
     renderStreak();
+    if(typeof renderMissions === 'function') renderMissions();
     updateMenuStats('QUIZ_PL_ES');
   }
 }
@@ -33,8 +39,13 @@ function renderCatGrid(){
   });
 }
 
-function showMenuStep(n){
+function showMenuStep(n, pushHistory = true){
   menuStep = n;
+
+  if (pushHistory) {
+    history.pushState({ sectionId: 'menu', step: n }, '', `#menu-step${n}`);
+  }
+
   [1,2,3].forEach(i => {
     const el = document.getElementById('menuStep'+i);
     if (el) el.classList.toggle('hidden', i !== n);
@@ -85,7 +96,7 @@ function showModeSelect(){
   renderXPBar();
   renderStreak();
   updateMenuStats('QUIZ_PL_ES');
-  showMenuStep(3);
+  showMenuStep(3, true);
 }
 
 document.getElementById('toMenuBtn').addEventListener('click', ()=> { show('menu'); });
@@ -106,7 +117,9 @@ $$('.level-card').forEach(card => {
 
 $$('[data-go]').forEach(b => b.addEventListener('click', () => {
   const target = b.getAttribute('data-go'); show(target);
-  if (target==='quiz'){ startQuiz(); updateMenuStats('QUIZ_PL_ES'); }
+  if (target==='quiz'){ startQuiz(); updateMenuStats('QUIZ_PL_ES'); if(typeof progressMission==='function') progressMission('play_quiz'); }
+  if (target==='memory'){ startMemory(); if(typeof progressMission==='function') progressMission('play_memory'); }
+  if (target==='timerace'){ startTimerace(); if(typeof progressMission==='function') progressMission('play_timerace'); }
   if (target==='finditem'){ startFindItem(); updateMenuStats('FIND_ITEM'); }
   if (target==='flashcards'){ renderFlashcard(); }
   if (target==='scramble'){ startScramble(); updateMenuStats('SCRAMBLE'); }
@@ -124,4 +137,27 @@ document.getElementById('startUnlearnedBtn').addEventListener('click', () => {
   const learnedSet = new Set(getModeStats(mode, currentLevel, currentCat).learnedWords || []);
   const pool = datasetFor(currentCat).filter(w => !learnedSet.has(w.es.toLowerCase()));
   startSpecialQuiz(pool, 'Nowe słowa');
+});
+
+window.addEventListener('popstate', (e) => {
+  if (e.state) {
+    const { sectionId, step } = e.state;
+    if (sectionId === 'menu') {
+      ALL_SECTIONS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('hidden', id !== 'menu');
+      });
+      showMenuStep(step, false);
+      renderBadges();
+      renderAchievements();
+      renderXPBar();
+      renderStreak();
+      if(typeof renderMissions === 'function') renderMissions();
+      updateMenuStats('QUIZ_PL_ES');
+    } else {
+      show(sectionId, false);
+    }
+  } else {
+    show('menu', false, 1);
+  }
 });

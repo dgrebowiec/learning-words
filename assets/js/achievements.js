@@ -170,18 +170,28 @@ function updateStreak() {
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
 
+  let addedDay = false;
+
   if (state.lastDate === yesterdayStr) {
     state.count += 1;
+    addedDay = true;
   } else {
     state.count = 1;
+    addedDay = true;
   }
 
   state.lastDate = today;
   saveStreak(state);
   renderStreak();
 
-  if (typeof toast === 'function') {
-    toast(`🔥 Dzienna seria: ${state.count} dni!`);
+  if (addedDay) {
+    if (state.count % 7 === 0) {
+      if (typeof addXP === 'function') addXP(100, "Tydzień nauki!");
+      if (typeof toast === 'function') toast(`🎉 100 XP za 7 dni nauki z rzędu!`);
+      if (typeof launchConfetti === 'function') launchConfetti();
+    } else {
+      if (typeof toast === 'function') toast(`🔥 Dzienna seria: ${state.count} dni!`);
+    }
   }
 }
 
@@ -192,6 +202,51 @@ function renderStreak() {
   
   const statsEl = document.getElementById('streakPillStats');
   if (statsEl) statsEl.textContent = state.count;
+
+  const daysContainer = document.getElementById('streakDaysContainer');
+  if (daysContainer) {
+    daysContainer.innerHTML = '';
+    
+    let filledDays = state.count % 7;
+    if (state.count > 0 && filledDays === 0) {
+      filledDays = 7;
+    }
+
+    for (let i = 1; i <= 7; i++) {
+      const circle = document.createElement('div');
+      circle.style.width = '35px';
+      circle.style.height = '35px';
+      circle.style.borderRadius = '50%';
+      circle.style.display = 'flex';
+      circle.style.alignItems = 'center';
+      circle.style.justifyContent = 'center';
+      circle.style.fontWeight = 'bold';
+      circle.style.fontSize = '16px';
+      
+      if (i <= filledDays) {
+        circle.style.background = '#ef4444';
+        circle.style.color = '#fff';
+        circle.style.boxShadow = '0 0 8px #ef4444';
+        circle.textContent = i === 7 ? '🎁' : '✓';
+      } else {
+        circle.style.background = 'rgba(255,255,255,0.05)';
+        circle.style.border = '2px solid rgba(255,255,255,0.2)';
+        circle.textContent = i === 7 ? '🎁' : i;
+      }
+      
+      daysContainer.appendChild(circle);
+    }
+    
+    const textEl = document.getElementById('streakNextRewardText');
+    if (textEl) {
+      if (filledDays === 7) {
+         textEl.textContent = '🎉 Tydzień ukończony! 100 XP zdobyte!';
+      } else {
+         const left = 7 - filledDays;
+         textEl.textContent = `Graj codziennie! Za ${left} dni wielka nagroda!`;
+      }
+    }
+  }
 }
 
 function renderAchievements(){

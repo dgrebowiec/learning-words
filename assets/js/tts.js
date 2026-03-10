@@ -13,7 +13,8 @@ if ('speechSynthesis' in window){ chooseEsVoice(); window.speechSynthesis.onvoic
 }
 function speakEs(text){
   if (!('speechSynthesis' in window)) return;
-  const u = new SpeechSynthesisUtterance(text); u.lang = (esVoice && esVoice.lang) || 'es-ES'; u.voice = esVoice || null; u.rate = 0.95; u.pitch=1.0;
+  const spokenText = text.replace(/\//g, ', ');
+  const u = new SpeechSynthesisUtterance(spokenText); u.lang = (esVoice && esVoice.lang) || 'es-ES'; u.voice = esVoice || null; u.rate = 0.95; u.pitch=1.0;
   window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
 }
 

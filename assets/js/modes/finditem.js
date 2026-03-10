@@ -74,7 +74,7 @@
     fMistakeSet = new Set();
     document.getElementById('fScore').textContent='0'; renderCombo('fStreak', 0); document.getElementById('fBestStreak').textContent=fBestStreak;
     document.getElementById('fFill').style.width='0%'; document.getElementById('fNext').disabled=false; document.getElementById('fSkip').disabled=false;
-    document.getElementById('fRetry').disabled=true;
+    document.getElementById('fRetry').disabled=false;
     document.getElementById('fSummary').classList.add('hidden');
     const fStarEl = document.getElementById('fStarRating'); if (fStarEl) fStarEl.innerHTML = '';
     resetFindMistakeSummaryUI();
@@ -142,6 +142,7 @@
   document.getElementById('fSpeak').addEventListener('click', ()=> { if (fAnswer) speakEs(fAnswer.es); });
   document.getElementById('fRetry').addEventListener('click', ()=> { startFindItem(); });
   document.getElementById('fSumReview').addEventListener('click', ()=> { startMistakeReviewFind(); });
+  document.getElementById('fMenuBtn').addEventListener('click', ()=> { show('menu'); });
 
   function startMistakeReviewFind(){
     if (!fMistakes.length) {
@@ -167,7 +168,7 @@
     document.getElementById('fFill').style.width='0%';
     document.getElementById('fNext').disabled=false;
     document.getElementById('fSkip').disabled=false;
-    document.getElementById('fRetry').disabled=true;
+    document.getElementById('fRetry').disabled=false;
     document.getElementById('fSummary').classList.add('hidden');
     const fStarElR = document.getElementById('fStarRating'); if (fStarElR) fStarElR.innerHTML = '';
 

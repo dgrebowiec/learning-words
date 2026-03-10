@@ -28,6 +28,20 @@
       <button class="btn" style="width:100%; font-size:18px" data-go="tamagotchi">Odwiedź Zwierzaka</button>
     </div>
 
+    <div class="card" id="missionsCard" style="margin-bottom:20px; background:linear-gradient(135deg, rgba(250,204,21,.15), rgba(251,146,60,.15)); border-color:rgba(250,204,21,.4);">
+      <h3 style="margin:0 0 10px 0; font-size:22px;">✨ Dzisiejsze Misje</h3>
+      <p class="sub" style="margin:0 0 14px 0">Wykonuj zadania i odbieraj dodatkowe XP!</p>
+      <div id="dailyMissionsContainer"></div>
+    </div>
+
+    <div class="card" id="streakRewardCard" style="margin-bottom:20px; background:linear-gradient(135deg, rgba(239,68,68,.15), rgba(248,113,113,.15)); border-color:rgba(248,113,113,.4);">
+      <h3 style="margin:0 0 10px 0; font-size:22px;">🔥 Dzienny Trening</h3>
+      <p class="sub" style="margin:0 0 14px 0">Ucz się codziennie by zgarnąć super nagrodę na koniec tygodnia!</p>
+      <div id="streakDaysContainer" style="display:flex; justify-content:space-between; margin-bottom:10px;">
+      </div>
+      <p class="sub small" id="streakNextRewardText" style="margin:0; text-align:center; font-weight:bold;">Graj dalej!</p>
+    </div>
+
     <p class="sub" style="margin:12px 0 8px">Wybierz kategorię:</p>
     <div class="cat-grid" id="catGrid"></div>
 

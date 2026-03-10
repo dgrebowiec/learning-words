@@ -78,7 +78,7 @@
     qAnsweredCorrect = false;
     document.getElementById('qScore').textContent='0'; renderCombo('qStreak', 0); document.getElementById('qBestStreak').textContent=qBestStreak;
     document.getElementById('scoreFill').style.width='0%'; document.getElementById('qNext').disabled=false; document.getElementById('qSkip').disabled=false;
-    document.getElementById('qRetry').disabled=true;
+    document.getElementById('qRetry').disabled=false;
     document.getElementById('qSummary').classList.add('hidden');
     const qStarEl = document.getElementById('qStarRating'); if (qStarEl) qStarEl.innerHTML = '';
     resetMistakeSummaryUI();
@@ -151,6 +151,7 @@
   document.getElementById('qSpeak').addEventListener('click', ()=> { if (qAnswer) speakEs(qAnswer.es); });
   document.getElementById('qRetry').addEventListener('click', ()=> { startQuiz(); });
   document.getElementById('qSumReview').addEventListener('click', ()=> { startMistakeReview(); });
+  document.getElementById('qMenuBtn').addEventListener('click', ()=> { show('menu'); });
 
   function endQuiz(){
     const elapsedSec = (performance.now() - qStartTime) / 1000;
@@ -226,7 +227,7 @@
     document.getElementById('scoreFill').style.width='0%';
     document.getElementById('qNext').disabled=false;
     document.getElementById('qSkip').disabled=false;
-    document.getElementById('qRetry').disabled=true;
+    document.getElementById('qRetry').disabled=false;
     document.getElementById('qSummary').classList.add('hidden');
     const qStarElS = document.getElementById('qStarRating'); if (qStarElS) qStarElS.innerHTML = '';
 
