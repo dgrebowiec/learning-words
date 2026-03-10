@@ -143,6 +143,13 @@
     if (!qAnswered && qAnswer){ registerMistake(qAnswer); }
     newQuestion();
   });
+  document.getElementById('qPrev').addEventListener('click', ()=>{
+    clearTimeout(qAutoTimer);
+    if (qRound > 1) {
+      qRound -= 2;
+      newQuestion();
+    }
+  });
   document.getElementById('qSkip').addEventListener('click', ()=>{
     clearTimeout(qAutoTimer);
     if (qAnswer && (!qAnswered || !qAnsweredCorrect)){ registerMistake(qAnswer); }
@@ -151,7 +158,10 @@
   document.getElementById('qSpeak').addEventListener('click', ()=> { if (qAnswer) speakEs(qAnswer.es); });
   document.getElementById('qRetry').addEventListener('click', ()=> { startQuiz(); });
   document.getElementById('qSumReview').addEventListener('click', ()=> { startMistakeReview(); });
-  document.getElementById('qMenuBtn').addEventListener('click', ()=> { show('menu'); });
+  document.getElementById('qMenuBtn').addEventListener('click', ()=> { 
+    clearTimeout(qAutoTimer);
+    show('menu'); 
+  });
 
   function endQuiz(){
     const elapsedSec = (performance.now() - qStartTime) / 1000;

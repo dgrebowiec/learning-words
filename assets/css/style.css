@@ -802,3 +802,82 @@ footer{
 .tama-happy-anim {
   animation: tama-happy 0.8s ease !important;
 }
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+@media (max-width: 600px) {
+  body {
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bot);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .app {
+    width: 100%;
+    min-height: 100svh;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+  header {
+    padding: 10px 12px;
+  }
+  header h1 {
+    font-size: 18px;
+  }
+  main {
+    padding: 12px 10px calc(16px + var(--safe-bot));
+    gap: 12px;
+  }
+  .card {
+    padding: 14px 12px;
+    border-radius: 14px;
+  }
+  .btn {
+    min-height: 48px; /* Easier to tap on mobile */
+    font-size: 15px;
+  }
+  .menu-grid {
+    gap: 10px;
+  }
+  .mode-card {
+    padding: 14px;
+    min-height: auto;
+  }
+  .mode-card h3 {
+    font-size: 16px;
+  }
+  .mode-card p {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .cat-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+  }
+  .cat-card {
+    padding: 12px 8px;
+  }
+  .cat-card .cat-emoji {
+    font-size: 1.8rem;
+  }
+  .choice {
+    min-height: 56px;
+    padding: 10px 12px;
+  }
+  .choice b {
+    font-size: 16px;
+  }
+  .level-card {
+    padding: 16px 12px;
+  }
+  .word {
+    font-size: clamp(24px, 8vw, 30px);
+  }
+  .stats-hero-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .stats-hero-grid > div:last-child {
+    grid-column: span 2;
+  }
+}
+

@@ -133,6 +133,13 @@
     if (fAnswer && !answered) { registerFindMistake(fAnswer); }
     newFindQuestion();
   });
+  document.getElementById('fPrev').addEventListener('click', ()=> {
+    clearTimeout(fAutoTimer);
+    if (fRound > 1) {
+      fRound -= 2;
+      newFindQuestion();
+    }
+  });
   document.getElementById('fSkip').addEventListener('click', ()=> {
     clearTimeout(fAutoTimer);
     const answered = [...document.getElementById('itemChoices').children].some(c => c.classList.contains('correct') || c.classList.contains('wrong'));
@@ -142,7 +149,10 @@
   document.getElementById('fSpeak').addEventListener('click', ()=> { if (fAnswer) speakEs(fAnswer.es); });
   document.getElementById('fRetry').addEventListener('click', ()=> { startFindItem(); });
   document.getElementById('fSumReview').addEventListener('click', ()=> { startMistakeReviewFind(); });
-  document.getElementById('fMenuBtn').addEventListener('click', ()=> { show('menu'); });
+  document.getElementById('fMenuBtn').addEventListener('click', ()=> { 
+    clearTimeout(fAutoTimer);
+    show('menu'); 
+  });
 
   function startMistakeReviewFind(){
     if (!fMistakes.length) {

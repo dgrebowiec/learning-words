@@ -182,6 +182,7 @@
     if (match) {
       match.found = true;
       foundWords.add(match.es);
+      if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(match.original);
       markFound(currentSelection);
       document.getElementById(`ws-word-${match.es}`).classList.add('ws-word-found');
       if (typeof toast === 'function') toast(`¡Encontrado: ${match.es}! ✨`);
@@ -228,7 +229,7 @@
   function endWordSearch() {
     const elapsed = (performance.now() - startTime) / 1000;
     const xp = wordsToFind.length * 15;
-    if (typeof addXP === 'function') addXP(xp, 'Sopa de Letras');
+    if (typeof addXP === 'function') addXP(xp, 'Wykreślanka');
     if (typeof launchConfetti === 'function') launchConfetti();
 
     const pct = wsStarPct(elapsed, wordsToFind.length);

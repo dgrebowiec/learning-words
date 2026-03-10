@@ -61,6 +61,13 @@
     input.disabled = false;
     input.focus();
     
+    // Obsługa klawisza Enter
+    input.onkeydown = function(e) {
+      if (e.key === 'Enter') {
+        checkSpelling();
+      }
+    };
+    
     updateHintText();
   }
 
@@ -95,6 +102,7 @@
   function handleCorrect() {
     canCheck = false;
     score++;
+    if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(pool[currentIndex]);
     document.getElementById('spScore').textContent = score;
     const inputEl = document.getElementById('spInput');
     inputEl.style.borderColor = '#10b981';
@@ -180,6 +188,12 @@
     if (btn.getAttribute('data-go') === 'spelling') startSpelling();
     if (btn.id === 'spCheckBtn') checkSpelling();
     if (btn.id === 'spHintBtn') showHint();
+    if (btn.id === 'spPrevBtn') {
+      if (currentIndex > 0) {
+        currentIndex--;
+        nextSpQuestion();
+      }
+    }
     if (btn.id === 'spSkipBtn') {
       currentIndex++;
       nextSpQuestion();

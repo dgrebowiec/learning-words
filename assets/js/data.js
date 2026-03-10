@@ -79,17 +79,17 @@ const MATERIAL_ESCOLAR = [
   {emoji:'✂️', pl:'nożyczki',     es:'tijeras',         article:'las'},
   {emoji:'🎒', pl:'plecak',       es:'mochila',         article:'la'},
   {emoji:'🖊️', pl:'długopis',     es:'bolígrafo',       article:'el'},
-  {emoji:'🔧', pl:'temperówka',   es:'sacapuntas',      article:'el'},
+  {emoji:'🖍️', pl:'temperówka',   es:'sacapuntas',      article:'el'},
   {emoji:'📖', pl:'książka',      es:'libro',           article:'el'},
   {emoji:'📎', pl:'spinacz',      es:'clip',            article:'el'},
-  {emoji:'🗂️', pl:'zszywacz',     es:'engrapadora',     article:'la'},
+  {emoji:'🖇️', pl:'zszywacz',     es:'engrapadora',     article:'la'},
   {emoji:'📄', pl:'papier',       es:'papel',           article:'el'},
-  {emoji:'🧽', pl:'gumka',        es:'borrador',        article:'el'},
-  {emoji:'🧴', pl:'klej',         es:'pegamento',       article:'el'},
-  {emoji:'🖍️', pl:'zakreślacz',   es:'marcador',        article:'el'},
+  {emoji:'🧼', pl:'gumka',        es:'borrador',        article:'el'},
+  {emoji:'💧', pl:'klej',         es:'pegamento',       article:'el'},
+  {emoji:'🖌️', pl:'zakreślacz',   es:'marcador',        article:'el'},
   {emoji:'🗑️', pl:'kosz',         es:'papelera',        article:'la'},
   {emoji:'📏', pl:'linijka',      es:'regla',           article:'la'},
-  {emoji:'🧳', pl:'piórnik',      es:'estuche',         article:'el'}
+  {emoji:'👝', pl:'piórnik',      es:'estuche',         article:'el'}
 ];
 
 const HALLOWEEN = [

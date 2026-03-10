@@ -74,6 +74,7 @@
 
     if (isOk) {
       score++;
+      if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(pool[currentIndex]);
       btn.classList.add('correct', 'anim-bounce');
       document.getElementById('artScore').textContent = score;
       if (typeof AudioFX !== 'undefined') AudioFX.correct();
@@ -130,6 +131,12 @@
     if (!btn) return;
     if (btn.id === 'artMenuBtn' || btn.id === 'artSumMenuBtn') show('menu');
     if (btn.id === 'artGamesBtn' || btn.id === 'artSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
+    if (btn.id === 'artPrevBtn') {
+      if (currentIndex > 0) {
+        currentIndex--;
+        nextArtQuestion();
+      }
+    }
     if (btn.id === 'artSumRetryBtn') startArticulos();
     if (btn.getAttribute('data-go') === 'articulos') startArticulos();
     if (btn.classList.contains('large-art')) handleArtClick(btn);

@@ -140,6 +140,7 @@
   function handleCorrect() {
     canCheck = false;
     score++;
+    if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(pool[currentIndex]);
     document.getElementById('scrScore').textContent = score;
     
     const resultBtns = document.querySelectorAll('.result-btn');
@@ -258,6 +259,12 @@
     if (btn.id === 'scrResetBtn') resetCurrentQuestion();
     if (btn.id === 'scrHintBtn') showHint();
     if (btn.id === 'scrCheckBtn') checkScramble();
+    if (btn.id === 'scrPrevBtn') {
+      if (currentIndex > 0) {
+        currentIndex--;
+        nextScrQuestion();
+      }
+    }
     if (btn.id === 'scrSkipBtn') {
       currentIndex++;
       nextScrQuestion();

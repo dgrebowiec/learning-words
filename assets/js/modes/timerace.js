@@ -70,6 +70,7 @@
       if (typeof AudioFX !== 'undefined') AudioFX.correct();
       btn.classList.add('correct');
       score++;
+      if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(currentItem);
       timeLeft += 2; // Bonus +2s
       if (typeof speak === 'function') speak(currentItem.es);
       document.getElementById('trScore').textContent = score;

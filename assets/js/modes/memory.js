@@ -93,6 +93,7 @@
         c1.el.classList.add('matched');
         c2.el.classList.add('matched');
         matches++;
+        if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(item1);
         updateProgress();
         flipped = [];
         if (matches === totalPairs) endMemory();
@@ -166,8 +167,14 @@
   window.startMemory = startMemory;
 
   document.addEventListener('click', (e) => {
-    if (e.target.id === 'memMenuBtn' || e.target.id === 'memSumMenuBtn') show('menu');
-    if (e.target.id === 'memGamesBtn' || e.target.id === 'memSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
+    if (e.target.id === 'memMenuBtn' || e.target.id === 'memSumMenuBtn') {
+      clearInterval(timerInterval);
+      show('menu');
+    }
+    if (e.target.id === 'memGamesBtn' || e.target.id === 'memSumGamesBtn') { 
+      clearInterval(timerInterval);
+      if (typeof showModeSelect === 'function') showModeSelect(); 
+    }
     if (e.target.id === 'memRetryBtn' || e.target.id === 'memSumRetryBtn') startMemory();
     if (e.target.getAttribute('data-go') === 'memory') startMemory();
   });

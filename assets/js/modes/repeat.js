@@ -98,6 +98,7 @@
     
     if (accuracy >= 0.75) {
       score++;
+      if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(pool[currentIndex]);
       document.getElementById('repScore').textContent = score;
       if (typeof AudioFX !== 'undefined') AudioFX.correct();
       toast(`¡Excelente! (${accuracyPct}%) 🌟`);
@@ -221,6 +222,12 @@
     if (btn.id === 'repNextBtn') {
       currentIndex++;
       nextRepQuestion();
+    }
+    if (btn.id === 'repPrevBtn') {
+      if (currentIndex > 0) {
+        currentIndex--;
+        nextRepQuestion();
+      }
     }
     if (btn.id === 'repSkipBtn') {
       currentIndex++;
