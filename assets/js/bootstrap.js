@@ -14,6 +14,8 @@
     {name:'repeat', path:'assets/html/repeat.html'},
     {name:'timerace', path:'assets/html/timerace.html'},
     {name:'tamagotchi', path:'assets/html/tamagotchi.html'},
+    {name:'balloons', path:'assets/html/balloons.html'},
+    {name:'catchword', path:'assets/html/catchword.html'},
     {name:'footer', path:'assets/html/footer.html'}
   ];
 
@@ -41,6 +43,8 @@
     'assets/js/modes/repeat.js',
     'assets/js/modes/timerace.js',
     'assets/js/modes/tamagotchi.js',
+    'assets/js/modes/balloons.js',
+    'assets/js/modes/catchword.js',
     'assets/js/missions.js',
     'assets/js/app.js',
     'assets/js/tests/layout-smoke-test.js',

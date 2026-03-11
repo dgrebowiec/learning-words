@@ -70,3 +70,86 @@ function showStarRating(pct, elId) {
     setTimeout(() => { if (typeof launchConfetti === 'function') launchConfetti(); }, 1100);
   }
 }
+
+// ==========================================
+// NOWE EFEKTY WIZUALNE I HAPTYCZNE (UX/JUICE)
+// ==========================================
+
+function spawnTouchParticles(x, y) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors = ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#22d3ee'];
+  for (let i = 0; i < 6; i++) {
+    const p = document.createElement('div');
+    const size = 4 + Math.random() * 6;
+    p.style.cssText = `position:fixed;width:${size}px;height:${size}px;border-radius:50%;background:${colors[Math.floor(Math.random()*colors.length)]};left:${x}px;top:${y}px;pointer-events:none;z-index:99999;box-shadow:0 0 4px ${colors[Math.floor(Math.random()*colors.length)]};`;
+    document.body.appendChild(p);
+    const angle = Math.random() * 2 * Math.PI;
+    const dist = 15 + Math.random() * 30;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+    p.animate(
+      [{transform:'translate(-50%,-50%) scale(1)',opacity:0.8},{transform:`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) scale(0)`,opacity:0}],
+      {duration:300+Math.random()*200,easing:'ease-out',fill:'forwards'}
+    ).onfinish = () => p.remove();
+  }
+}
+
+function vibrate(pattern) {
+  if (navigator.vibrate) {
+    try { navigator.vibrate(pattern); } catch (e) {}
+  }
+}
+
+function flashScreen(type) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const color = type === 'correct' ? 'rgba(34, 197, 94, 0.25)' : 'rgba(239, 68, 68, 0.25)';
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:9998;background:radial-gradient(circle at center, transparent 40%, ${color} 120%);transition:opacity 0.3s;opacity:1;`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 300);
+  });
+}
+
+function reactCheerleader(type) {
+  const mascot = document.getElementById('cheerleaderMascot');
+  if (!mascot) return;
+
+  if (typeof loadPetsData === 'function' && typeof getPetStage === 'function') {
+    try {
+      const data = loadPetsData();
+      const activeId = data.activePetId || 'chicken';
+      const petData = data.pets[activeId] || { xp: 0 };
+      const stage = getPetStage(activeId, petData.xp);
+      if (stage && stage.emoji) {
+        mascot.querySelector('span').textContent = stage.emoji;
+      }
+    } catch(e) {}
+  }
+  
+  mascot.classList.remove('hidden', 'cheer', 'sad');
+  void mascot.offsetWidth; // trigger reflow
+  
+  if (type === 'happy') {
+    mascot.classList.add('cheer');
+    setTimeout(() => mascot.classList.remove('cheer'), 1000);
+  } else if (type === 'sad') {
+    mascot.classList.add('sad');
+    setTimeout(() => mascot.classList.remove('sad'), 1000);
+  }
+}
+
+// Globalne nasłuchiwanie kliknięć dla efektów
+document.addEventListener('pointerdown', (e) => {
+  // Ignorujemy przewijanie, bierzemy pierwszy punkt dotyku lub kliknięcie myszką
+  const x = e.clientX;
+  const y = e.clientY;
+  if (e.pointerType === 'mouse' || e.pointerType === 'touch') {
+    spawnTouchParticles(x, y);
+  }
+  // Delikatna wibracja na klik
+  if (e.target.closest('button') || e.target.closest('.choice') || e.target.closest('.cat-card') || e.target.closest('.memory-card') || e.target.closest('.catch-item')) {
+    vibrate(10);
+  }
+}, {passive: true});

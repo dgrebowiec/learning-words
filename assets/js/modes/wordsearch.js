@@ -182,6 +182,7 @@
     if (match) {
       match.found = true;
       foundWords.add(match.es);
+      if (typeof AudioFX !== 'undefined' && AudioFX.correct) AudioFX.correct();
       if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(match.original);
       markFound(currentSelection);
       document.getElementById(`ws-word-${match.es}`).classList.add('ws-word-found');
@@ -189,6 +190,10 @@
       
       if (foundWords.size === wordsToFind.length) {
         endWordSearch();
+      }
+    } else {
+      if (currentSelection.length > 1) {
+        if (typeof AudioFX !== 'undefined' && AudioFX.wrong) AudioFX.wrong();
       }
     }
 

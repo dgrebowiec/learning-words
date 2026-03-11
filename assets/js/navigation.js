@@ -125,6 +125,8 @@ $$('[data-go]').forEach(b => b.addEventListener('click', () => {
   if (target==='scramble'){ startScramble(); updateMenuStats('SCRAMBLE'); }
   if (target==='repeat'){ startRepeat(); updateMenuStats('REPEAT'); }
   if (target==='tamagotchi'){ if(typeof window.renderTamagotchi === 'function') window.renderTamagotchi(); }
+  if (target==='balloons'){ if(typeof window.startBalloons === 'function') startBalloons(); }
+  if (target==='catchword'){ if(typeof window.startCatchword === 'function') startCatchword(); }
 }));
 
 document.getElementById('startReviewBtn').addEventListener('click', () => {

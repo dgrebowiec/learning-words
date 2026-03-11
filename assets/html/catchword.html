@@ -1,0 +1,35 @@
+<section id="catchword" class="card hidden" style="position:relative; overflow:hidden; min-height: 70vh; display: flex; flex-direction: column;">
+  <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px; z-index: 10;">
+    <span class="pill" title="Złapane słowa">Złapane: <b id="cwScore">0</b>/<span id="cwTotal">10</span></span>
+    <span class="pill" title="Pozostałe życia">Szanse: <b id="cwLives">❤️ ❤️ ❤️</b></span>
+    <div class="star-game-widget pill" title="Postęp do kolejnej gwiazdki">⭐ <b id="cwStarCount">0</b> <div class="star-segs" id="cwStarSegs"></div></div>
+  </div>
+  <div class="scorebar" aria-hidden="true" style="margin:10px 0 14px 0; z-index: 10;"><span id="cwFill"></span></div>
+  
+  <div class="center" style="margin-bottom:6px; z-index: 10;">
+    <p class="sub" style="margin:0 0 5px 0">Złap obrazek dla słowa:</p>
+    <div class="word" id="cwEs" style="font-size: 2.5rem; text-shadow: 0 0 10px var(--primary-color);">manzana</div>
+    <div class="row" style="margin-top:6px">
+      <button class="btn" id="cwSpeak">🔁 Odsłuchaj (ES)</button>
+    </div>
+  </div>
+
+  <div id="catchArea" style="flex-grow: 1; position: relative; width: 100%; border-radius: 12px; background: rgba(0,0,0,0.2); overflow: hidden; border: 2px dashed var(--border-color); margin-top: 10px;">
+    <!-- Falling items will be spawned here -->
+  </div>
+
+  <div class="row" style="margin-top:10px; justify-content:space-between; z-index: 10;">
+    <button class="btn secondary" id="cwMenuBtn">🏠 Zakończ</button>
+  </div>
+
+  <div id="cwSummary" class="summary hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--bg-color); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: center;">
+    <div class="big" id="cwSummaryTitle">Podsumowanie</div>
+    <div class="star-rating" id="cwStarRating"></div>
+    <div><b>Wynik:</b> <span id="cwSumScore">0</span>/<span id="cwSumTotal">0</span> (<span id="cwSumPct">0</span>%)</div>
+    <div class="muted">Czas gry: <b id="cwSumTime">0.0 s</b></div>
+    <div class="row" style="margin-top:20px; justify-content: center; gap: 10px;">
+      <button class="btn secondary" id="cwSumMenu">🏠 Menu</button>
+      <button class="btn" id="cwSumRetry">⟳ Zagraj ponownie</button>
+    </div>
+  </div>
+</section>

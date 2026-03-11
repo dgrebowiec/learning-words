@@ -31,7 +31,20 @@ const AudioFX = (() => {
     } catch(e) {}
   }
   return {
-    correct() { tone(880, 0.13); setTimeout(() => tone(1320, 0.11), 70); },
-    wrong()   { tone(200, 0.22, 'sawtooth', 0.18); }
+    correct() { 
+      tone(880, 0.13); setTimeout(() => tone(1320, 0.11), 70); 
+      if (typeof flashScreen === 'function') flashScreen('correct');
+      if (typeof reactCheerleader === 'function') reactCheerleader('happy');
+      if (typeof vibrate === 'function') vibrate([30, 50, 30]);
+    },
+    wrong() { 
+      tone(200, 0.22, 'sawtooth', 0.18); 
+      if (typeof flashScreen === 'function') flashScreen('wrong');
+      if (typeof reactCheerleader === 'function') reactCheerleader('sad');
+      if (typeof vibrate === 'function') vibrate([100, 50, 100]);
+    },
+    pop() { 
+      tone(600, 0.05, 'sine', 0.1); 
+    }
   };
 })();

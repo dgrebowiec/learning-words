@@ -74,6 +74,7 @@
   function handleFlip(el, index) {
     if (flipped.length >= 2 || el.classList.contains('flipped') || el.classList.contains('matched')) return;
 
+    if (typeof AudioFX !== 'undefined' && AudioFX.pop) AudioFX.pop();
     el.classList.add('flipped');
     flipped.push({ el, index });
 
@@ -89,6 +90,7 @@
 
     if (item1.id === item2.id) {
       // Match!
+      if (typeof AudioFX !== 'undefined') AudioFX.correct();
       setTimeout(() => {
         c1.el.classList.add('matched');
         c2.el.classList.add('matched');
@@ -100,6 +102,7 @@
       }, 500);
     } else {
       // No match
+      if (typeof AudioFX !== 'undefined') AudioFX.wrong();
       setTimeout(() => {
         c1.el.classList.remove('flipped');
         c2.el.classList.remove('flipped');
