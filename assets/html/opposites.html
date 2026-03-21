@@ -1,0 +1,31 @@
+<section id="opposites" class="card hidden">
+  <div class="row" style="justify-content:space-between; flex-wrap:wrap; gap:6px;">
+    <span class="pill">Dopasowano: <b id="oppPairs">0/0</b></span>
+    <span class="pill">Czas: <b id="oppTime">0.0 s</b></span>
+    <button class="btn secondary" id="oppMenuBtn" style="padding:6px 12px; min-height:unset; font-size:12px">🏠 Menu</button>
+    <button class="btn secondary" id="oppGamesBtn" style="padding:6px 12px; min-height:unset; font-size:12px">🎮 Ćwiczenia</button>
+  </div>
+  
+  <div class="center" style="margin:20px 0">
+    <div id="oppositesGameContainer" class="opposites-container" style="position:relative; width:100%; max-width:600px; margin:0 auto;">
+      <div id="oppPuzzleArea" class="opp-puzzle-area">
+        <!-- Tu będą rzędy: [Słowo A] [Slot] -->
+      </div>
+      
+      <p class="sub" style="text-align:center; margin-bottom:12px; font-weight:700;">Przeciągnij pasujące przeciwieństwo:</p>
+      <div id="oppBank" class="opp-bank">
+        <!-- Tu będą rozsypane przeciwieństwa -->
+      </div>
+    </div>
+  </div>
+
+  <div id="oppSummary" class="summary hidden">
+    <div class="big">🎉 Brawo!</div>
+    <div id="oppFinalStats" class="muted">Ukończono w 0s</div>
+    <div class="row" style="margin-top:20px; justify-content:center; gap:10px;">
+      <button class="btn secondary" id="oppSumMenuBtn">🏠 Menu</button>
+      <button class="btn secondary" id="oppSumGamesBtn">🎮 Ćwiczenia</button>
+      <button class="btn" id="oppSumRetryBtn">⟳ Ponownie</button>
+    </div>
+  </div>
+</section>
