@@ -163,6 +163,38 @@ const ESTACIONES = [
   {emoji:'❄️', pl:'zima',   es:'invierno',  article:'el'}
 ];
 
+const NUMEROS = [
+  {val:0,  pl:'zero',       es:'cero'},
+  {val:1,  pl:'jeden',      es:'uno'},
+  {val:2,  pl:'dwa',        es:'dos'},
+  {val:3,  pl:'trzy',       es:'tres'},
+  {val:4,  pl:'cztery',     es:'cuatro'},
+  {val:5,  pl:'pięć',       es:'cinco'},
+  {val:6,  pl:'sześć',      es:'seis'},
+  {val:7,  pl:'siedem',     es:'siete'},
+  {val:8,  pl:'osiem',      es:'ocho'},
+  {val:9,  pl:'dziewięć',   es:'nueve'},
+  {val:10, pl:'dziesięć',   es:'diez'},
+  {val:11, pl:'jedenaście', es:'once'},
+  {val:12, pl:'dwanaście',  es:'doce'},
+  {val:13, pl:'trzynaście', es:'trece'},
+  {val:14, pl:'czternaście',es:'catorce'},
+  {val:15, pl:'piętnaście', es:'quince'},
+  {val:16, pl:'szesnaście',  es:'dieciséis'},
+  {val:17, pl:'siedemnaście',es:'diecisiete'},
+  {val:18, pl:'osiemnaście', es:'dieciocho'},
+  {val:19, pl:'dziewiętnaście',es:'diecinueve'},
+  {val:20, pl:'dwadzieścia',  es:'veinte'},
+  {val:30, pl:'trzydzieści',  es:'treinta'},
+  {val:40, pl:'czterdzieści', es:'cuarenta'},
+  {val:50, pl:'pięćdziesiąt', es:'cincuenta'},
+  {val:60, pl:'sześćdziesiąt',es:'sesenta'},
+  {val:70, pl:'siedemdziesiąt',es:'setenta'},
+  {val:80, pl:'osiemdziesiąt',es:'ochenta'},
+  {val:90, pl:'dziewięćdziesiąt',es:'noventa'},
+  {val:100,pl:'sto',          es:'cien'}
+];
+
 const CATEGORIES = {
   FRUITS:          {label:'Owoce',            emoji:'🍓', data:FRUITS},
   VEGGIES:         {label:'Warzywa',          emoji:'🥦', data:VEGGIES},
@@ -175,6 +207,7 @@ const CATEGORIES = {
   OTONO:           {label:'Jesień',           emoji:'🍂', data:OTONO},
   INVIERNO:        {label:'Zima',             emoji:'❄️', data:INVIERNO},
   ESTACIONES:      {label:'Pory roku',        emoji:'🌸', data:ESTACIONES},
+  NUMEROS:         {label:'Liczebniki',       emoji:'1️⃣', data:NUMEROS},
   MIXED:           {label:'Wszystko',         emoji:'🌍', data:null}
 };
 

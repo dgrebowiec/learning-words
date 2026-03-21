@@ -6,9 +6,20 @@ let currentCat = 'FRUITS';
 let menuStep = 1;
 
 function datasetFor(cat){
+  if (cat === 'NUMEROS') {
+    let range = 20;
+    if (currentLevel === 'SREDNI') range = 50;
+    if (currentLevel === 'TRUDNY') range = 101;
+    return NUMEROS.filter(n => n.val < range).map(n => ({
+      ...n,
+      emoji: n.val.toString() // Używamy liczby jako emoji dla celów wizualnych w innych trybach
+    }));
+  }
   if (cat === 'MIXED'){
     let all = [];
-    Object.entries(CATEGORIES).forEach(([k,v]) => { if (k !== 'MIXED' && v.data) all = all.concat(v.data); });
+    Object.entries(CATEGORIES).forEach(([k,v]) => { 
+      if (k !== 'MIXED' && k !== 'NUMEROS' && v.data) all = all.concat(v.data); 
+    });
     return all;
   }
   const entry = CATEGORIES[cat];
