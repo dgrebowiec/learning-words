@@ -99,6 +99,7 @@
     if (typeof renderBadges === 'function') renderBadges();
     if (typeof renderAchievements === 'function') renderAchievements();
     if (typeof renderStreak === 'function') renderStreak();
+    if (typeof renderMissions === 'function') renderMissions();
     if (typeof updateMenuStats === 'function') updateMenuStats('QUIZ_PL_ES');
   }
 

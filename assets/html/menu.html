@@ -199,62 +199,71 @@
     </div>
     <p class="sub" style="margin:12px 0 8px">Wybierz tryb gry:</p>
     <div class="menu-grid">
-      <div class="mode-card">
-        <div><h3>Fiszki</h3><p>Ucz się nazw + odsłuch, bez punktacji.</p></div>
-        <button class="btn" data-go="flashcards">Start</button>
+      <div class="mode-card" data-go="wordlist">
+        <span class="mode-emoji">📖</span>
+        <h3>Lista słów</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Quiz (PL → ES)</h3><p>Wybierz hiszpańską nazwę.</p></div>
-        <button class="btn" data-go="quiz">Start</button>
+      <div class="mode-card" data-go="flashcards">
+        <span class="mode-emoji">🎴</span>
+        <h3>Fiszki</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Wybierz element (ES → obraz)</h3><p>Podajemy nazwę po hiszp.; wybierz właściwy obraz.</p></div>
-        <button class="btn" data-go="finditem">Start</button>
+      <div class="mode-card" data-go="quiz">
+        <span class="mode-emoji">❓</span>
+        <h3>Quiz (PL → ES)</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Memory</h3><p>Dopasuj pary: emoji/obraz do słowa.</p></div>
-        <button class="btn" data-go="memory">Start</button>
+      <div class="mode-card" data-go="finditem">
+        <span class="mode-emoji">🖼️</span>
+        <h3>Wybierz element</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>El / La</h3><p>Wybierz poprawny rodzajnik.</p></div>
-        <button class="btn" data-go="articulos">Start</button>
+      <div class="mode-card" data-go="memory">
+        <span class="mode-emoji">🧠</span>
+        <h3>Memory</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Wykreślanka</h3><p>Znajdź ukryte słowa w siatce liter.</p></div>
-        <button class="btn" data-go="wordsearch">Start</button>
+      <div class="mode-card" data-go="articulos">
+        <span class="mode-emoji">⚖️</span>
+        <h3>El / La</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Wpisz słowo</h3><p>Wpisz poprawne słowo po hiszpańsku.</p></div>
-        <button class="btn" data-go="spelling">Start</button>
+      <div class="mode-card" data-go="wordsearch">
+        <span class="mode-emoji">🔍</span>
+        <h3>Wykreślanka</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Ułóż słowo</h3><p>Ułóż słowo z rozsypanych liter.</p></div>
-        <button class="btn" data-go="scramble">Start</button>
+      <div class="mode-card" data-go="spelling">
+        <span class="mode-emoji">⌨️</span>
+        <h3>Wpisz słowo</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Powtórz słowo</h3><p>Wypowiedz słowo do mikrofonu.</p></div>
-        <button class="btn" data-go="repeat">Start</button>
+      <div class="mode-card" data-go="scramble">
+        <span class="mode-emoji">🔀</span>
+        <h3>Ułóż słowo</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Wyścig z Czasem</h3><p>Masz 60s! Odpowiadaj jak najszybciej.</p></div>
-        <button class="btn" data-go="timerace">Start</button>
+      <div class="mode-card" data-go="repeat">
+        <span class="mode-emoji">🗣️</span>
+        <h3>Powtórz słowo</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Balony z Kolorami</h3><p>Przebijaj balony we właściwym kolorze!</p></div>
-        <button class="btn" data-go="balloons">Start</button>
+      <div class="mode-card" data-go="timerace">
+        <span class="mode-emoji">⏱️</span>
+        <h3>Wyścig z Czasem</h3>
       </div>
-      <div class="mode-card">
-        <div><h3>Złap Słowo</h3><p>Łap spadające obrazki dopasowane do słowa!</p></div>
-        <button class="btn" data-go="catchword">Start</button>
+      <div class="mode-card" data-go="balloons">
+        <span class="mode-emoji">🎈</span>
+        <h3>Balony</h3>
       </div>
-      <div class="mode-card" id="reviewModeCard" style="display: none; background:linear-gradient(160deg, rgba(239,68,68,.10), rgba(255,255,255,.03)); border-color:rgba(239,68,68,.3);">
-        <div><h3>Powtórka (Błędy)</h3><p>Przećwicz słowa, z którymi masz problem.</p></div>
-        <button class="btn" id="startReviewBtn">Start (0 słów)</button>
+      <div class="mode-card" data-go="catchword">
+        <span class="mode-emoji">🎣</span>
+        <h3>Złap Słowo</h3>
+      </div>
+      <div class="mode-card" id="oppositesModeCard" data-go="opposites" style="display: none;">
+        <span class="mode-emoji">↔️</span>
+        <h3>Przeciwieństwa</h3>
       </div>
 
-      <div class="mode-card" id="unlearnedModeCard" style="display: none; background:linear-gradient(160deg, rgba(96,165,250,.10), rgba(255,255,255,.03)); border-color:rgba(96,165,250,.3);">
-        <div><h3>Ćwicz nienauczone</h3><p>Skup się na słowach, których jeszcze nie znasz.</p></div>
-        <button class="btn" id="startUnlearnedBtn">Start (0 słów)</button>
+      <div class="mode-card" id="reviewModeCard" data-go="review" style="display: none; border-color:rgba(239,68,68,.3);">
+        <span class="mode-emoji">🔄</span>
+        <h3>Powtórka</h3>
+      </div>
+
+      <div class="mode-card" id="unlearnedModeCard" data-go="unlearned" style="display: none; border-color:rgba(96,165,250,.3);">
+        <span class="mode-emoji">🆕</span>
+        <h3>Nienauczone</h3>
       </div>
     </div>
 

@@ -73,21 +73,30 @@ function progressMission(type, amount = 1) {
 }
 
 function claimMission(index) {
-  const missions = loadMissions();
-  const m = missions[index];
-  
-  if (m && m.completed && !m.claimed) {
-    m.claimed = true;
-    saveMissions(missions);
+  try {
+    const missions = loadMissions();
+    const m = missions[index];
     
-    if (typeof addXP === 'function') {
-      addXP(m.xp, `Misja: ${m.desc}`);
+    if (m && m.completed && !m.claimed) {
+      m.claimed = true;
+      saveMissions(missions);
+      
+      if (typeof addXP === 'function') {
+        addXP(m.xp, `Misja: ${m.desc}`);
+      }
+      if (typeof launchConfetti === 'function') {
+        launchConfetti();
+      }
+      
+      if (typeof toast === 'function') {
+        toast(`🎁 Odebrano nagrodę: ${m.xp} XP!`);
+      }
+      
+      renderMissions();
     }
-    if (typeof launchConfetti === 'function') {
-      launchConfetti();
-    }
-    
-    renderMissions();
+  } catch (e) {
+    console.error("Błąd podczas odbierania misji:", e);
+    if (typeof toast === 'function') toast("Wystąpił błąd podczas odbierania nagrody.");
   }
 }
 
@@ -132,9 +141,13 @@ function renderMissions() {
     } else if (m.completed) {
       const btn = document.createElement('button');
       btn.className = 'btn';
-      btn.style.cssText = 'min-height: 44px; padding: 0 16px; background: var(--primary-color); color: #000;';
+      btn.style.cssText = 'min-height: 44px; padding: 0 16px; background: var(--primary-color); color: #000; cursor: pointer;';
       btn.textContent = 'Odbierz';
-      btn.onclick = () => claimMission(index);
+      btn.onclick = () => {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        claimMission(index);
+      };
       action.appendChild(btn);
     } else {
       action.innerHTML = `<span style="font-size: 20px; opacity: 0.5;">⏳</span>`;
@@ -182,10 +195,15 @@ if (originalMarkLearned) {
 }
 
 // Hook into app start or menu show
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    if (typeof renderMissions === 'function') {
-      renderMissions();
-    }
-  }, 500);
-});
+function initMissions() {
+  if (typeof renderMissions === 'function') {
+    renderMissions();
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMissions);
+} else {
+  // If we are already loaded (common with dynamic script loading), run immediately
+  initMissions();
+}

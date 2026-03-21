@@ -119,6 +119,12 @@ function updateMenuStats(mode){
     rCard.style.display = mistakesPool.length > 0 ? 'flex' : 'none';
   }
 
+  const oppCard = $('#oppositesModeCard');
+  if (oppCard){
+    const hasOpposites = datasetFor(currentCat).some(w => w.opposite);
+    oppCard.style.display = hasOpposites ? 'flex' : 'none';
+  }
+
   const el3Best = document.getElementById('statBest3');
   const el3Time = document.getElementById('statBestTime3');
   const el3Learned = document.getElementById('statLearned3');
