@@ -123,7 +123,7 @@
           <span class="ws-word-es">${w.es}</span>
           <span class="ws-word-pl">${w.original.pl}</span>
         </span>
-        <button class="ws-speak-btn" title="Posłuchaj po hiszpańsku" onclick="event.stopPropagation(); speakEs('${w.original.es.replace(/'/g, "\\'")}')">🔊</button>
+        <button class="ws-speak-btn" title="Posłuchaj po hiszpańsku" onclick="event.stopPropagation(); if(typeof initAudio==='function')initAudio(); speakEs('${w.original.es.replace(/'/g, "\\'")}')">🔊</button>
       `;
       listEl.appendChild(item);
     });
@@ -257,8 +257,14 @@
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
-    if (btn.id === 'wsMenuBtn' || btn.id === 'wsSumMenuBtn') show('menu');
-    if (btn.id === 'wsGamesBtn' || btn.id === 'wsSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
+    if (btn.id === 'wsMenuBtn' || btn.id === 'wsSumMenuBtn') {
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
+    }
+    if (btn.id === 'wsGamesBtn' || btn.id === 'wsSumGamesBtn') {
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else if (typeof showModeSelect === 'function') showModeSelect();
+    }
     if (btn.id === 'wsRetryBtn' || btn.id === 'wsSumRetryBtn') startWordSearch();
     if (btn.getAttribute('data-go') === 'wordsearch') startWordSearch();
   });

@@ -18,8 +18,9 @@
     <!-- Falling items will be spawned here -->
   </div>
 
-  <div class="row" style="margin-top:10px; justify-content:space-between; z-index: 10;">
-    <button class="btn secondary" id="cwMenuBtn">🏠 Zakończ</button>
+  <div class="row" style="margin-top:10px; justify-content:center; gap:10px; z-index: 10;">
+    <button class="btn secondary" id="cwMenuBtn">🏠 Start</button>
+    <button class="btn secondary" id="cwGamesBtn">🎮 Ćwiczenia</button>
   </div>
 
   <div id="cwSummary" class="summary hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--bg-color); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: center;">
@@ -28,7 +29,8 @@
     <div><b>Wynik:</b> <span id="cwSumScore">0</span>/<span id="cwSumTotal">0</span> (<span id="cwSumPct">0</span>%)</div>
     <div class="muted">Czas gry: <b id="cwSumTime">0.0 s</b></div>
     <div class="row" style="margin-top:20px; justify-content: center; gap: 10px;">
-      <button class="btn secondary" id="cwSumMenu">🏠 Menu</button>
+      <button class="btn secondary" id="cwSumMenu">🏠 Start</button>
+      <button class="btn secondary" id="cwSumGames">🎮 Ćwiczenia</button>
       <button class="btn" id="cwSumRetry">⟳ Zagraj ponownie</button>
     </div>
   </div>

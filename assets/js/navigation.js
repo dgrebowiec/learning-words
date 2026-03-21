@@ -1,8 +1,51 @@
+const NON_EXERCISE_SECTIONS = new Set(['menu', 'tamagotchi']);
+
+function isExerciseSection(sectionId){
+  return ALL_SECTIONS.includes(sectionId) && !NON_EXERCISE_SECTIONS.has(sectionId);
+}
+
+function goHome(){
+  show('menu');
+}
+
+function goToExercisePicker(){
+  showModeSelect();
+}
+
+function syncHeaderForSection(sectionId){
+  const menuBtn = document.getElementById('toMenuBtn');
+  const menuBtnIcon = document.getElementById('toMenuBtnIcon');
+  const menuBtnLabel = document.getElementById('toMenuBtnLabel');
+  if (!menuBtn) return;
+  const shouldShowMenuButton = sectionId !== 'menu';
+  menuBtn.classList.toggle('hidden', !shouldShowMenuButton);
+  menuBtn.setAttribute('aria-hidden', shouldShowMenuButton ? 'false' : 'true');
+  if (!shouldShowMenuButton) return;
+
+  if (isExerciseSection(sectionId)){
+    menuBtn.dataset.navTarget = 'exercise-picker';
+    menuBtn.setAttribute('aria-label', 'Wróć do ekranu ćwiczeń');
+    if (menuBtnIcon) menuBtnIcon.textContent = '🎮';
+    if (menuBtnLabel) menuBtnLabel.textContent = 'Ćwiczenia';
+  } else {
+    menuBtn.dataset.navTarget = 'home';
+    menuBtn.setAttribute('aria-label', 'Wróć do ekranu głównego');
+    if (menuBtnIcon) menuBtnIcon.textContent = '🏠';
+    if (menuBtnLabel) menuBtnLabel.textContent = 'Start';
+  }
+}
+
+window.syncHeaderForSection = syncHeaderForSection;
+window.goHome = goHome;
+window.goToExercisePicker = goToExercisePicker;
+window.isExerciseSection = isExerciseSection;
+
 function show(sectionId, pushHistory = true, step = 1){
   ALL_SECTIONS.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('hidden', id !== sectionId);
   });
+  syncHeaderForSection(sectionId);
   
   if (pushHistory && sectionId !== 'menu') {
     history.pushState({ sectionId, step: null }, '', `#${sectionId}`);
@@ -110,6 +153,7 @@ function showModeSelect(){
     const el = document.getElementById(id);
     if (el) el.classList.toggle('hidden', id !== 'menu');
   });
+  syncHeaderForSection('menu');
   renderBadges();
   renderAchievements();
   renderXPBar();
@@ -119,7 +163,14 @@ function showModeSelect(){
   showMenuStep(3, true);
 }
 
-document.getElementById('toMenuBtn').addEventListener('click', ()=> { show('menu'); });
+document.getElementById('toMenuBtn').addEventListener('click', ()=> {
+  const navTarget = document.getElementById('toMenuBtn')?.dataset?.navTarget;
+  if (navTarget === 'home'){
+    goHome();
+    return;
+  }
+  goToExercisePicker();
+});
 
 document.getElementById('wizardBreadcrumb').addEventListener('click', e => {
   const btn = e.target.closest('.wiz-step');
@@ -176,6 +227,7 @@ window.addEventListener('popstate', (e) => {
         const el = document.getElementById(id);
         if (el) el.classList.toggle('hidden', id !== 'menu');
       });
+      syncHeaderForSection('menu');
       showMenuStep(step, false);
       renderBadges();
       renderAchievements();

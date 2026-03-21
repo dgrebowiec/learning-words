@@ -204,10 +204,14 @@
     const btn = e.target.closest('button');
     if (!btn) return;
     
-    if (btn.id === 'repMenuBtn') show('menu');
-    if (btn.id === 'repGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
-    if (btn.id === 'repSumMenuBtn') show('menu');
-    if (btn.id === 'repSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
+    if (btn.id === 'repMenuBtn' || btn.id === 'repSumMenuBtn') {
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
+    }
+    if (btn.id === 'repGamesBtn' || btn.id === 'repSumGamesBtn') {
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else if (typeof showModeSelect === 'function') showModeSelect();
+    }
     if (btn.id === 'repSumRetryBtn') startRepeat();
     if (btn.getAttribute('data-go') === 'repeat') startRepeat();
     

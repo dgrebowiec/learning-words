@@ -16,10 +16,16 @@
   document.getElementById('fcPrev').addEventListener('click', ()=> { fcIndex=(fcIndex-1); renderFlashcard(); flashcardSpeak(); });
   document.getElementById('fcSpeak').addEventListener('click', flashcardSpeak);
   document.getElementById('resetBtn').addEventListener('click', ()=> { fcIndex=0; renderFlashcard(); });
-  document.getElementById('fcGamesBtn').addEventListener('click', ()=> showModeSelect());
+  document.getElementById('fcHomeBtn').addEventListener('click', ()=> {
+    if (typeof goHome === 'function') goHome();
+    else show('menu');
+  });
+  document.getElementById('fcGamesBtn').addEventListener('click', ()=> {
+    if (typeof goToExercisePicker === 'function') goToExercisePicker();
+    else showModeSelect();
+  });
 
   renderFlashcard();
 
   window.renderFlashcard = renderFlashcard;
 })();
-

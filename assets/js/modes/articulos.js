@@ -56,6 +56,8 @@
     document.getElementById('artPl').textContent = '(' + item.pl + ')';
     document.getElementById('artVisual').innerHTML = renderItemVisual(item, '8rem');
     
+    if (typeof speakEs === 'function') speakEs(item.es);
+    
     const fill = (currentIndex / pool.length) * 100;
     document.getElementById('artFill').style.width = fill + '%';
 
@@ -129,8 +131,14 @@
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
-    if (btn.id === 'artMenuBtn' || btn.id === 'artSumMenuBtn') show('menu');
-    if (btn.id === 'artGamesBtn' || btn.id === 'artSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
+    if (btn.id === 'artMenuBtn' || btn.id === 'artSumMenuBtn') {
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
+    }
+    if (btn.id === 'artGamesBtn' || btn.id === 'artSumGamesBtn') {
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else if (typeof showModeSelect === 'function') showModeSelect();
+    }
     if (btn.id === 'artPrevBtn') {
       if (currentIndex > 0) {
         currentIndex--;

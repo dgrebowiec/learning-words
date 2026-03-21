@@ -91,6 +91,7 @@
     if (item1.id === item2.id) {
       // Match!
       if (typeof AudioFX !== 'undefined') AudioFX.correct();
+      if (typeof speakEs === 'function') speakEs(item1.es);
       setTimeout(() => {
         c1.el.classList.add('matched');
         c2.el.classList.add('matched');
@@ -172,11 +173,13 @@
   document.addEventListener('click', (e) => {
     if (e.target.id === 'memMenuBtn' || e.target.id === 'memSumMenuBtn') {
       clearInterval(timerInterval);
-      show('menu');
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
     }
     if (e.target.id === 'memGamesBtn' || e.target.id === 'memSumGamesBtn') { 
       clearInterval(timerInterval);
-      if (typeof showModeSelect === 'function') showModeSelect(); 
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else if (typeof showModeSelect === 'function') showModeSelect(); 
     }
     if (e.target.id === 'memRetryBtn' || e.target.id === 'memSumRetryBtn') startMemory();
     if (e.target.getAttribute('data-go') === 'memory') startMemory();

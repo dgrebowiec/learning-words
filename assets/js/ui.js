@@ -9,11 +9,16 @@ function renderItemVisual(item, size){
 function toast(msg){
   const t = document.createElement('div');
   t.textContent = msg;
-  t.style.position='fixed'; t.style.bottom='16px'; t.style.left='50%'; t.style.transform='translateX(-50%)';
-  t.style.background='rgba(0,0,0,.85)'; t.style.padding='10px 14px'; t.style.border='1px solid rgba(255,255,255,.25)';
-  t.style.borderRadius='12px'; t.style.zIndex='9999'; t.style.color='#fff';
-  document.body.appendChild(t); setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .4s'; }, 1400);
-  setTimeout(()=> t.remove(), 1850);
+  t.style.cssText = `
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:rgba(11, 16, 32, 0.95); padding:14px 20px; border:1px solid rgba(255,255,255,0.3);
+    border-radius:16px; z-index:9999; color:#fff; text-align:center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+    max-width: 85vw; font-weight: 600; font-size: 15px; transition: opacity 0.5s, transform 0.5s;
+  `;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(10px)'; }, 2800);
+  setTimeout(()=> t.remove(), 3350);
 }
 
 function renderCombo(elId, val) {

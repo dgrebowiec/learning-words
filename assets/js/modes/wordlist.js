@@ -47,3 +47,13 @@ function startWordList() {
         container.appendChild(card);
     });
 }
+
+document.getElementById('wlHomeBtn').addEventListener('click', () => {
+    if (typeof goHome === 'function') goHome();
+    else show('menu');
+});
+
+document.getElementById('wlGamesBtn').addEventListener('click', () => {
+    if (typeof goToExercisePicker === 'function') goToExercisePicker();
+    else showModeSelect();
+});

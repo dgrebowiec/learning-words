@@ -131,6 +131,7 @@
       const speakBtn = btn.querySelector('.choice-speak');
       speakBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        if (typeof initAudio === 'function') initAudio();
         speakEs(opt.es);
       });
 
@@ -155,13 +156,25 @@
     if (qAnswer && (!qAnswered || !qAnsweredCorrect)){ registerMistake(qAnswer); }
     newQuestion();
   });
-  document.getElementById('qSpeak').addEventListener('click', ()=> { if (qAnswer) speakEs(qAnswer.es); });
+      document.getElementById('qSpeak').addEventListener('click', ()=> { 
+        if (typeof initAudio === 'function') initAudio();
+        if (qAnswer) speakEs(qAnswer.es); 
+      });
   document.getElementById('qRetry').addEventListener('click', ()=> { startQuiz(); });
   document.getElementById('qSumReview').addEventListener('click', ()=> { startMistakeReview(); });
   document.getElementById('qMenuBtn').addEventListener('click', ()=> { 
     clearTimeout(qAutoTimer);
-    show('menu'); 
+    if (typeof goHome === 'function') goHome();
+    else show('menu');
   });
+  const qGamesBtn = document.getElementById('qGamesBtn');
+  if (qGamesBtn){
+    qGamesBtn.addEventListener('click', ()=> {
+      clearTimeout(qAutoTimer);
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else showModeSelect();
+    });
+  }
 
   function endQuiz(){
     const elapsedSec = (performance.now() - qStartTime) / 1000;
@@ -200,9 +213,15 @@
     document.getElementById('qSummary').classList.remove('hidden');
 
     document.getElementById('qSumRetry').onclick = ()=> startQuiz();
-    document.getElementById('qSumMenu').onclick  = ()=> { show('menu'); };
+    document.getElementById('qSumMenu').onclick  = ()=> {
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
+    };
     const qSumGames = document.getElementById('qSumGames');
-    if (qSumGames) qSumGames.onclick = ()=> showModeSelect();
+    if (qSumGames) qSumGames.onclick = ()=> {
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else showModeSelect();
+    };
     updateGlobalStats();
   }
 

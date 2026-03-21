@@ -201,6 +201,12 @@ function handlePieceEnd(e) {
             oppMatchedCount++;
             updateOppPairsText();
             if (typeof playSuccessSound === 'function') playSuccessSound();
+            if (typeof speakEs === 'function') {
+                const ds = datasetFor(currentCat);
+                const p = oppCurrentPairs.find(p => p.es === pieceDragging.dataset.id || p.opposite === pieceDragging.dataset.id);
+                // Wypowiedz oba słowa z pary
+                if (p) speakEs(`${p.es} , ${p.opposite}`);
+            }
             
             if (oppMatchedCount === oppPairsTotal) {
                 setTimeout(finishOpposites, 500);
@@ -274,10 +280,22 @@ function finishOpposites() {
 }
 
 // Event Listeners
-document.getElementById('oppMenuBtn').onclick = () => show('menu');
-document.getElementById('oppSumMenuBtn').onclick = () => show('menu');
-document.getElementById('oppGamesBtn').onclick = () => showMenuStep(3);
-document.getElementById('oppSumGamesBtn').onclick = () => showMenuStep(3);
+document.getElementById('oppMenuBtn').onclick = () => {
+  if (typeof goHome === 'function') goHome();
+  else show('menu');
+};
+document.getElementById('oppSumMenuBtn').onclick = () => {
+  if (typeof goHome === 'function') goHome();
+  else show('menu');
+};
+document.getElementById('oppGamesBtn').onclick = () => {
+  if (typeof goToExercisePicker === 'function') goToExercisePicker();
+  else if (typeof showModeSelect === 'function') showModeSelect();
+};
+document.getElementById('oppSumGamesBtn').onclick = () => {
+  if (typeof goToExercisePicker === 'function') goToExercisePicker();
+  else if (typeof showModeSelect === 'function') showModeSelect();
+};
 document.getElementById('oppSumRetryBtn').onclick = () => startOpposites();
 
 // Register globally

@@ -33,7 +33,7 @@
       } else {
         document.getElementById('trTime').textContent = timeLeft + 's';
         if (timeLeft <= 10) {
-          document.getElementById('trTime').style.color = 'var(--danger)';
+          document.getElementById('trTime').style.color = 'var(--bad)';
         } else {
           document.getElementById('trTime').style.color = '';
         }
@@ -58,7 +58,7 @@
     options.forEach(opt => {
       const btn = document.createElement('button');
       btn.className = 'btn choice';
-      btn.textContent = opt.es;
+      btn.innerHTML = '<b>' + opt.es + '</b>';
       btn.addEventListener('click', () => handleAnswer(opt.es === currentItem.es, btn));
       optsContainer.appendChild(btn);
     });
@@ -72,10 +72,10 @@
       score++;
       if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(currentItem);
       timeLeft += 2; // Bonus +2s
-      if (typeof speak === 'function') speak(currentItem.es);
+      if (typeof speakEs === 'function') speakEs(currentItem.es);
       document.getElementById('trScore').textContent = score;
       document.getElementById('trTime').textContent = timeLeft + 's';
-      document.getElementById('trTime').style.color = 'var(--success)';
+      document.getElementById('trTime').style.color = 'var(--good)';
       setTimeout(() => document.getElementById('trTime').style.color = '', 500);
       learnedInSession.add(currentItem.es);
       setTimeout(nextRound, 400);
@@ -85,7 +85,7 @@
       btn.classList.add('shake');
       timeLeft = Math.max(0, timeLeft - 3); // Penalty -3s
       document.getElementById('trTime').textContent = timeLeft + 's';
-      document.getElementById('trTime').style.color = 'var(--danger)';
+      document.getElementById('trTime').style.color = 'var(--bad)';
       setTimeout(() => {
         btn.classList.remove('wrong', 'shake');
       }, 500);
@@ -134,7 +134,13 @@
   document.addEventListener('click', (e) => {
     if (e.target.id === 'trMenuBtn' || e.target.id === 'trMenuSumBtn') {
       clearInterval(timerInterval);
-      show('menu');
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
+    }
+    if (e.target.id === 'trGamesBtn' || e.target.id === 'trGamesSumBtn') {
+      clearInterval(timerInterval);
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else if (typeof showModeSelect === 'function') showModeSelect();
     }
     if (e.target.id === 'trRetryBtn') startTimerace();
     if (e.target.getAttribute('data-go') === 'timerace') startTimerace();

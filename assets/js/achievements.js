@@ -158,6 +158,9 @@ function pluralizeStars(count){
   if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return 'gwiazdki';
   return 'gwiazdek';
 }
+function pluralizeDays(count){
+  return Math.abs(count) === 1 ? 'dzień' : 'dni';
+}
 
 function streakDefaults() { return { lastDate: null, count: 0 }; }
 function loadStreak() {
@@ -207,7 +210,7 @@ function updateStreak() {
 function renderStreak() {
   const state = loadStreak();
   const el = document.getElementById('streakPill');
-  if (el) el.textContent = `🔥 Seria: ${state.count} dni`;
+  if (el) el.textContent = `🔥 ${state.count} ${pluralizeDays(state.count)}`;
   
   const statsEl = document.getElementById('streakPillStats');
   if (statsEl) statsEl.textContent = state.count;

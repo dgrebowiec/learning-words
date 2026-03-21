@@ -105,10 +105,11 @@
     if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(pool[currentIndex]);
     document.getElementById('spScore').textContent = score;
     const inputEl = document.getElementById('spInput');
-    inputEl.style.borderColor = '#10b981';
+    inputEl.style.borderColor = 'var(--good)';
     inputEl.disabled = true;
 
     if (typeof AudioFX !== 'undefined') AudioFX.correct();
+    if (typeof speakEs === 'function') speakEs(pool[currentIndex].es);
     if (typeof toast === 'function') toast('¡Excelente! 🌟');
     
     setTimeout(() => {
@@ -119,7 +120,7 @@
 
   function handleIncorrect() {
     const inputEl = document.getElementById('spInput');
-    inputEl.style.borderColor = '#ef4444';
+    inputEl.style.borderColor = 'var(--bad)';
     
     inputEl.animate([
       { transform: 'translateX(0)' },
@@ -180,10 +181,14 @@
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
-    if (btn.id === 'spMenuBtn') show('menu');
-    if (btn.id === 'spGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
-    if (btn.id === 'spSumMenuBtn') show('menu');
-    if (btn.id === 'spSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
+    if (btn.id === 'spMenuBtn' || btn.id === 'spSumMenuBtn') {
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
+    }
+    if (btn.id === 'spGamesBtn' || btn.id === 'spSumGamesBtn') {
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else if (typeof showModeSelect === 'function') showModeSelect();
+    }
     if (btn.id === 'spSumRetryBtn') startSpelling();
     if (btn.getAttribute('data-go') === 'spelling') startSpelling();
     if (btn.id === 'spCheckBtn') checkSpelling();

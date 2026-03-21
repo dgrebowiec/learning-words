@@ -161,14 +161,33 @@
     document.getElementById('cwSummary').classList.remove('hidden');
 
     document.getElementById('cwSumRetry').onclick = ()=> startCatchword();
-    document.getElementById('cwSumMenu').onclick  = ()=> { show('menu'); };
+    document.getElementById('cwSumMenu').onclick  = ()=> {
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
+    };
+    const cwSumGames = document.getElementById('cwSumGames');
+    if (cwSumGames){
+      cwSumGames.onclick = ()=> {
+        if (typeof goToExercisePicker === 'function') goToExercisePicker();
+        else showModeSelect();
+      };
+    }
     updateGlobalStats();
   }
 
   document.getElementById('cwMenuBtn').addEventListener('click', ()=> {
     clearInterval(cwSpawnInterval);
-    show('menu');
+    if (typeof goHome === 'function') goHome();
+    else show('menu');
   });
+  const cwGamesBtn = document.getElementById('cwGamesBtn');
+  if (cwGamesBtn){
+    cwGamesBtn.addEventListener('click', ()=> {
+      clearInterval(cwSpawnInterval);
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else showModeSelect();
+    });
+  }
   document.getElementById('cwSpeak').addEventListener('click', ()=> { if (cwTarget) speakEs(cwTarget.es); });
 
   window.startCatchword = startCatchword;

@@ -22,12 +22,15 @@
 
     const container = document.getElementById('balloonsContainer');
     if (container) container.innerHTML = '';
-    
-    document.getElementById('balloonsSummary').classList.add('hidden');
-    
+
+    const summary = document.getElementById('balloonsSummary');
+    if (summary) summary.classList.add('hidden');
+
+    if (typeof initAudio === 'function') initAudio();
+
     updateBalloonsUI();
     nextRound();
-    
+
     clearInterval(balloonsInterval);
     balloonsInterval = setInterval(gameLoop, 50);
 
@@ -39,7 +42,7 @@
     currentWord = pick(list, 1)[0];
     const targetEl = document.getElementById('balloonsTargetWord');
     if (targetEl) targetEl.textContent = currentWord.es;
-    
+
     if (typeof speak === 'function') speak(currentWord.es);
     spawnBalloons();
   }
@@ -51,58 +54,65 @@
     activeBalloons = [];
 
     const list = dataset();
-    let optionsCount = LEVELS[currentLevel]?.options || 3;
-    
+    const optionsCount = LEVELS[currentLevel]?.options || 3;
+
     let wrongWords = list.filter(w => w.es !== currentWord.es);
     wrongWords = shuffle(wrongWords).slice(0, optionsCount - 1);
-    
+
     let pool = [currentWord, ...wrongWords];
     pool = shuffle(pool);
 
     const containerWidth = container.clientWidth;
-    const balloonWidth = 60; 
+    const balloonWidth = 60;
 
     pool.forEach((item, index) => {
       const el = document.createElement('div');
       el.className = 'balloon';
-      
-      // Random color for balloon background if not COLORES
+
       const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
       const bg = colors[index % colors.length];
-      
+
       el.style.backgroundColor = bg;
       el.innerHTML = renderItemVisual(item, '30px');
-      
-      // Position evenly
+
       const spacing = containerWidth / pool.length;
       const left = (index * spacing) + (spacing / 2) - (balloonWidth / 2);
-      
+
       el.style.left = left + 'px';
       el.style.bottom = '-80px';
-      
+
       el.dataset.es = item.es;
-      
-      el.addEventListener('mousedown', () => popBalloon(el, item));
-      el.addEventListener('touchstart', (e) => { e.preventDefault(); popBalloon(el, item); });
+
+      const handlePop = (e) => {
+        if (e.type === 'touchstart') e.preventDefault();
+        if (el.dataset.popped) return;
+        el.dataset.popped = 'true';
+        if (typeof initAudio === 'function') initAudio();
+        popBalloon(el, item);
+      };
+
+      el.addEventListener('mousedown', handlePop);
+      el.addEventListener('touchstart', handlePop, { passive: false });
 
       container.appendChild(el);
-      
+
       activeBalloons.push({
         element: el,
         y: -80,
-        speed: 1.5 + Math.random() * 1.5, // Random speed
-        item: item
+        speed: 1.5 + Math.random() * 1.5,
+        item
       });
     });
   }
 
   function popBalloon(el, item) {
     if (!gameActive) return;
-    
-    // Add pop animation class
+
+    if (typeof playSound === 'function') playSound('pop');
+
     el.style.transform = 'scale(1.5)';
     el.style.opacity = '0';
-    
+
     setTimeout(() => {
       if (el.parentNode) el.parentNode.removeChild(el);
     }, 200);
@@ -110,26 +120,24 @@
     activeBalloons = activeBalloons.filter(b => b.element !== el);
 
     if (item.es === currentWord.es) {
-      // Correct!
       score++;
-      if (typeof playSound === 'function') playSound('correct');
+      if (typeof playSuccessSound === 'function') playSuccessSound();
       if (typeof registerCorrectAnswer === 'function') registerCorrectAnswer(item);
-      
+
       updateBalloonsUI();
-      
+
       if (score >= targetScore) {
         endGame(true);
       } else {
         setTimeout(nextRound, 500);
       }
     } else {
-      // Wrong!
       lives--;
-      if (typeof playSound === 'function') playSound('wrong');
+      if (typeof playErrorSound === 'function') playErrorSound();
       if (typeof registerWrongAnswer === 'function') registerWrongAnswer(currentWord);
-      
+
       updateBalloonsUI();
-      
+
       if (lives <= 0) {
         endGame(false);
       }
@@ -147,7 +155,7 @@
     activeBalloons.forEach(b => {
       b.y += b.speed;
       b.element.style.bottom = b.y + 'px';
-      
+
       if (b.y > containerHeight + 20) {
         if (b.item.es === currentWord.es && !missedTarget) {
           missedTarget = true;
@@ -160,17 +168,16 @@
 
     if (missedTarget) {
       lives--;
-      if (typeof playSound === 'function') playSound('wrong');
+      if (typeof playErrorSound === 'function') playErrorSound();
       if (typeof registerWrongAnswer === 'function') registerWrongAnswer(currentWord);
       updateBalloonsUI();
-      
+
       if (lives <= 0) {
         endGame(false);
       } else {
         setTimeout(nextRound, 500);
       }
     } else if (activeBalloons.length === 0 && gameActive) {
-      // Wszyscy odlecieli, ale nie ominęliśmy poprawnego (to niemożliwe logicznie, ale zabezpieczenie)
       setTimeout(nextRound, 500);
     }
   }
@@ -179,7 +186,7 @@
     const sEl = document.getElementById('balloonsScore');
     const tEl = document.getElementById('balloonsTarget');
     const lEl = document.getElementById('balloonsLives');
-    
+
     if (sEl) sEl.textContent = score;
     if (tEl) tEl.textContent = targetScore;
     if (lEl) lEl.textContent = lives;
@@ -188,18 +195,19 @@
   function endGame(win) {
     gameActive = false;
     clearInterval(balloonsInterval);
-    
+
     const summary = document.getElementById('balloonsSummary');
     const msg = document.getElementById('balloonsFinalMsg');
-    
+    if (!summary || !msg) return;
+
     summary.classList.remove('hidden');
-    
+
     if (win) {
       const xp = targetScore * 5;
       if (typeof addXP === 'function') addXP(xp, 'Balloons Game');
       if (typeof launchConfetti === 'function') launchConfetti();
       msg.textContent = `¡Fantástico! Przebito wszystkie balony! Zdobyto ${xp} XP! 🎉`;
-      
+
       const st = getModeStats('BALLOONS', currentLevel, currentCat);
       st.games = (st.games || 0) + 1;
       setModeStats('BALLOONS', currentLevel, currentCat, st);
@@ -212,17 +220,28 @@
   window.startBalloons = startBalloons;
 
   document.addEventListener('click', (e) => {
-    if (e.target.id === 'balloonsMenuBtn' || e.target.id === 'balloonsSumMenuBtn') {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+
+    if (btn.id === 'balloonsMenuBtn' || btn.id === 'balloonsSumMenuBtn') {
       clearInterval(balloonsInterval);
       gameActive = false;
-      show('menu');
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
     }
-    if (e.target.id === 'balloonsRetryBtn') {
+    if (btn.id === 'balloonsGamesBtn' || btn.id === 'balloonsSumGamesBtn') {
+      clearInterval(balloonsInterval);
+      gameActive = false;
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else if (typeof showModeSelect === 'function') showModeSelect();
+    }
+    if (btn.id === 'balloonsRetryBtn') {
+      if (typeof initAudio === 'function') initAudio();
       startBalloons();
     }
-    if (e.target.id === 'balloonsSpeakBtn') {
+    if (btn.id === 'balloonsSpeakBtn') {
+      if (typeof initAudio === 'function') initAudio();
       if (currentWord && typeof speak === 'function') speak(currentWord.es);
     }
   });
-
 })();

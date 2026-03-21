@@ -144,9 +144,10 @@
     document.getElementById('scrScore').textContent = score;
     
     const resultBtns = document.querySelectorAll('.result-btn');
-    resultBtns.forEach(b => b.style.background = '#10b981');
+    resultBtns.forEach(b => b.style.background = 'var(--good)');
 
     if (typeof AudioFX !== 'undefined') AudioFX.correct();
+    if (typeof speakEs === 'function') speakEs(pool[currentIndex].es);
     if (typeof toast === 'function') toast('¡Muy bien! 🌟');
     
     setTimeout(() => {
@@ -167,11 +168,18 @@
     if (typeof AudioFX !== 'undefined') AudioFX.wrong();
     if (typeof toast === 'function') toast('Spróbuj jeszcze raz! ❌');
     
-    // Reset po chwili lub pozwól użytkownikowi poprawić
+    const resultBtns = document.querySelectorAll('.result-btn');
+    resultBtns.forEach(b => {
+      b.style.background = 'var(--bad)';
+      b.style.borderColor = 'var(--bad)';
+    });
+    
     setTimeout(() => {
-        // Opcjonalnie: resetuj tylko jeśli chcemy wymusić ponowne ułożenie
-        // resetCurrentQuestion();
-    }, 500);
+      resultBtns.forEach(b => {
+        b.style.background = 'rgba(255,255,255,0.1)';
+        b.style.borderColor = '';
+      });
+    }, 800);
   }
 
   function resetCurrentQuestion() {
@@ -250,10 +258,14 @@
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
-    if (btn.id === 'scrMenuBtn') show('menu');
-    if (btn.id === 'scrGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
-    if (btn.id === 'scrSumMenuBtn') show('menu');
-    if (btn.id === 'scrSumGamesBtn') { if (typeof showModeSelect === 'function') showModeSelect(); }
+    if (btn.id === 'scrMenuBtn' || btn.id === 'scrSumMenuBtn') {
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
+    }
+    if (btn.id === 'scrGamesBtn' || btn.id === 'scrSumGamesBtn') {
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else if (typeof showModeSelect === 'function') showModeSelect();
+    }
     if (btn.id === 'scrSumRetryBtn') startScramble();
     if (btn.getAttribute('data-go') === 'scramble') startScramble();
     if (btn.id === 'scrResetBtn') resetCurrentQuestion();

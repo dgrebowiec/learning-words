@@ -151,8 +151,17 @@
   document.getElementById('fSumReview').addEventListener('click', ()=> { startMistakeReviewFind(); });
   document.getElementById('fMenuBtn').addEventListener('click', ()=> { 
     clearTimeout(fAutoTimer);
-    show('menu'); 
+    if (typeof goHome === 'function') goHome();
+    else show('menu');
   });
+  const fGamesBtn = document.getElementById('fGamesBtn');
+  if (fGamesBtn){
+    fGamesBtn.addEventListener('click', ()=> {
+      clearTimeout(fAutoTimer);
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else showModeSelect();
+    });
+  }
 
   function startMistakeReviewFind(){
     if (!fMistakes.length) {
@@ -231,9 +240,15 @@
     document.getElementById('fSummary').classList.remove('hidden');
 
     document.getElementById('fSumRetry').onclick = ()=> startFindItem();
-    document.getElementById('fSumMenu').onclick  = ()=> { show('menu'); };
+    document.getElementById('fSumMenu').onclick  = ()=> {
+      if (typeof goHome === 'function') goHome();
+      else show('menu');
+    };
     const fSumGames = document.getElementById('fSumGames');
-    if (fSumGames) fSumGames.onclick = ()=> showModeSelect();
+    if (fSumGames) fSumGames.onclick = ()=> {
+      if (typeof goToExercisePicker === 'function') goToExercisePicker();
+      else showModeSelect();
+    };
     updateGlobalStats();
   }
 
