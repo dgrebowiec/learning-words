@@ -83,6 +83,25 @@ function showMenuStep(n, pushHistory = true){
     if (step3CatLabel) step3CatLabel.textContent = cat.label || catLabel(currentCat);
     if (step3LevelLabel) step3LevelLabel.textContent = LEVEL_NAMES[currentLevel] || '';
     updateMenuStats('QUIZ_PL_ES');
+
+    // Update Special Modes counters
+    const mistakesSet = getPersistentMistakes(currentCat);
+    const reviewCard = document.getElementById('reviewModeCard');
+    if (reviewCard) {
+      reviewCard.style.display = mistakesSet.size > 0 ? 'flex' : 'none';
+      const h3 = reviewCard.querySelector('h3');
+      if (h3) h3.textContent = `Powtórka (${mistakesSet.size})`;
+    }
+
+    const mode = 'QUIZ_PL_ES';
+    const learnedSet = new Set(getModeStats(mode, currentLevel, currentCat).learnedWords || []);
+    const unlearnedPool = datasetFor(currentCat).filter(w => !learnedSet.has(w.es.toLowerCase()));
+    const unlearnedCard = document.getElementById('unlearnedModeCard');
+    if (unlearnedCard) {
+      unlearnedCard.style.display = unlearnedPool.length > 0 ? 'flex' : 'none';
+      const h3 = unlearnedCard.querySelector('h3');
+      if (h3) h3.textContent = `Nienauczone (${unlearnedPool.length})`;
+    }
   }
 }
 
@@ -95,6 +114,7 @@ function showModeSelect(){
   renderAchievements();
   renderXPBar();
   renderStreak();
+  if (typeof renderMissions === 'function') renderMissions();
   updateMenuStats('QUIZ_PL_ES');
   showMenuStep(3, true);
 }
@@ -115,30 +135,37 @@ $$('.level-card').forEach(card => {
   });
 });
 
-$$('[data-go]').forEach(b => b.addEventListener('click', () => {
-  const target = b.getAttribute('data-go'); show(target);
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-go]');
+  if (!b) return;
+  const target = b.getAttribute('data-go'); 
+  if (target === 'review') {
+    const mistakesSet = getPersistentMistakes(currentCat);
+    const pool = datasetFor(currentCat).filter(w => mistakesSet.has(w.es.toLowerCase()));
+    startSpecialQuiz(pool, 'Powtórka błędów');
+    return;
+  }
+  if (target === 'unlearned') {
+    const mode = 'QUIZ_PL_ES';
+    const learnedSet = new Set(getModeStats(mode, currentLevel, currentCat).learnedWords || []);
+    const pool = datasetFor(currentCat).filter(w => !learnedSet.has(w.es.toLowerCase()));
+    startSpecialQuiz(pool, 'Nowe słowa');
+    return;
+  }
+  
+  show(target);
   if (target==='quiz'){ startQuiz(); updateMenuStats('QUIZ_PL_ES'); if(typeof progressMission==='function') progressMission('play_quiz'); }
   if (target==='memory'){ startMemory(); if(typeof progressMission==='function') progressMission('play_memory'); }
   if (target==='timerace'){ startTimerace(); if(typeof progressMission==='function') progressMission('play_timerace'); }
   if (target==='finditem'){ startFindItem(); updateMenuStats('FIND_ITEM'); }
   if (target==='flashcards'){ renderFlashcard(); }
+  if (target==='wordlist'){ startWordList(); }
   if (target==='scramble'){ startScramble(); updateMenuStats('SCRAMBLE'); }
   if (target==='repeat'){ startRepeat(); updateMenuStats('REPEAT'); }
   if (target==='tamagotchi'){ if(typeof window.renderTamagotchi === 'function') window.renderTamagotchi(); }
   if (target==='balloons'){ if(typeof window.startBalloons === 'function') startBalloons(); }
   if (target==='catchword'){ if(typeof window.startCatchword === 'function') startCatchword(); }
-}));
-
-document.getElementById('startReviewBtn').addEventListener('click', () => {
-  const mistakesSet = getPersistentMistakes(currentCat);
-  const pool = datasetFor(currentCat).filter(w => mistakesSet.has(w.es.toLowerCase()));
-  startSpecialQuiz(pool, 'Powtórka błędów');
-});
-document.getElementById('startUnlearnedBtn').addEventListener('click', () => {
-  const mode = 'QUIZ_PL_ES';
-  const learnedSet = new Set(getModeStats(mode, currentLevel, currentCat).learnedWords || []);
-  const pool = datasetFor(currentCat).filter(w => !learnedSet.has(w.es.toLowerCase()));
-  startSpecialQuiz(pool, 'Nowe słowa');
+  if (target==='opposites'){ if(typeof window.startOpposites === 'function') startOpposites(); }
 });
 
 window.addEventListener('popstate', (e) => {

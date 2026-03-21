@@ -4,6 +4,7 @@
     {name:'header', path:'assets/html/header.html'},
     {name:'menu', path:'assets/html/menu.html'},
     {name:'flashcards', path:'assets/html/flashcards.html'},
+    {name:'wordlist', path:'assets/html/wordlist.html'},
     {name:'quiz', path:'assets/html/quiz.html'},
     {name:'finditem', path:'assets/html/finditem.html'},
     {name:'memory', path:'assets/html/memory.html'},
@@ -16,6 +17,7 @@
     {name:'tamagotchi', path:'assets/html/tamagotchi.html'},
     {name:'balloons', path:'assets/html/balloons.html'},
     {name:'catchword', path:'assets/html/catchword.html'},
+    {name:'opposites', path:'assets/html/opposites.html'},
     {name:'footer', path:'assets/html/footer.html'}
   ];
 
@@ -27,6 +29,7 @@
     'assets/js/ui.js',
     'assets/js/tts.js',
     'assets/js/storage.js',
+    'assets/js/profiles.js',
     'assets/js/badges.js',
     'assets/js/achievements.js',
     'assets/js/shop.js',
@@ -35,6 +38,7 @@
     'assets/js/modes/quiz.js',
     'assets/js/modes/finditem.js',
     'assets/js/modes/flashcards.js',
+    'assets/js/modes/wordlist.js',
     'assets/js/modes/memory.js',
     'assets/js/modes/articulos.js',
     'assets/js/modes/wordsearch.js',
@@ -45,10 +49,10 @@
     'assets/js/modes/tamagotchi.js',
     'assets/js/modes/balloons.js',
     'assets/js/modes/catchword.js',
+    'assets/js/modes/opposites.js',
     'assets/js/missions.js',
     'assets/js/app.js',
-    'assets/js/tests/layout-smoke-test.js',
-    'assets/js/profiles.js'
+    'assets/js/tests/layout-smoke-test.js'
   ];
 
   async function fetchFragment(url){
