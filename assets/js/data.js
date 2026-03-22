@@ -79,7 +79,7 @@ const MATERIAL_ESCOLAR = [
   {emoji:'✂️', pl:'nożyczki',     es:'tijeras',         article:'las'},
   {emoji:'🎒', pl:'plecak',       es:'mochila',         article:'la'},
   {emoji:'🖊️', pl:'długopis',     es:'bolígrafo',       article:'el'},
-  {emoji:'🖍️', pl:'temperówka',   es:'sacapuntas',      article:'el'},
+  {img:'assets/img/material_escolar/temperowka.jpg', pl:'temperówka',   es:'sacapuntas',      article:'el'},
   {emoji:'📖', pl:'książka',      es:'libro',           article:'el'},
   {emoji:'📎', pl:'spinacz',      es:'clip',            article:'el'},
   {emoji:'🖇️', pl:'zszywacz',     es:'engrapadora',     article:'la'},
@@ -117,13 +117,13 @@ const NAVIDAD = [
   {emoji:'⭐', pl:'gwiazda',            es:'estrella',          article:'la'},
   {emoji:'🔔', pl:'dzwonek',            es:'campana',           article:'la'},
   {emoji:'🛷', pl:'sanie',              es:'trineo',            article:'el'},
-  {emoji:'🦌', pl:'renifer',            es:'reno',              article:'el'},
+  {img:'assets/img/navidad/renifer.jpg', pl:'renifer',            es:'reno',              article:'el'},
   {emoji:'🐪', pl:'wielbłąd',           es:'camello',           article:'el'},
   {emoji:'🎅', pl:'Święty Mikołaj',     es:'papa noel',         article:'el'},
-  {emoji:'👑', pl:'Trzej Królowie',     es:'reyes magos',       article:'los'},
+  {img:'assets/img/navidad/trzej_krolowie.jpg', pl:'Trzej Królowie',     es:'reyes magos',       article:'los'},
   {emoji:'⛄', pl:'bałwan',             es:'muñeco de nieve',   article:'el'},
-  {emoji:'🎉', pl:'Boże Narodzenie',    es:'navidad',           article:'la'},
-  {emoji:'🏘️', pl:'szopka',             es:'belén',             article:'el'}
+  {img:'assets/img/navidad/boze_narodzenie.jpg', pl:'Boże Narodzenie',    es:'navidad',           article:'la'},
+  {img:'assets/img/navidad/szopka.jpg', pl:'szopka',             es:'belén',             article:'el'}
 ];
 
 const OTONO = [
@@ -136,24 +136,24 @@ const OTONO = [
   {emoji:'🥾', pl:'buty',              es:'botas',           article:'las'},
   {emoji:'🍫', pl:'czekolada',         es:'chocolate',       article:'el'},
   {emoji:'🦔', pl:'jeż',              es:'erizo',           article:'el'},
-  {emoji:'🧑‍🌾', pl:'strach na wróble', es:'espantapájaros',  article:'el'},
-  {emoji:'🌲', pl:'szyszki',           es:'piñas',           article:'las'},
-  {emoji:'🧥', pl:'sweter',            es:'jersey',          article:'el'}
+  {img:'assets/img/otono/strach_na_wroble.jpg', pl:'strach na wróble', es:'espantapájaros',  article:'el'},
+  {img:'assets/img/otono/szyszki.webb', pl:'szyszki',           es:'piñas',           article:'las'},
+  {img:'assets/img/otono/sweter.jpg', pl:'sweter',            es:'jersey',          article:'el'}
 ];
 
 const INVIERNO = [
-  {emoji:'❄️', pl:'śnieg',          es:'nieve',           article:'la'},
-  {emoji:'🏠', pl:'igloo',          es:'iglú',            article:'el'},
+  {img:'assets/img/invierno/snieg.jpg', pl:'śnieg',          es:'nieve',           article:'la'},
+  {img:'assets/img/invierno/igloo.jpg', pl:'igloo',          es:'iglú',            article:'el'},
   {emoji:'❄️', pl:'płatek śniegu',  es:'copo de nieve',   article:'el'},
   {emoji:'🐧', pl:'pingwin',        es:'pingüino',        article:'el'},
   {emoji:'⛄', pl:'bałwan',         es:'muñeco de nieve', article:'el'},
   {emoji:'🧢', pl:'czapka',         es:'gorro',           article:'el'},
   {emoji:'🧣', pl:'szalik',         es:'bufanda',         article:'la'},
   {emoji:'🧤', pl:'rękawiczki',     es:'guantes',         article:'los'},
-  {emoji:'🧥', pl:'kurtka',         es:'abrigo',          article:'el'},
+  {img:'assets/img/invierno/kurtka.jpg', pl:'kurtka',         es:'abrigo',          article:'el'},
   {emoji:'🥾', pl:'buty',           es:'botas',           article:'las'},
   {emoji:'🥶', pl:'zimno',          es:'frío',            article:'el'},
-  {emoji:'🧊', pl:'sopel',          es:'carámbano',       article:'el'}
+  {img:'assets/img/invierno/sopel.jpg', pl:'sopel',          es:'carámbano',       article:'el'}
 ];
 
 const ESTACIONES = [
@@ -196,40 +196,40 @@ const NUMEROS = [
 ];
 
 const OPUESTOS = [
-  {es:'calor', pl:'gorąco', emoji:'🔥', opposite:'frío'},
-  {es:'frío', pl:'zimno', emoji:'❄️', opposite:'calor'},
-  {es:'grande', pl:'duży', emoji:'🐘', opposite:'pequeño'},
-  {es:'pequeño', pl:'mały', emoji:'🐭', opposite:'grande'},
-  {es:'rápido', pl:'szybki', emoji:'🏃', opposite:'lento'},
-  {es:'lento', pl:'wolny', emoji:'🐢', opposite:'rápido'},
-  {es:'encendido', pl:'włączony', emoji:'💡', opposite:'apagado'},
-  {es:'apagado', pl:'wyłączony', emoji:'🔌', opposite:'encendido'},
+  {es:'calor', pl:'gorąco', img:'assets/img/opuestos/goraco.jpg', opposite:'frío'},
+  {es:'frío', pl:'zimno', img:'assets/img/opuestos/zimno.jpg', opposite:'calor'},
+  {es:'grande', pl:'duży', img:'assets/img/opuestos/duzy.jpg', opposite:'pequeño'},
+  {es:'pequeño', pl:'mały', img:'assets/img/opuestos/maly.jpg', opposite:'grande'},
+  {es:'rápido', pl:'szybki', img:'assets/img/opuestos/szybki.jpg', opposite:'lento'},
+  {es:'lento', pl:'wolny', img:'assets/img/opuestos/wolny.jpg', opposite:'rápido'},
+  {es:'encendido', pl:'włączony', img:'assets/img/opuestos/wlaczony.jpg', opposite:'apagado'},
+  {es:'apagado', pl:'wyłączony',  img:'assets/img/opuestos/wylaczony.jpg', opposite:'encendido'},
   {es:'arriba', pl:'na górze', emoji:'⬆️', opposite:'abajo'},
   {es:'abajo', pl:'na dole', emoji:'⬇️', opposite:'arriba'},
-  {es:'duro', pl:'twardy', emoji:'🪨', opposite:'blando'},
-  {es:'blando', pl:'miękki', emoji:'🪶', opposite:'duro'},
+  {es:'duro', pl:'twardy', img:'assets/img/opuestos/twardy.jpg', opposite:'blando'},
+  {es:'blando', pl:'miękki', img:'assets/img/opuestos/miekki.jpg', opposite:'duro'},
   {es:'feliz', pl:'szczęśliwy', emoji:'😊', opposite:'triste'},
   {es:'triste', pl:'smutny', emoji:'😢', opposite:'feliz'},
-  {es:'largo', pl:'długi', emoji:'📏', opposite:'corto'},
-  {es:'corto', pl:'krótki', emoji:'✂️', opposite:'largo'},
+  {es:'largo', pl:'długi', img:'assets/img/opuestos/dlugi.jpg', opposite:'corto'},
+  {es:'corto', pl:'krótki', img:'assets/img/opuestos/krotki.jpg', opposite:'largo'},
   {es:'abierto', pl:'otwarty', emoji:'🔓', opposite:'cerrado'},
   {es:'cerrado', pl:'zamknięty', emoji:'🔒', opposite:'abierto'},
-  {es:'alto', pl:'wysoki', emoji:'🦒', opposite:'bajo'},
-  {es:'bajo', pl:'niski', emoji:'🐕', opposite:'alto'},
-  {es:'fuera', pl:'na zewnątrz', emoji:'🏠', opposite:'dentro'},
-  {es:'dentro', pl:'wewnątrz', emoji:'📥', opposite:'fuera'},
-  {es:'lleno', pl:'pełny', emoji:'🥛', opposite:'vacío'},
-  {es:'vacío', pl:'pusty', emoji:'🫙', opposite:'lleno'},
-  {es:'cerca', pl:'blisko', emoji:'📍', opposite:'lejos'},
-  {es:'lejos', pl:'daleko', emoji:'🔭', opposite:'cerca'},
-  {es:'adelante', pl:'do przodu', emoji:'⏩', opposite:'atrás'},
-  {es:'atrás', pl:'do tyłu', emoji:'⏪', opposite:'adelante'},
-  {es:'entera', pl:'cała', emoji:'🍊', opposite:'partida'},
-  {es:'partida', pl:'przecięta', emoji:'🔪', opposite:'entera'},
-  {es:'de pie', pl:'na stojąco', emoji:'🧍', opposite:'sentada'},
-  {es:'sentada', pl:'na siedząco', emoji:'🪑', opposite:'de pie'},
-  {es:'limpio', pl:'czysty', emoji:'✨', opposite:'sucio'},
-  {es:'sucio', pl:'brudny', emoji:'💩', opposite:'limpio'}
+  {es:'alto', pl:'wysoki', img:'assets/img/opuestos/wysoki.jpg', opposite:'bajo'},
+  {es:'bajo', pl:'niski', img:'assets/img/opuestos/niski.jpg', opposite:'alto'},
+  {es:'fuera', pl:'na zewnątrz', img:'assets/img/opuestos/nazewnatrz.jpg', opposite:'dentro'},
+  {es:'dentro', pl:'wewnątrz', img:'assets/img/opuestos/wsrodku.jpg', opposite:'fuera'},
+  {es:'lleno', pl:'pełny', img:'assets/img/opuestos/pelny.jpg', opposite:'vacío'},
+  {es:'vacío', pl:'pusty', img:'assets/img/opuestos/pusty.jpg', opposite:'lleno'},
+  {es:'cerca', pl:'blisko', img:'assets/img/opuestos/blisko.jpg', opposite:'lejos'},
+  {es:'lejos', pl:'daleko', img:'assets/img/opuestos/daleko.jpg', opposite:'cerca'},
+  {es:'adelante', pl:'przed', img:'assets/img/opuestos/przed.jpg', opposite:'atrás'},
+  {es:'atrás', pl:'zza', img:'assets/img/opuestos/zza.jpg', opposite:'adelante'},
+  {es:'entera', pl:'cała', img:'assets/img/opuestos/cala.jpg', opposite:'partida'},
+  {es:'partida', pl:'przekrojona', img:'assets/img/opuestos/kawalek.jpg', opposite:'entera'},
+  {es:'de pie', pl:'na stojąco', img:'assets/img/opuestos/nastojaco.jpg', opposite:'sentada'},
+  {es:'sentada', pl:'na siedząco',img:'assets/img/opuestos/nasiedzaco.jpg', opposite:'de pie'},
+  {es:'limpio', pl:'czysty', img:'assets/img/opuestos/czysty.jpg', opposite:'sucio'},
+  {es:'sucio', pl:'brudny', img:'assets/img/opuestos/brudny.jpg', opposite:'limpio'}
 ];
 
 const RECIENTES = [
