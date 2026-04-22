@@ -269,6 +269,21 @@ const RECIENTES = [
   {es:'sucio', pl:'brudny', emoji:'💩', opposite:'limpio'}
 ];
 
+const FORMAS = [
+  {emoji:'⚫', pl:'koło',        es:'círculo',    article:'el'},
+  {emoji:'🟦', pl:'kwadrat',     es:'cuadrado',   article:'el'},
+  {emoji:'🔺', pl:'trójkąt',     es:'triángulo',  article:'el'},
+  {emoji:'🟥', pl:'prostokąt',   es:'rectángulo', article:'el'},
+  {emoji:'⭐', pl:'gwiazda',      es:'estrella',   article:'la'},
+  {emoji:'❤️', pl:'serce',       es:'corazón',    article:'el'},
+  {emoji:'🔷', pl:'romb',        es:'rombo',      article:'el'},
+  {emoji:'🥚', pl:'owal',        es:'óvalo',      article:'el'},
+  {emoji:'⬟', pl:'pięciokąt',   es:'pentágono',  article:'el'},
+  {emoji:'⬢', pl:'sześciokąt',  es:'hexágono',   article:'el'},
+  {emoji:'7️⃣', pl:'siedmiokąt', es:'heptágono',  article:'el'},
+  {emoji:'🛑', pl:'ośmiokąt',   es:'octágono',   article:'el'}
+];
+
 const CATEGORIES = {
   FRUITS:          {label:'Owoce',            emoji:'🍓', data:FRUITS},
   VEGGIES:         {label:'Warzywa',          emoji:'🥦', data:VEGGIES},
@@ -276,6 +291,7 @@ const CATEGORIES = {
   PRONOMBRES:      {label:'Zaimki',           emoji:'👤', data:PRONOMBRES},
   COLORES:         {label:'Kolory',           emoji:'🎨', data:COLORES},
   MATERIAL_ESCOLAR:{label:'Przybory szkolne', emoji:'🎒', data:MATERIAL_ESCOLAR},
+  FORMAS:          {label:'Kształty',         emoji:'🔷', data:FORMAS},
   HALLOWEEN:       {label:'Halloween',        emoji:'🎃', data:HALLOWEEN},
   NAVIDAD:         {label:'Boże Narodzenie',  emoji:'🎄', data:NAVIDAD},
   OTONO:           {label:'Jesień',           emoji:'🍂', data:OTONO},
